@@ -23,121 +23,72 @@ export default function Dashboard() {
   const TARGET_PER_MEMBER = 1600000;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       
-      {/* Hero Header with Primary Action Button */}
-      <div className="bg-white p-5 rounded-lg border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Hero Header */}
+      <div className="bg-white p-6 rounded-xl border border-zinc-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
+          <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider block">
             Saldo Kas Berjalan
           </span>
-          <div className="text-3xl font-bold tabular-nums text-zinc-950 mt-1">
+          <div className="text-3xl sm:text-4xl font-bold tabular-nums text-zinc-950 mt-1">
             {formatRupiah(saldoSaatIni)}
           </div>
-          <span className="text-xs text-zinc-500 mt-0.5 block">
-            Tercatat di Buku Kas • Mutasi kas aktif
+          <span className="text-xs text-zinc-500 mt-1 block">
+            Posisi kas riil terverifikasi dari Buku Kas
           </span>
         </div>
 
         {role === 'Bendahara' && (
-          <button
-            onClick={() => setIsRecordModalOpen(true)}
-            className="flex items-center justify-center space-x-2 px-5 py-2.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition shadow-xs"
-          >
-            <Plus className="w-4 h-4 text-emerald-400" />
-            <span>+ Catat Transaksi Baru</span>
-          </button>
+          <div className="shrink-0">
+            <button
+              onClick={() => setIsRecordModalOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition cursor-pointer"
+            >
+              <Plus className="w-4 h-4 text-emerald-400" />
+              <span>Catat Transaksi</span>
+            </button>
+          </div>
         )}
       </div>
 
-      {/* 3 Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      {/* 3 Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <MetricCard
           title="Total Pemasukan"
           amount={formatRupiah(totalDanaKelompok)}
-          subtitle="Iuran 10 anggota & kas masuk"
+          subtitle="Iuran anggota dan pendapatan lain"
         />
         <MetricCard
           title="Total Pengeluaran"
           amount={formatRupiah(totalPengeluaranKas)}
-          subtitle={`${bbKasOktober.length} mutasi kas keluar`}
+          subtitle={`${bbKasOktober.length} transaksi kas tercatat`}
         />
         <MetricCard
           title="Rencana Anggaran (RAB)"
           amount={formatRupiah(totalRabHarian + uangProker)}
-          subtitle="RAB Harian + Alokasi Proker"
+          subtitle="RAB operasional dan program kerja"
         />
       </div>
 
-      {/* 2 Clean Sections: Iuran & Recent Kas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* 2 Equal Columns: Iuran Status & Recent Transactions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
-        {/* Progress Iuran Anggota */}
-        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-zinc-100 flex items-center justify-between">
-            <h2 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
-              Iuran per Anggota
-            </h2>
+        {/* Iuran per Member Table */}
+        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
+                Rekapitulasi Iuran
+              </h2>
+              <span className="text-[11px] text-zinc-500">Target baku: {formatRupiah(TARGET_PER_MEMBER)} / orang</span>
+            </div>
             <button
               onClick={() => setActiveTab('KARTU IURAN')}
               className="text-xs text-zinc-600 hover:text-zinc-950 font-medium inline-flex items-center space-x-1"
             >
-              <span>Detail</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-
-          <div className="p-3 divide-y divide-zinc-100">
-            {members.map((m, idx) => {
-              const current = Number(m.total) || 0;
-              const isOver = current > TARGET_PER_MEMBER;
-              const isLunas = current >= TARGET_PER_MEMBER;
-
-              return (
-                <div key={idx} className="py-2 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2.5">
-                    <span className="w-5 h-5 rounded bg-zinc-100 text-zinc-600 text-[10px] font-medium flex items-center justify-center">
-                      {idx + 1}
-                    </span>
-                    <span className="font-medium text-zinc-900">{m.name}</span>
-                  </div>
-
-                  <div className="text-right flex items-center space-x-2">
-                    <span className="tabular-nums font-semibold text-zinc-900">
-                      {formatRupiah(current)}
-                    </span>
-                    {isOver ? (
-                      <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                        Lunas (+400rb)
-                      </span>
-                    ) : isLunas ? (
-                      <span className="text-[10px] font-semibold text-zinc-700 bg-zinc-100 px-1.5 py-0.5 rounded">
-                        Lunas
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
-                        Kurang
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Mutasi Kas Terkini */}
-        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-zinc-100 flex items-center justify-between">
-            <h2 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
-              Mutasi Kas Terakhir
-            </h2>
-            <button
-              onClick={() => setActiveTab('BB KAS')}
-              className="text-xs text-zinc-600 hover:text-zinc-950 font-medium inline-flex items-center space-x-1"
-            >
-              <span>Buku Kas</span>
-              <ArrowRight className="w-3 h-3" />
+              <span>Selengkapnya</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -145,29 +96,93 @@ export default function Dashboard() {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 font-medium text-[11px]">
-                  <th className="py-2 px-3">Tgl</th>
-                  <th className="py-2 px-3">Keterangan</th>
-                  <th className="py-2 px-3 text-right">Keluar/Masuk</th>
-                  <th className="py-2 px-3 text-right">Saldo</th>
+                  <th className="py-2.5 px-4 text-center w-12">No</th>
+                  <th className="py-2.5 px-4">Nama</th>
+                  <th className="py-2.5 px-4 text-right">Terkumpul</th>
+                  <th className="py-2.5 px-4 text-center w-28">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {members.map((m, idx) => {
+                  const current = Number(m.total) || 0;
+                  const isOver = current > TARGET_PER_MEMBER;
+                  const isLunas = current >= TARGET_PER_MEMBER;
+
+                  return (
+                    <tr key={idx} className="hover:bg-zinc-50/50">
+                      <td className="py-2.5 px-4 text-center text-zinc-400">{idx + 1}</td>
+                      <td className="py-2.5 px-4 font-medium text-zinc-900">{m.name}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums font-semibold text-zinc-900">
+                        {formatRupiah(current)}
+                      </td>
+                      <td className="py-2.5 px-4 text-center">
+                        {isOver ? (
+                          <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                            Lunas (Lebih)
+                          </span>
+                        ) : isLunas ? (
+                          <span className="text-[10px] font-medium text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded">
+                            Lunas
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                            Belum Lunas
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mutasi Kas Terkini */}
+        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
+                Mutasi Kas Terakhir
+              </h2>
+              <span className="text-[11px] text-zinc-500">6 transaksi kas terkonfirmasi</span>
+            </div>
+            <button
+              onClick={() => setActiveTab('BB KAS')}
+              className="text-xs text-zinc-600 hover:text-zinc-950 font-medium inline-flex items-center space-x-1"
+            >
+              <span>Buku Kas</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 font-medium text-[11px]">
+                  <th className="py-2.5 px-4 w-20">Tanggal</th>
+                  <th className="py-2.5 px-4">Deskripsi</th>
+                  <th className="py-2.5 px-4 text-right">Nominal</th>
+                  <th className="py-2.5 px-4 text-right">Saldo Kas</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
                 {bbKasOktober.slice(-6).reverse().map((tx, idx) => (
                   <tr key={idx} className="hover:bg-zinc-50/50">
-                    <td className="py-2 px-3 text-zinc-500 text-[11px]">
+                    <td className="py-2.5 px-4 text-zinc-500 text-[11px] whitespace-nowrap">
                       {tx.tanggal ? `Okt ${tx.tanggal}` : '-'}
                     </td>
-                    <td className="py-2 px-3 font-medium text-zinc-900 truncate max-w-[150px]">
+                    <td className="py-2.5 px-4 font-medium text-zinc-900">
                       {tx.deskripsi}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums">
+                    <td className="py-2.5 px-4 text-right tabular-nums whitespace-nowrap">
                       {tx.masuk > 0 ? (
-                        <span className="text-emerald-700 font-medium">+{formatRupiah(tx.masuk)}</span>
+                        <span className="text-emerald-700 font-medium">{formatRupiah(tx.masuk)}</span>
                       ) : (
-                        <span className="text-zinc-900 font-medium">-{formatRupiah(tx.keluar)}</span>
+                        <span className="text-zinc-900 font-medium">{formatRupiah(tx.keluar)}</span>
                       )}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums font-semibold text-zinc-950">
+                    <td className="py-2.5 px-4 text-right tabular-nums font-semibold text-zinc-950 whitespace-nowrap">
                       {formatRupiah(tx.saldo)}
                     </td>
                   </tr>

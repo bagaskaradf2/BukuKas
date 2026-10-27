@@ -5,7 +5,7 @@ import { saveKasTransaction } from '../services/api';
 import { Plus, Search, Filter, X } from 'lucide-react';
 
 export default function BbKas() {
-  const { data, setData, role, showToast, refreshLogs } = useApp();
+  const { data, setData, role, showToast, refreshLogs, refreshData } = useApp();
   const bbKas = data?.bbKas || {};
 
   const [activeMonth, setActiveMonth] = useState('OKTOBER');
@@ -97,6 +97,7 @@ export default function BbKas() {
       showToast(`Transaksi kas berhasil dicatat.`, 'success');
       setIsModalOpen(false);
       refreshLogs();
+      refreshData(true);
     } catch (err) {
       showToast('Gagal mencatat transaksi: ' + err.message, 'error');
     } finally {
@@ -108,16 +109,16 @@ export default function BbKas() {
     <div className="space-y-4 pb-10">
       
       {/* Month Selector & Controls */}
-      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center space-x-2">
+      <div className="bg-white p-4 rounded-xl border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center space-x-1.5">
           {['OKTOBER', 'NOVEMBER', 'DESEMBER'].map(m => (
             <button
               key={m}
               onClick={() => setActiveMonth(m)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                 activeMonth === m
-                  ? 'bg-[#0F291E] text-white'
-                  : 'bg-[#F8F9FA] text-[#64748B] hover:bg-[#E2E8F0]'
+                  ? 'bg-zinc-900 text-white'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
               {m}
@@ -128,31 +129,37 @@ export default function BbKas() {
         {role === 'Bendahara' && (
           <button
             onClick={handleOpenAdd}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-[#0F291E] hover:bg-[#1B4D3E] text-white text-xs font-medium transition"
+            className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>+ Catat Transaksi Kas</span>
+            <Plus className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Catat Transaksi Kas</span>
           </button>
         )}
       </div>
 
       {/* Quick Numbers Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-2xs">
-          <span className="text-[11px] text-[#64748B] block">Total Masuk ({activeMonth})</span>
-          <span className="text-base font-bold tabular-nums text-emerald-700">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div className="bg-white p-4 rounded-xl border border-zinc-200">
+          <span className="text-[11px] text-zinc-500 font-medium uppercase tracking-wider block">
+            Total Masuk ({activeMonth})
+          </span>
+          <span className="text-xl font-bold tabular-nums text-emerald-700 mt-1 block">
             {formatRupiah(totalMasuk)}
           </span>
         </div>
-        <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-2xs">
-          <span className="text-[11px] text-[#64748B] block">Total Keluar ({activeMonth})</span>
-          <span className="text-base font-bold tabular-nums text-rose-700">
+        <div className="bg-white p-4 rounded-xl border border-zinc-200">
+          <span className="text-[11px] text-zinc-500 font-medium uppercase tracking-wider block">
+            Total Keluar ({activeMonth})
+          </span>
+          <span className="text-xl font-bold tabular-nums text-zinc-950 mt-1 block">
             {formatRupiah(totalKeluar)}
           </span>
         </div>
-        <div className="bg-[#0F291E] text-white p-3.5 rounded-xl border border-[#1A382B] shadow-2xs">
-          <span className="text-[11px] text-[#95D5B2] block">Saldo Akhir Berjalan ({activeMonth})</span>
-          <span className="text-base font-bold tabular-nums text-white">
+        <div className="bg-white p-4 rounded-xl border border-zinc-200">
+          <span className="text-[11px] text-zinc-500 font-medium uppercase tracking-wider block">
+            Saldo Akhir ({activeMonth})
+          </span>
+          <span className="text-xl font-bold tabular-nums text-zinc-950 mt-1 block">
             {formatRupiah(latestSaldo)}
           </span>
         </div>
@@ -161,22 +168,22 @@ export default function BbKas() {
       {/* Search & Filter */}
       <div className="flex items-center space-x-2">
         <div className="relative flex-1">
-          <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Cari transaksi..."
+            placeholder="Cari transaksi kas..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-white rounded-md border border-[#E2E8F0] text-xs focus:outline-none focus:ring-1 focus:ring-[#0F291E]"
+            className="w-full pl-8 pr-3 py-1.5 bg-white rounded-lg border border-zinc-200 text-xs focus:outline-none focus:border-zinc-400"
           />
         </div>
 
         <div className="flex items-center space-x-1">
-          <Filter className="w-3.5 h-3.5 text-[#64748B]" />
+          <Filter className="w-3.5 h-3.5 text-zinc-500" />
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-2.5 py-1.5 bg-white rounded-md border border-[#E2E8F0] text-xs text-[#1E293B] focus:outline-none"
+            className="px-2.5 py-1.5 bg-white rounded-lg border border-zinc-200 text-xs text-zinc-800 focus:outline-none"
           >
             <option value="ALL">Semua Tipe</option>
             <option value="MASUK">Pemasukan</option>
@@ -186,44 +193,44 @@ export default function BbKas() {
       </div>
 
       {/* Ledger Table */}
-      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
         <div className="overflow-x-auto max-h-[550px] overflow-y-auto">
           <table className="w-full text-left text-xs border-collapse">
-            <thead className="sticky top-0 bg-[#0F291E] text-white z-10 text-[11px]">
+            <thead className="sticky top-0 bg-zinc-50 text-zinc-600 border-b border-zinc-200 z-10 text-[11px] font-medium">
               <tr>
-                <th className="py-2.5 px-3 font-semibold text-center w-10">No</th>
-                <th className="py-2.5 px-3 font-semibold w-20">Tanggal</th>
-                <th className="py-2.5 px-3 font-semibold">Deskripsi</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-28">Uang Masuk</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-28">Uang Keluar</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-32 bg-[#091D15]">Saldo Berjalan</th>
-                <th className="py-2.5 px-3 font-semibold w-28">Keterangan</th>
+                <th className="py-2.5 px-3 text-center w-10">No</th>
+                <th className="py-2.5 px-3 w-24">Tanggal</th>
+                <th className="py-2.5 px-3">Deskripsi</th>
+                <th className="py-2.5 px-3 text-right w-28">Uang Masuk</th>
+                <th className="py-2.5 px-3 text-right w-28">Uang Keluar</th>
+                <th className="py-2.5 px-3 text-right w-32 font-semibold text-zinc-950">Saldo Kas</th>
+                <th className="py-2.5 px-3 w-28">Keterangan</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F1F5F9]">
+            <tbody className="divide-y divide-zinc-100">
               {filteredTxs.length > 0 ? (
                 filteredTxs.map((tx, idx) => (
-                  <tr key={idx} className="hover:bg-[#F8F9FA] transition-colors">
-                    <td className="py-2 px-3 text-center text-[#94A3B8] font-mono">{idx + 1}</td>
-                    <td className="py-2 px-3 text-[#64748B]">
+                  <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="py-2.5 px-3 text-center text-zinc-400 font-mono">{idx + 1}</td>
+                    <td className="py-2.5 px-3 text-zinc-500 whitespace-nowrap">
                       {tx.tanggal ? `${activeMonth.slice(0, 3)} ${tx.tanggal}` : '-'}
                     </td>
-                    <td className="py-2 px-3 font-medium text-[#1E293B]">{tx.deskripsi}</td>
-                    <td className="py-2 px-3 text-right tabular-nums text-emerald-700 font-medium">
+                    <td className="py-2.5 px-3 font-medium text-zinc-900">{tx.deskripsi}</td>
+                    <td className="py-2.5 px-3 text-right tabular-nums text-emerald-700 font-medium whitespace-nowrap">
                       {tx.masuk > 0 ? formatRupiah(tx.masuk) : '-'}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums text-rose-700 font-medium">
+                    <td className="py-2.5 px-3 text-right tabular-nums text-zinc-900 font-medium whitespace-nowrap">
                       {tx.keluar > 0 ? formatRupiah(tx.keluar) : '-'}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums font-semibold text-[#0F291E] bg-[#FAFAFA]">
+                    <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-zinc-950 whitespace-nowrap">
                       {formatRupiah(tx.saldo)}
                     </td>
-                    <td className="py-2 px-3 text-[#64748B] text-[11px]">{tx.keterangan || '-'}</td>
+                    <td className="py-2.5 px-3 text-zinc-500 text-[11px]">{tx.keterangan || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-xs text-[#94A3B8]">
+                  <td colSpan={7} className="text-center py-8 text-xs text-zinc-400">
                     Tidak ada transaksi untuk filter yang dipilih.
                   </td>
                 </tr>
@@ -235,22 +242,22 @@ export default function BbKas() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-sm w-full border border-[#E2E8F0] shadow-xl overflow-hidden">
-            <div className="bg-[#0F291E] text-white px-5 py-3.5 flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Catat Transaksi Buku Kas</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-white/70 hover:text-white">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-sm w-full border border-zinc-200 shadow-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
+              <h3 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">Catat Transaksi Buku Kas</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Bulan</label>
+                <label className="block font-medium text-zinc-600 mb-1">Bulan</label>
                 <select
                   value={formData.bulan}
                   onChange={(e) => setFormData({ ...formData, bulan: e.target.value })}
-                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md font-medium text-[#1E293B]"
+                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900 bg-white"
                 >
                   <option value="OKTOBER">OKTOBER</option>
                   <option value="NOVEMBER">NOVEMBER</option>
@@ -259,28 +266,28 @@ export default function BbKas() {
               </div>
 
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Tanggal (Hari 1-31)</label>
+                <label className="block font-medium text-zinc-600 mb-1">Tanggal (Hari 1-31)</label>
                 <input
                   type="number"
                   min="1"
                   max="31"
                   value={formData.tanggal}
                   onChange={(e) => setFormData({ ...formData, tanggal: e.target.value })}
-                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md tabular-nums font-semibold"
+                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded tabular-nums font-semibold"
                   required
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Tipe Transaksi</label>
+                <label className="block font-medium text-zinc-600 mb-1">Tipe Transaksi</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, tipe: 'Keluar' })}
-                    className={`py-1.5 font-medium rounded-md border transition ${
+                    className={`py-1.5 font-medium rounded border transition cursor-pointer ${
                       formData.tipe === 'Keluar'
-                        ? 'bg-rose-50 text-rose-800 border-rose-300'
-                        : 'border-[#E2E8F0] text-[#64748B]'
+                        ? 'bg-zinc-900 text-white border-zinc-900'
+                        : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
                     }`}
                   >
                     Pengeluaran
@@ -288,10 +295,10 @@ export default function BbKas() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, tipe: 'Masuk' })}
-                    className={`py-1.5 font-medium rounded-md border transition ${
+                    className={`py-1.5 font-medium rounded border transition cursor-pointer ${
                       formData.tipe === 'Masuk'
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                        : 'border-[#E2E8F0] text-[#64748B]'
+                        ? 'bg-zinc-900 text-white border-zinc-900'
+                        : 'border-zinc-200 text-zinc-600 hover:bg-zinc-50'
                     }`}
                   >
                     Pemasukan
@@ -300,38 +307,38 @@ export default function BbKas() {
               </div>
 
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Deskripsi</label>
+                <label className="block font-medium text-zinc-600 mb-1">Deskripsi</label>
                 <input
                   type="text"
                   placeholder="Lauk sayur, galon, dll"
                   value={formData.deskripsi}
                   onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md"
+                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded"
                   required
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Nominal (Rupiah)</label>
+                <label className="block font-medium text-zinc-600 mb-1">Nominal (Rupiah)</label>
                 <input
                   type="number"
                   placeholder="50000"
                   value={formData.nominal}
                   onChange={(e) => setFormData({ ...formData, nominal: e.target.value })}
-                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md tabular-nums font-semibold"
+                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded tabular-nums font-semibold"
                   required
                   min="500"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-[#1E293B] mb-1">Keterangan / Kategori</label>
+                <label className="block font-medium text-zinc-600 mb-1">Keterangan / Kategori</label>
                 <input
                   type="text"
                   placeholder="Konsumsi, Posko, dll"
                   value={formData.keterangan}
                   onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md"
+                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded"
                 />
               </div>
 
@@ -339,14 +346,14 @@ export default function BbKas() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 border border-[#E2E8F0] rounded-md text-[#64748B]"
+                  className="px-3 py-1.5 rounded border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-3 py-1.5 bg-[#0F291E] hover:bg-[#1B4D3E] text-white rounded-md font-medium transition disabled:opacity-50"
+                  className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded font-medium transition disabled:opacity-50"
                 >
                   {submitting ? 'Menyimpan...' : 'Simpan'}
                 </button>

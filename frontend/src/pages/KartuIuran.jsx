@@ -169,16 +169,16 @@ export default function KartuIuran() {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => handleOpenAdd()}
-              className="px-3 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition inline-flex items-center space-x-1"
+              className="px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition inline-flex items-center space-x-1.5 cursor-pointer"
             >
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3.5 h-3.5 text-emerald-400" />
               <span>Catat Iuran</span>
             </button>
             <button
               onClick={handleOpenAddLain}
-              className="px-3 py-1.5 rounded border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium transition inline-flex items-center space-x-1"
+              className="px-3.5 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium transition inline-flex items-center space-x-1.5 cursor-pointer"
             >
-              <Plus className="w-3 h-3 text-zinc-500" />
+              <Plus className="w-3.5 h-3.5 text-zinc-500" />
               <span>Pendapatan Lain</span>
             </button>
           </div>
@@ -186,11 +186,11 @@ export default function KartuIuran() {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium">
+              <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-[11px]">
                 <th className="py-2.5 px-3 text-center w-10">No</th>
                 <th className="py-2.5 px-3 w-36">Nama</th>
                 {MONTHS.map(m => {
@@ -201,7 +201,7 @@ export default function KartuIuran() {
                     </th>
                   );
                 })}
-                <th className="py-2.5 px-3 text-right w-32 bg-zinc-100/60 font-semibold text-zinc-900">
+                <th className="py-2.5 px-4 text-right w-36 bg-zinc-100/60 font-semibold text-zinc-900">
                   Total
                 </th>
                 <th className="py-2.5 px-2 w-8"></th>
@@ -217,7 +217,7 @@ export default function KartuIuran() {
                       onClick={() => setExpandedMember(isExpanded ? null : m.name)}
                       className={`hover:bg-zinc-50/70 cursor-pointer transition-colors ${isExpanded ? 'bg-zinc-50' : ''}`}
                     >
-                      <td className="py-2 px-3 text-center text-zinc-400 font-mono">{idx + 1}</td>
+                      <td className="py-2 px-3 text-center text-zinc-400">{idx + 1}</td>
                       <td className="py-2 px-3 font-medium text-zinc-900">{m.name}</td>
                       {MONTHS.map(monthKey => {
                         if (selectedMonth !== 'ALL' && selectedMonth !== monthKey) return null;
@@ -228,7 +228,7 @@ export default function KartuIuran() {
                           </td>
                         );
                       })}
-                      <td className="py-2 px-3 text-right tabular-nums font-semibold bg-zinc-50 text-zinc-950">
+                      <td className="py-2 px-4 text-right tabular-nums font-semibold bg-zinc-50 text-zinc-950">
                         {formatRupiah(m.total)}
                       </td>
                       <td className="py-2 px-2 text-center text-zinc-400">
@@ -239,8 +239,8 @@ export default function KartuIuran() {
                     {/* Inline Expandable Drawer */}
                     {isExpanded && (
                       <tr className="bg-zinc-50/50">
-                        <td colSpan={selectedMonth === 'ALL' ? 11 : 4} className="p-3 border-y border-zinc-200">
-                          <div className="space-y-2">
+                        <td colSpan={selectedMonth === 'ALL' ? 11 : 4} className="p-4 border-y border-zinc-200">
+                          <div className="space-y-3">
                             <div className="flex items-center justify-between text-xs font-semibold text-zinc-800">
                               <span>Mutasi Setoran: {m.name}</span>
                               {role === 'Bendahara' && (
@@ -249,25 +249,25 @@ export default function KartuIuran() {
                                     e.stopPropagation();
                                     handleOpenAdd(m.name);
                                   }}
-                                  className="text-zinc-600 hover:text-zinc-950 text-xs font-normal"
+                                  className="text-zinc-600 hover:text-zinc-950 text-xs font-normal underline"
                                 >
-                                  + Tambah ke {m.name}
+                                  Catat Setoran Baru
                                 </button>
                               )}
                             </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                               {MONTHS.map(mKey => {
                                 const mData = m.months[mKey] || { entries: [], subtotal: 0 };
                                 if (mData.entries.length === 0) return null;
 
                                 return (
-                                  <div key={mKey} className="bg-white p-2 rounded border border-zinc-200 text-xs">
+                                  <div key={mKey} className="bg-white p-2.5 rounded-lg border border-zinc-200 text-xs">
                                     <div className="flex justify-between font-medium text-zinc-700 text-[11px] pb-1 border-b border-zinc-100">
                                       <span>{mKey}</span>
                                       <span className="tabular-nums font-semibold">{formatRupiah(mData.subtotal)}</span>
                                     </div>
-                                    <div className="space-y-0.5 pt-1">
+                                    <div className="space-y-1 pt-1.5">
                                       {mData.entries.map((e, eIdx) => (
                                         <div key={eIdx} className="text-[10px] flex justify-between text-zinc-500">
                                           <span>{formatDate(e.tanggal)} ({e.metode || 'Cash'})</span>
@@ -292,11 +292,11 @@ export default function KartuIuran() {
       </div>
 
       {/* Pendapatan Lain-Lain */}
-      <div className="bg-white rounded-lg border border-zinc-200 p-4">
+      <div className="bg-white rounded-xl border border-zinc-200 p-4">
         <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100 mb-3">
           <div>
             <h3 className="font-semibold text-xs uppercase tracking-wide text-zinc-900">Pendapatan Lain-Lain</h3>
-            <p className="text-xs text-zinc-500">Iuran non-rutin & bunga/bank</p>
+            <p className="text-xs text-zinc-500">Iuran non-rutin & kas insidental</p>
           </div>
           <div className="text-right">
             <span className="text-xs font-bold tabular-nums text-zinc-950">
@@ -305,18 +305,18 @@ export default function KartuIuran() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {MONTHS.map(mKey => {
             const mData = pendapatanLain.months?.[mKey] || { entries: [], subtotal: 0 };
             if (mData.entries.length === 0) return null;
 
             return (
-              <div key={mKey} className="p-2 bg-zinc-50 rounded border border-zinc-200 text-xs">
-                <div className="flex justify-between items-center text-[11px] font-semibold text-zinc-800 mb-1">
+              <div key={mKey} className="p-2.5 bg-zinc-50 rounded-lg border border-zinc-200 text-xs">
+                <div className="flex justify-between items-center text-[11px] font-semibold text-zinc-800 mb-1.5">
                   <span>{mKey}</span>
-                  <span className="tabular-nums">{formatRupiah(mData.subtotal)}</span>
+                  <span className="tabular-nums font-semibold">{formatRupiah(mData.subtotal)}</span>
                 </div>
-                <div className="space-y-0.5">
+                <div className="space-y-1">
                   {mData.entries.map((e, idx) => (
                     <div key={idx} className="text-[10px] flex justify-between text-zinc-600 bg-white p-1 rounded border border-zinc-100">
                       <span className="truncate mr-1">{e.keterangan || formatDate(e.tanggal)}</span>
@@ -333,8 +333,8 @@ export default function KartuIuran() {
       {/* Minimal Form Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-sm w-full border border-zinc-200 shadow-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-100 flex items-center justify-between">
+          <div className="bg-white rounded-xl max-w-sm w-full border border-zinc-200 shadow-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
               <h3 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
                 {modalType === 'member' ? 'Catat Iuran Anggota' : 'Catat Pendapatan Lain'}
               </h3>
@@ -343,7 +343,7 @@ export default function KartuIuran() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-4 space-y-3 text-xs">
+            <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
               {modalType === 'member' && (
                 <div>
                   <label className="block text-zinc-600 font-medium mb-1">Anggota</label>
@@ -398,7 +398,7 @@ export default function KartuIuran() {
 
               {modalType === 'member' ? (
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Metode</label>
+                  <label className="block text-zinc-600 font-medium mb-1">Metode Pembayaran</label>
                   <input
                     type="text"
                     placeholder="Transfer BRI, Cash, Shopeepay"
@@ -433,7 +433,7 @@ export default function KartuIuran() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-3 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white font-medium disabled:opacity-50"
+                  className="px-4 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white font-medium disabled:opacity-50"
                 >
                   {submitting ? 'Menyimpan...' : 'Simpan'}
                 </button>
