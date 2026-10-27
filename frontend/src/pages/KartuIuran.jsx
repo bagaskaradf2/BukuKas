@@ -6,19 +6,6 @@ import { Search, ChevronRight, ChevronDown, CheckCircle2, AlertCircle } from 'lu
 const MONTHS = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER'];
 const TARGET_PER_MEMBER = 1600000;
 
-const AVATAR_COLORS = [
-  'bg-emerald-100 text-emerald-800 border-emerald-200',
-  'bg-blue-100 text-blue-800 border-blue-200',
-  'bg-purple-100 text-purple-800 border-purple-200',
-  'bg-amber-100 text-amber-800 border-amber-200',
-  'bg-rose-100 text-rose-800 border-rose-200',
-  'bg-teal-100 text-teal-800 border-teal-200',
-  'bg-indigo-100 text-indigo-800 border-indigo-200',
-  'bg-cyan-100 text-cyan-800 border-cyan-200',
-  'bg-orange-100 text-orange-800 border-orange-200',
-  'bg-violet-100 text-violet-800 border-violet-200',
-];
-
 export default function KartuIuran() {
   const { data } = useApp();
   const kartuIuran = data?.kartuIuran || {};
@@ -99,7 +86,6 @@ export default function KartuIuran() {
                 const isExpanded = expandedMember === m.name;
                 const current = Number(m.total) || 0;
                 const isLunas = current >= TARGET_PER_MEMBER;
-                const avatarStyle = AVATAR_COLORS[idx % AVATAR_COLORS.length];
 
                 return (
                   <React.Fragment key={idx}>
@@ -108,14 +94,7 @@ export default function KartuIuran() {
                       className={`hover:bg-zinc-50/80 cursor-pointer transition-colors ${isExpanded ? 'bg-zinc-50/60' : ''}`}
                     >
                       <td className="py-3 px-3 text-center text-zinc-400 font-medium tabular-nums">{idx + 1}</td>
-                      <td className="py-3 px-3">
-                        <div className="flex items-center space-x-2.5">
-                          <span className={`w-7 h-7 rounded-full border text-[11px] font-bold flex items-center justify-center shrink-0 ${avatarStyle}`}>
-                            {m.name.charAt(0)}
-                          </span>
-                          <span className="font-semibold text-zinc-900">{m.name}</span>
-                        </div>
-                      </td>
+                      <td className="py-3 px-3 font-semibold text-zinc-900">{m.name}</td>
                       {MONTHS.map(monthKey => {
                         if (selectedMonth !== 'ALL' && selectedMonth !== monthKey) return null;
                         const sub = m.months[monthKey]?.subtotal || 0;

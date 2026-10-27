@@ -25,19 +25,11 @@ export default function Navbar() {
           <div className="flex items-center space-x-8">
             <button 
               onClick={() => setActiveTab('DASHBOARD')}
-              className="flex items-center space-x-2.5 cursor-pointer text-left"
+              className="cursor-pointer text-left"
             >
-              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">
-                B
-              </div>
-              <div>
-                <span className="font-bold text-base tracking-tight text-zinc-950 block leading-tight">
-                  BukuKas
-                </span>
-                <span className="text-[10px] text-emerald-700 font-semibold block">
-                  Spreadsheet Live
-                </span>
-              </div>
+              <span className="font-bold text-lg tracking-tight text-zinc-950 block">
+                BukuKas
+              </span>
             </button>
 
             <nav className="hidden md:flex items-center space-x-1">
@@ -78,15 +70,11 @@ export default function Navbar() {
             {/* Role Switcher */}
             <button
               onClick={toggleRole}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                role === 'Bendahara'
-                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs hover:bg-emerald-100'
-                  : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
-              }`}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 text-xs font-semibold transition cursor-pointer"
             >
               {role === 'Bendahara' ? (
                 <>
-                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                  <Shield className="w-3.5 h-3.5 text-zinc-700" />
                   <span>Bendahara</span>
                 </>
               ) : (
