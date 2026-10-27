@@ -2,8 +2,8 @@
 
 > **Nama Proyek:** BukuKas KKN  
 > **Unit KKN:** KKN M UNY 2026/2027 — Padukuhan Pengkol, Sriharjo  
-> **Spreadsheet Sumber (Single Source of Truth):** [Google Sheets Keuangan KKN](https://docs.google.com/spreadsheets/d/1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP/edit)  
-> **Spreadsheet ID:** `1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP`  
+> **Spreadsheet Sumber (Single Source of Truth):** [Google Sheets Keuangan KKN](https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit?usp=sharing)  
+> **Spreadsheet ID:** `1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao`  
 > **Frontend:** React JS + Tailwind CSS (Vite)  
 > **Backend/Integrasi:** Google Apps Script Web App + Node.js / Vercel Serverless  
 

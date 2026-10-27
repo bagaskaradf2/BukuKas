@@ -1,22 +1,24 @@
 /**
  * BukuKas KKN - Google Apps Script Backend
- * Spreadsheet ID: 1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP
+ * Spreadsheet ID: 1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao
  * 
  * Petunjuk Instalasi:
- * 1. Buka Google Sheets Keuangan KKN Anda.
- * 2. Klik menu 'Extensions' (Ekstensi) > 'Apps Script'.
- * 3. Hapus kode lama dan paste SELURUH isi file ini.
- * 4. Klik icon 'Save' (Simpan).
- * 5. Klik tombol 'Deploy' (Terapkan) di kanan atas > 'New deployment' (Penerapan baru).
- * 6. Pilih type 'Web app' (Aplikasi web).
+ * 1. Buka Google Sheets Keuangan KKN Anda:
+ *    https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit
+ * 2. Klik menu 'Ekstensi' (Extensions) > 'Apps Script'.
+ * 3. Hapus kode bawaan (myFunction) dan paste SELURUH isi file ini.
+ * 4. Klik icon 'Save' (Simpan) / Ctrl+S.
+ * 5. Klik tombol biru 'Deploy' (Terapkan) di kanan atas > 'New deployment' (Penerapan baru).
+ * 6. Klik ikon gerigi (Select type) > pilih 'Web app' (Aplikasi web).
  * 7. Isi Description: "BukuKas KKN API".
  * 8. Execute as: "Me" (email Anda).
  * 9. Who has access: "Anyone" (Siapa saja).
- * 10. Klik Deploy, salin "Web app URL" (akhiran /exec), lalu masukkan URL tersebut
+ * 10. Klik Deploy > Authorize access (Izinkan akses dengan akun Google Anda).
+ * 11. Salin "Web app URL" (yang berakhiran /exec), lalu masukkan URL tersebut
  *     ke menu Pengaturan di aplikasi Web BukuKas KKN.
  */
 
-const SPREADSHEET_ID = "1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP";
+const SPREADSHEET_ID = "1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao";
 
 function getSpreadsheet() {
   try {

@@ -21,7 +21,7 @@ export default function Settings() {
   const [copied, setCopied] = useState(false);
   const [testing, setTesting] = useState(false);
 
-  const spreadsheetId = '1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP';
+  const spreadsheetId = '1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao';
   const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
   const excelUrl = getLiveExcelDownloadUrl();
 

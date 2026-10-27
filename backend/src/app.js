@@ -35,7 +35,7 @@ function loadLocalData() {
   return cachedData;
 }
 
-const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP';
+const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao';
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || '';
 
 // Health check

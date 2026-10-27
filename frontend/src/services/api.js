@@ -89,7 +89,7 @@ export async function fetchAllData() {
  * Download live Excel file
  */
 export function getLiveExcelDownloadUrl() {
-  const spreadsheetId = '1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP';
+  const spreadsheetId = '1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao';
   return `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=xlsx`;
 }
 
