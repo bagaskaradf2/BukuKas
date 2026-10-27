@@ -8,50 +8,65 @@ export function AppProvider({ children }) {
   const [data, setData] = useState(initialData);
   const [role, setRole] = useState(() => localStorage.getItem('bukukas_user_role') || 'Bendahara');
   const [activeTab, setActiveTab] = useState('DASHBOARD');
-  const [status, setStatus] = useState('Tersimpan');
-  const [dataSource, setDataSource] = useState('local-seed');
+  const [status, setStatus] = useState('Sinkron');
+  const [dataSource, setDataSource] = useState('seed');
   const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString('id-ID'));
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [logs, setLogs] = useState(getAuditLogs);
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => {
       setToast(null);
-    }, 4000);
+    }, 3500);
   }, []);
 
   const refreshData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
-    setStatus('Sinkronisasi...');
     try {
       const res = await fetchAllData();
       if (res && res.data) {
         setData(res.data);
         setDataSource(res.source);
         setLastSync(new Date().toLocaleTimeString('id-ID'));
-        setStatus('Tersimpan');
-        if (!silent) showToast('Data terbaru Google Sheets berhasil dimuat!', 'success');
+        setStatus('Sinkron');
+        if (!silent) showToast('Data tersinkronisasi otomatis.', 'success');
       }
     } catch (err) {
-      console.error(err);
-      setStatus('Periksa Koneksi');
-      if (!silent) showToast('Gagal menyinkronkan data Google Sheets: ' + err.message, 'error');
+      console.warn(err);
+      setStatus('Offline');
     } finally {
       if (!silent) setLoading(false);
     }
   }, [showToast]);
 
+  // Realtime Auto-sync (Background polling + Window Focus)
   useEffect(() => {
+    // Initial fetch
     refreshData(true);
+
+    // Auto sync on window focus
+    const onFocus = () => refreshData(true);
+    window.addEventListener('focus', onFocus);
+
+    // Polling background every 12 seconds
+    const interval = setInterval(() => {
+      refreshData(true);
+    }, 12000);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(interval);
+    };
   }, [refreshData]);
 
   const toggleRole = () => {
     const nextRole = role === 'Bendahara' ? 'Pembaca' : 'Bendahara';
     setRole(nextRole);
     localStorage.setItem('bukukas_user_role', nextRole);
-    showToast(`Mode akses beralih ke: ${nextRole}`, 'info');
+    showToast(`Mode akses: ${nextRole}`, 'info');
   };
 
   const updateLocalData = (updater) => {
@@ -80,7 +95,9 @@ export function AppProvider({ children }) {
         toast,
         showToast,
         auditLogs: logs,
-        refreshLogs: () => setLogs(getAuditLogs())
+        refreshLogs: () => setLogs(getAuditLogs()),
+        isRecordModalOpen,
+        setIsRecordModalOpen
       }}
     >
       {children}

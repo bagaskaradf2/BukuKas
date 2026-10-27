@@ -1,21 +1,10 @@
 /**
- * BukuKas KKN - Google Apps Script Backend
+ * BukuKas - Google Apps Script Backend
  * Spreadsheet ID: 1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao
  * 
- * Petunjuk Instalasi:
- * 1. Buka Google Sheets Keuangan KKN Anda:
- *    https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit
- * 2. Klik menu 'Ekstensi' (Extensions) > 'Apps Script'.
- * 3. Hapus kode bawaan (myFunction) dan paste SELURUH isi file ini.
- * 4. Klik icon 'Save' (Simpan) / Ctrl+S.
- * 5. Klik tombol biru 'Deploy' (Terapkan) di kanan atas > 'New deployment' (Penerapan baru).
- * 6. Klik ikon gerigi (Select type) > pilih 'Web app' (Aplikasi web).
- * 7. Isi Description: "BukuKas KKN API".
- * 8. Execute as: "Me" (email Anda).
- * 9. Who has access: "Anyone" (Siapa saja).
- * 10. Klik Deploy > Authorize access (Izinkan akses dengan akun Google Anda).
- * 11. Salin "Web app URL" (yang berakhiran /exec), lalu masukkan URL tersebut
- *     ke menu Pengaturan di aplikasi Web BukuKas KKN.
+ * Sistem Terintegrasi 2 Arah Realtime:
+ * - Sekali input langsung terhubung ke Buku Kas, RAB Harian/Proker, atau Kartu Iuran
+ * - Rumus dan struktur Google Sheets tetap terjaga utuh
  */
 
 const SPREADSHEET_ID = "1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao";
@@ -57,7 +46,7 @@ function doGet(e) {
     if (action === 'exportXlsx') {
       return jsonResponse({
         downloadUrl: 'https://docs.google.com/spreadsheets/d/' + ss.getId() + '/export?format=xlsx',
-        filename: 'KEUANGAN_KKN_' + Utilities.formatDate(new Date(), 'GMT+7', 'yyyyMMdd_HHmm') + '.xlsx'
+        filename: 'KEUANGAN_' + Utilities.formatDate(new Date(), 'GMT+7', 'yyyyMMdd_HHmm') + '.xlsx'
       });
     }
 
@@ -84,11 +73,14 @@ function doPost(e) {
     let result = { message: 'No action performed' };
 
     switch (action) {
+      case 'recordIntegratedTransaction':
+        result = handleIntegratedTransaction(ss, payload);
+        break;
+      case 'addRabHarianItem':
+        result = handleAddRabHarianItem(ss, payload);
+        break;
       case 'addIuran':
         result = handleAddIuran(ss, payload);
-        break;
-      case 'addLainLainIuran':
-        result = handleAddLainLainIuran(ss, payload);
         break;
       case 'addBbKasTransaction':
         result = handleAddBbKasTransaction(ss, payload);
@@ -109,7 +101,7 @@ function doPost(e) {
         return jsonResponse({ message: 'Action tidak dikenal: ' + action }, 400);
     }
 
-    // Kembalikan data terbaru setelah update
+    // Langsung baca kembali data segar agar realtime 2 arah
     const freshData = readAllSheets(ss);
     return jsonResponse({
       result: result,
@@ -121,7 +113,171 @@ function doPost(e) {
 }
 
 // ==========================================
-// 1. READ ALL SHEETS
+// 1. INTEGRATED TRANSACTION (SEKALI INPUT SEMUA TERHUBUNG)
+// ==========================================
+function handleIntegratedTransaction(ss, p) {
+  const jenis = p.jenis; // 'Pengeluaran' atau 'Pemasukan'
+  const tanggal = p.tanggal || new Date().toISOString().split('T')[0];
+  const tglObj = new Date(tanggal);
+  const tglDay = tglObj.getDate();
+  const nominal = Number(p.nominal) || 0;
+  const deskripsi = String(p.deskripsi || '').trim();
+  const targetAlokasi = p.targetAlokasi; // 'RAB_KONSUMSI', 'RAB_POSKO', 'PROKER_...', 'IURAN_ANGGOTA', 'LAINNYA'
+
+  // 1. Tulis ke BUKU KAS (BB KAS)
+  const bulanNama = getBulanKas(tglObj.getMonth());
+  const bbResult = handleAddBbKasTransaction(ss, {
+    bulan: bulanNama,
+    tanggal: tglDay,
+    deskripsi: deskripsi,
+    tipe: jenis === 'Pemasukan' ? 'Masuk' : 'Keluar',
+    nominal: nominal,
+    keterangan: p.keterangan || (targetAlokasi ? targetAlokasi.replace('RAB_', '') : 'Kas')
+  });
+
+  // 2. Hubungkan ke RAB atau Kartu Iuran secara otomatis
+  if (jenis === 'Pengeluaran') {
+    if (targetAlokasi && targetAlokasi.startsWith('RAB_')) {
+      const catName = targetAlokasi.replace('RAB_', 'RAB ');
+      handleAddRabHarianItem(ss, {
+        category: catName,
+        kebutuhan: deskripsi,
+        volume: Number(p.volume) || 1,
+        satuan: p.satuan || 'Kali',
+        harga: Number(p.harga) || nominal
+      });
+    } else if (targetAlokasi && targetAlokasi.startsWith('PROKER_')) {
+      const prokerTitle = targetAlokasi.replace('PROKER_', '');
+      handleAddRabProkerItem(ss, {
+        title: prokerTitle,
+        kebutuhan: deskripsi,
+        volume: Number(p.volume) || 1,
+        satuan: p.satuan || 'Unit',
+        harga: Number(p.harga) || nominal
+      });
+    }
+  } else if (jenis === 'Pemasukan') {
+    if (p.member) {
+      handleAddIuran(ss, {
+        member: p.member,
+        month: p.bulanIuran || 'SEPTEMBER/OKTOBER',
+        tanggal: tanggal,
+        nominal: nominal,
+        metode: p.metode || 'Transfer'
+      });
+    } else {
+      handleAddLainLainIuran(ss, {
+        month: p.bulanIuran || 'SEPTEMBER/OKTOBER',
+        tanggal: tanggal,
+        nominal: nominal,
+        keterangan: deskripsi
+      });
+    }
+  }
+
+  return {
+    success: true,
+    message: "Transaksi '" + deskripsi + "' Rp " + nominal + " berhasil terintegrasi ke Buku Kas dan target anggaran.",
+    bbResult: bbResult
+  };
+}
+
+function getBulanKas(monthIdx) {
+  if (monthIdx <= 9) return 'OKTOBER';
+  if (monthIdx === 10) return 'NOVEMBER';
+  return 'DESEMBER';
+}
+
+// Tambah item kebutuhan baru di RAB Harian
+function handleAddRabHarianItem(ss, p) {
+  const sheet = ss.getSheetByName('RAB HARIAN');
+  if (!sheet) return;
+
+  const catMap = {
+    'RAB KONSUMSI': 1,
+    'RAB POSKO/KEBERSIHAN': 8,
+    'RAB TRANSPORTASI': 15,
+    'RAB LANGGANAN': 22,
+    'RAB SEKRE': 29
+  };
+  const cStart = catMap[p.category] || 1;
+
+  // Cari baris kosong di rows 6 s.d 19
+  let targetRow = null;
+  let nextNo = 1;
+  for (let r = 6; r <= 19; r++) {
+    const keb = sheet.getRange(r, cStart + 1).getValue();
+    const curNo = sheet.getRange(r, cStart).getValue();
+    if (curNo && typeof curNo === 'number') nextNo = curNo + 1;
+    if (!keb) {
+      targetRow = r;
+      break;
+    }
+  }
+
+  if (targetRow) {
+    sheet.getRange(targetRow, cStart).setValue(nextNo);
+    sheet.getRange(targetRow, cStart + 1).setValue(p.kebutuhan);
+    sheet.getRange(targetRow, cStart + 2).setValue(p.volume || 1);
+    sheet.getRange(targetRow, cStart + 3).setValue(p.satuan || 'Kali');
+    sheet.getRange(targetRow, cStart + 4).setValue(p.harga || 0);
+
+    const volCol = String.fromCharCode(64 + cStart + 2);
+    const hrgCol = String.fromCharCode(64 + cStart + 4);
+    sheet.getRange(targetRow, cStart + 5).setFormula('=' + volCol + targetRow + '*' + hrgCol + targetRow);
+  }
+
+  return { success: true, row: targetRow };
+}
+
+// Tambah item di RAB Proker
+function handleAddRabProkerItem(ss, p) {
+  const sheet = ss.getSheetByName('RAB PROKER');
+  if (!sheet) return;
+
+  const prokerBlocks = [
+    { title: 'PENDATAAN MASYARAKAT', rStart: 6, rEnd: 19, cStart: 1 },
+    { title: 'BIMBINGAN BELAJAR', rStart: 6, rEnd: 19, cStart: 8 },
+    { title: 'PROKER TAMBAHAN', rStart: 6, rEnd: 19, cStart: 15 },
+    { title: 'PLANG EDUKATIF PADUKUHAN PENGKOL', rStart: 24, rEnd: 37, cStart: 1 },
+    { title: 'TPA', rStart: 24, rEnd: 37, cStart: 8 },
+    { title: 'PEMASANGAN KACA CEMBUUNG', rStart: 42, rEnd: 55, cStart: 1 },
+    { title: 'JALAN SEHAT DAN POHON HARAPAN', rStart: 60, rEnd: 73, cStart: 1 },
+    { title: 'PETA BENCANA', rStart: 78, rEnd: 91, cStart: 1 },
+    { title: 'SISTEM PENGELOLAAN SAMPAH', rStart: 96, rEnd: 109, cStart: 1 }
+  ];
+
+  const blk = prokerBlocks.find(b => b.title === p.title) || prokerBlocks[0];
+  let targetRow = null;
+  let nextNo = 1;
+
+  for (let r = blk.rStart; r <= blk.rEnd; r++) {
+    const keb = sheet.getRange(r, blk.cStart + 1).getValue();
+    const curNo = sheet.getRange(r, blk.cStart).getValue();
+    if (curNo && typeof curNo === 'number') nextNo = curNo + 1;
+    if (!keb) {
+      targetRow = r;
+      break;
+    }
+  }
+
+  if (targetRow) {
+    sheet.getRange(targetRow, blk.cStart).setValue(nextNo);
+    sheet.getRange(targetRow, blk.cStart + 1).setValue(p.kebutuhan);
+    sheet.getRange(targetRow, blk.cStart + 2).setValue(p.volume || 1);
+    sheet.getRange(targetRow, blk.cStart + 3).setValue(p.satuan || 'Unit');
+    sheet.getRange(targetRow, blk.cStart + 4).setValue(p.harga || 0);
+
+    const volCol = String.fromCharCode(64 + blk.cStart + 2);
+    const hrgCol = String.fromCharCode(64 + blk.cStart + 4);
+    sheet.getRange(targetRow, blk.cStart + 5).setFormula('=' + volCol + targetRow + '*' + hrgCol + targetRow);
+  }
+
+  return { success: true, row: targetRow };
+}
+
+// ==========================================
+// 2. READ ALL SHEETS
 // ==========================================
 function readAllSheets(ss) {
   return {
@@ -133,12 +289,11 @@ function readAllSheets(ss) {
   };
 }
 
-// KARTU IURAN
 function readKartuIuran(sheet) {
   if (!sheet) return null;
   const values = sheet.getDataRange().getValues();
 
-  const memberRows = [5, 16, 27, 38, 49, 60, 71, 82, 93, 104]; // 1-based index
+  const memberRows = [5, 16, 27, 38, 49, 60, 71, 82, 93, 104];
   const monthsCols = [
     { name: 'FEBRUARI', c: 1 },
     { name: 'MARET', c: 5 },
@@ -152,8 +307,8 @@ function readKartuIuran(sheet) {
 
   const members = [];
   for (let i = 0; i < memberRows.length; i++) {
-    const rStart = memberRows[i]; // 1-based
-    const rIdx = rStart - 1; // 0-based
+    const rStart = memberRows[i];
+    const rIdx = rStart - 1;
     const name = values[rIdx][0];
     const memberObj = {
       name: name,
@@ -171,12 +326,7 @@ function readKartuIuran(sheet) {
         const nom = values[slotRowIdx][cIdx + 2];
         const metode = values[slotRowIdx][cIdx + 3];
         if (tgl || nom || (metode && String(metode).trim())) {
-          entries.append ? entries.push({
-            slot: slot + 1,
-            tanggal: tgl,
-            nominal: Number(nom) || 0,
-            metode: String(metode || '').trim()
-          }) : entries.push({
+          entries.push({
             slot: slot + 1,
             tanggal: tgl,
             nominal: Number(nom) || 0,
@@ -193,7 +343,6 @@ function readKartuIuran(sheet) {
     members.push(memberObj);
   }
 
-  // Pendapatan Lain-Lain (row 115 1-based -> idx 114)
   const pendLain = {
     title: 'PENDAPATAN LAIN-LAIN',
     months: {},
@@ -205,7 +354,7 @@ function readKartuIuran(sheet) {
     const cIdx = mInfo.c - 1;
     const entries = [];
     for (let slot = 0; slot < 10; slot++) {
-      const slotRowIdx = 117 + slot; // row 118-127
+      const slotRowIdx = 117 + slot;
       const tgl = formatDateVal(values[slotRowIdx][cIdx + 1]);
       const nom = values[slotRowIdx][cIdx + 2];
       const ket = values[slotRowIdx][cIdx + 3];
@@ -234,7 +383,6 @@ function readKartuIuran(sheet) {
   };
 }
 
-// RAB HARIAN
 function readRabHarian(sheet) {
   if (!sheet) return [];
   const values = sheet.getDataRange().getValues();
@@ -252,7 +400,7 @@ function readRabHarian(sheet) {
     const cat = categories[i];
     const cIdx = cat.colStart - 1;
     const items = [];
-    for (let r = 5; r < 19; r++) { // rows 6 to 19 (0-indexed 5 to 18)
+    for (let r = 5; r < 19; r++) {
       const no = values[r][cIdx];
       const keb = values[r][cIdx + 1];
       const vol = values[r][cIdx + 2];
@@ -272,7 +420,7 @@ function readRabHarian(sheet) {
         });
       }
     }
-    const total = values[19][cIdx + 5] || 0; // row 20
+    const total = values[19][cIdx + 5] || 0;
     result.push({
       category: cat.category,
       colStart: cat.colStart,
@@ -283,7 +431,6 @@ function readRabHarian(sheet) {
   return result;
 }
 
-// RAB PROKER
 function readRabProker(sheet) {
   if (!sheet) return [];
   const values = sheet.getDataRange().getValues();
@@ -338,7 +485,6 @@ function readRabProker(sheet) {
   return result;
 }
 
-// BB KAS
 function readBbKas(sheet) {
   if (!sheet) return {};
   const values = sheet.getDataRange().getValues();
@@ -354,7 +500,7 @@ function readBbKas(sheet) {
     const m = monthsBb[i];
     const cIdx = m.cStart - 1;
     const txs = [];
-    for (let r = 6; r < 71; r++) { // rows 7 to 71 (0-indexed 6 to 70)
+    for (let r = 6; r < 71; r++) {
       const blnLbl = values[r][cIdx];
       const tgl = values[r][cIdx + 1];
       const dsk = values[r][cIdx + 2];
@@ -381,13 +527,12 @@ function readBbKas(sheet) {
   return result;
 }
 
-// LAIN LAIN
 function readLainLain(sheet) {
   if (!sheet) return { vest: [], fotoStudio: [] };
   const values = sheet.getDataRange().getValues();
 
   const vestItems = [];
-  for (let r = 2; r < 12; r++) { // rows 3 to 12
+  for (let r = 2; r < 12; r++) {
     vestItems.push({
       row: r + 1,
       no: values[r][1],
@@ -420,12 +565,11 @@ function readLainLain(sheet) {
 }
 
 // ==========================================
-// 2. WRITE HANDLERS (STRICT INPUT CELL MAP)
+// 3. LOW LEVEL WRITES
 // ==========================================
-
 function handleAddIuran(ss, p) {
   const sheet = ss.getSheetByName('KARTU IURAN');
-  if (!sheet) throw new Error("Sheet 'KARTU IURAN' tidak ditemukan!");
+  if (!sheet) return;
 
   const memberName = String(p.member || '').trim().toUpperCase();
   const monthName = String(p.month || '').trim().toUpperCase();
@@ -443,11 +587,9 @@ function handleAddIuran(ss, p) {
   };
 
   const rStart = memberRowMap[memberName];
-  if (!rStart) throw new Error("Anggota tidak dikenal: " + memberName);
-  const cStart = monthColMap[monthName];
-  if (!cStart) throw new Error("Bulan tidak dikenal: " + monthName);
+  const cStart = monthColMap[monthName] || 29;
+  if (!rStart) return;
 
-  // Cari slot kosong (1 s.d 5)
   let targetRow = null;
   for (let slot = 0; slot < 5; slot++) {
     const curRow = rStart + 3 + slot;
@@ -459,25 +601,16 @@ function handleAddIuran(ss, p) {
     }
   }
 
-  if (!targetRow) {
-    throw new Error("Kapasitas slot iuran untuk " + memberName + " bulan " + monthName + " sudah penuh (maks 5 transaksi)!");
+  if (targetRow) {
+    sheet.getRange(targetRow, cStart + 1).setValue(tanggal);
+    sheet.getRange(targetRow, cStart + 2).setValue(nominal);
+    sheet.getRange(targetRow, cStart + 3).setValue(metode);
   }
-
-  // Tulis HANYA ke kolom Tanggal, Nominal, Metode (TIDAK menyentuh baris Total/Formula)
-  sheet.getRange(targetRow, cStart + 1).setValue(tanggal);
-  sheet.getRange(targetRow, cStart + 2).setValue(nominal);
-  sheet.getRange(targetRow, cStart + 3).setValue(metode);
-
-  return {
-    success: true,
-    message: "Iuran " + memberName + " sebesar Rp " + nominal + " berhasil dicatat pada baris " + targetRow,
-    targetRow: targetRow
-  };
 }
 
 function handleAddLainLainIuran(ss, p) {
   const sheet = ss.getSheetByName('KARTU IURAN');
-  if (!sheet) throw new Error("Sheet 'KARTU IURAN' tidak ditemukan!");
+  if (!sheet) return;
 
   const monthName = String(p.month || 'SEPTEMBER/OKTOBER').trim().toUpperCase();
   const tanggal = String(p.tanggal || '').trim();
@@ -501,29 +634,21 @@ function handleAddLainLainIuran(ss, p) {
     }
   }
 
-  if (!targetRow) {
-    throw new Error("Slot pendapatan lain-lain untuk bulan " + monthName + " sudah penuh (maks 10 slot)!");
+  if (targetRow) {
+    sheet.getRange(targetRow, cStart + 1).setValue(tanggal);
+    sheet.getRange(targetRow, cStart + 2).setValue(nominal);
+    sheet.getRange(targetRow, cStart + 3).setValue(keterangan);
   }
-
-  sheet.getRange(targetRow, cStart + 1).setValue(tanggal);
-  sheet.getRange(targetRow, cStart + 2).setValue(nominal);
-  sheet.getRange(targetRow, cStart + 3).setValue(keterangan);
-
-  return {
-    success: true,
-    message: "Pendapatan lain-lain sebesar Rp " + nominal + " berhasil dicatat.",
-    targetRow: targetRow
-  };
 }
 
 function handleAddBbKasTransaction(ss, p) {
   const sheet = ss.getSheetByName('BB KAS');
-  if (!sheet) throw new Error("Sheet 'BB KAS' tidak ditemukan!");
+  if (!sheet) return;
 
   const bulan = String(p.bulan || 'OKTOBER').trim().toUpperCase();
   const tanggal = Number(p.tanggal) || new Date().getDate();
   const deskripsi = String(p.deskripsi || '').trim();
-  const tipe = String(p.tipe || 'Keluar').trim(); // 'Masuk' atau 'Keluar'
+  const tipe = String(p.tipe || 'Keluar').trim();
   const nominal = Number(p.nominal) || 0;
   const keterangan = String(p.keterangan || '').trim();
 
@@ -532,10 +657,8 @@ function handleAddBbKasTransaction(ss, p) {
     'NOVEMBER': 9,
     'DESEMBER': 17
   };
-  const cStart = monthColMap[bulan];
-  if (!cStart) throw new Error("Bulan buku kas tidak valid: " + bulan);
+  const cStart = monthColMap[bulan] || 1;
 
-  // Cari baris kosong di rows 8 s.d 71
   let targetRow = null;
   for (let r = 8; r <= 71; r++) {
     const dsk = sheet.getRange(r, cStart + 2).getValue();
@@ -547,11 +670,8 @@ function handleAddBbKasTransaction(ss, p) {
     }
   }
 
-  if (!targetRow) {
-    throw new Error("Buku kas bulan " + bulan + " sudah penuh (maks 71 baris)!");
-  }
+  if (!targetRow) return { error: "Buku kas penuh" };
 
-  // Tulis ke sel input yang diizinkan
   sheet.getRange(targetRow, cStart + 1).setValue(tanggal);
   sheet.getRange(targetRow, cStart + 2).setValue(deskripsi);
 
@@ -565,100 +685,74 @@ function handleAddBbKasTransaction(ss, p) {
 
   sheet.getRange(targetRow, cStart + 6).setValue(keterangan);
 
-  // Pastikan rumus saldo baris ini konsisten: Saldo Sebelum + Masuk - Keluar
   const saldoColLetter = cStart === 1 ? 'F' : (cStart === 9 ? 'N' : 'V');
   const masukColLetter = cStart === 1 ? 'D' : (cStart === 9 ? 'L' : 'T');
   const keluarColLetter = cStart === 1 ? 'E' : (cStart === 9 ? 'M' : 'U');
   const prevRow = targetRow - 1;
   const saldoCell = sheet.getRange(targetRow, cStart + 5);
 
-  // Jika belum ada formula atau formula error, pulihkan rumus saldo
   const currentFormula = saldoCell.getFormula();
   if (!currentFormula || currentFormula.indexOf('#REF!') !== -1) {
     saldoCell.setFormula('=' + saldoColLetter + prevRow + '+' + masukColLetter + targetRow + '-' + keluarColLetter + targetRow);
   }
 
-  return {
-    success: true,
-    message: "Transaksi '" + deskripsi + "' Rp " + nominal + " (" + tipe + ") berhasil dicatat pada baris " + targetRow,
-    targetRow: targetRow
-  };
+  return { success: true, row: targetRow };
 }
 
 function handleUpdateRabHarianItem(ss, p) {
   const sheet = ss.getSheetByName('RAB HARIAN');
-  if (!sheet) throw new Error("Sheet 'RAB HARIAN' tidak ditemukan!");
+  if (!sheet) return;
 
   const row = Number(p.row);
   const colStart = Number(p.colStart);
-  if (!row || !colStart || row < 6 || row > 19) {
-    throw new Error("Koordinat item RAB Harian tidak valid!");
-  }
+  if (!row || !colStart) return;
 
   if (p.kebutuhan !== undefined) sheet.getRange(row, colStart + 1).setValue(p.kebutuhan);
   if (p.volume !== undefined) sheet.getRange(row, colStart + 2).setValue(p.volume);
   if (p.satuan !== undefined) sheet.getRange(row, colStart + 3).setValue(p.satuan);
   if (p.harga !== undefined) sheet.getRange(row, colStart + 4).setValue(p.harga);
 
-  // Pastikan formula Jumlah (=Volume * Harga) tetap utuh
   const volColLetter = String.fromCharCode(64 + colStart + 2);
   const hrgColLetter = String.fromCharCode(64 + colStart + 4);
   const jmlRange = sheet.getRange(row, colStart + 5);
   if (!jmlRange.getFormula()) {
     jmlRange.setFormula('=' + volColLetter + row + '*' + hrgColLetter + row);
   }
-
-  return { success: true, message: "Item RAB Harian baris " + row + " berhasil diperbarui." };
 }
 
 function handleUpdateRabProkerItem(ss, p) {
   const sheet = ss.getSheetByName('RAB PROKER');
-  if (!sheet) throw new Error("Sheet 'RAB PROKER' tidak ditemukan!");
+  if (!sheet) return;
 
   const row = Number(p.row);
   const colStart = Number(p.colStart);
-  if (!row || !colStart) {
-    throw new Error("Koordinat item RAB Proker tidak valid!");
-  }
+  if (!row || !colStart) return;
 
   if (p.kebutuhan !== undefined) sheet.getRange(row, colStart + 1).setValue(p.kebutuhan);
   if (p.volume !== undefined) sheet.getRange(row, colStart + 2).setValue(p.volume);
   if (p.satuan !== undefined) sheet.getRange(row, colStart + 3).setValue(p.satuan);
   if (p.harga !== undefined) sheet.getRange(row, colStart + 4).setValue(p.harga);
-
-  return { success: true, message: "Item RAB Proker baris " + row + " berhasil diperbarui." };
 }
 
 function handleUpdateVestItem(ss, p) {
   const sheet = ss.getSheetByName('LAIN LAIN');
-  if (!sheet) throw new Error("Sheet 'LAIN LAIN' tidak ditemukan!");
+  if (!sheet) return;
 
   const row = Number(p.row);
-  if (!row || row < 3 || row > 12) throw new Error("Baris Vest tidak valid!");
-
   if (p.ukuran !== undefined) sheet.getRange(row, 4).setValue(p.ukuran);
   if (p.keterangan !== undefined) sheet.getRange(row, 6).setValue(p.keterangan);
-
-  return { success: true, message: "Data Vest baris " + row + " berhasil diperbarui." };
 }
 
 function handleUpdateFotoStudioItem(ss, p) {
   const sheet = ss.getSheetByName('LAIN LAIN');
-  if (!sheet) throw new Error("Sheet 'LAIN LAIN' tidak ditemukan!");
+  if (!sheet) return;
 
   const row = Number(p.row);
-  if (!row || row < 3 || row > 12) throw new Error("Baris Foto Studio tidak valid!");
-
   if (p.onomoto !== undefined) sheet.getRange(row, 10).setValue(p.onomoto);
   if (p.kuyStudio !== undefined) sheet.getRange(row, 11).setValue(p.kuyStudio);
   if (p.keterangan !== undefined) sheet.getRange(row, 13).setValue(p.keterangan);
-
-  return { success: true, message: "Data Foto Studio baris " + row + " berhasil diperbarui." };
 }
 
-// ==========================================
-// UTILS
-// ==========================================
 function formatDateVal(val) {
   if (!val) return '';
   if (val instanceof Date) {

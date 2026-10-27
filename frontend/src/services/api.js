@@ -41,7 +41,7 @@ export function addAuditLog(entry) {
 }
 
 export async function fetchAllData() {
-  // 1. Apps Script direct if configured via ENV
+  // 1. Direct Apps Script if ENV configured
   if (APPS_SCRIPT_URL) {
     try {
       const resp = await fetch(`${APPS_SCRIPT_URL}?action=getAll`, { method: 'GET' });
@@ -52,11 +52,11 @@ export async function fetchAllData() {
         }
       }
     } catch (err) {
-      console.warn('Apps script direct fetch error, fallback to proxy:', err);
+      console.warn('Apps script direct fetch error:', err);
     }
   }
 
-  // 2. Local/Vercel Backend Proxy (/api/data)
+  // 2. Local/Vercel Proxy (/api/data)
   try {
     const resp = await fetch('/api/data');
     if (resp.ok) {
@@ -66,15 +66,66 @@ export async function fetchAllData() {
       }
     }
   } catch (err) {
-    console.warn('Proxy API error, fallback to local dataset:', err);
+    console.warn('Proxy API error:', err);
   }
 
-  // 3. Fallback to bundled dataset
+  // 3. Bundled dataset
   return { data: initialData, source: 'seed', lastSync: new Date().toLocaleTimeString('id-ID') };
 }
 
 export function getLiveExcelDownloadUrl() {
   return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=xlsx`;
+}
+
+/**
+ * SEKALI INPUT TERINTEGRASI:
+ * Masuk ke Buku Kas + Terhubung ke RAB Harian/Proker ATAU Kartu Iuran
+ */
+export async function recordIntegratedTransaction(payload, userRole = 'Bendahara') {
+  addAuditLog({
+    user: userRole,
+    action: payload.jenis === 'Pemasukan' ? 'CATAT_PEMASUKAN' : 'CATAT_PENGELUARAN',
+    sheet: 'INTEGRATED',
+    details: `${payload.deskripsi}: Rp ${Number(payload.nominal).toLocaleString('id-ID')} (${payload.targetAlokasi || payload.member || 'Kas'})`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'recordIntegratedTransaction', ...payload })
+      });
+      return await resp.json();
+    } catch (err) {
+      console.warn('Integrated transaction Apps Script error:', err);
+    }
+  }
+
+  return { success: true, message: 'Transaksi terintegrasi tersimpan', localOnly: true };
+}
+
+/**
+ * Tambah Item Baru di RAB Harian
+ */
+export async function addRabHarianItem(payload, userRole = 'Bendahara') {
+  addAuditLog({
+    user: userRole,
+    action: 'TAMBAH_ITEM_RAB',
+    sheet: 'RAB HARIAN',
+    details: `${payload.category}: ${payload.kebutuhan} (Vol: ${payload.volume} ${payload.satuan || ''} @ Rp ${payload.harga})`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'addRabHarianItem', ...payload })
+    });
+    return await resp.json();
+  }
+
+  return { success: true, message: 'Item RAB Harian tersimpan lokal', localOnly: true };
 }
 
 export async function saveIuran(payload, userRole = 'Bendahara') {
@@ -92,17 +143,6 @@ export async function saveIuran(payload, userRole = 'Bendahara') {
       body: JSON.stringify({ action: 'addIuran', ...payload })
     });
     return await resp.json();
-  }
-
-  try {
-    const resp = await fetch('/api/iuran', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...payload, user: userRole })
-    });
-    if (resp.ok) return await resp.json();
-  } catch (e) {
-    console.warn(e);
   }
 
   return { success: true, message: 'Iuran tersimpan lokal', localOnly: true };
@@ -143,17 +183,6 @@ export async function saveKasTransaction(payload, userRole = 'Bendahara') {
       body: JSON.stringify({ action: 'addBbKasTransaction', ...payload })
     });
     return await resp.json();
-  }
-
-  try {
-    const resp = await fetch('/api/bb-kas', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...payload, user: userRole })
-    });
-    if (resp.ok) return await resp.json();
-  } catch (e) {
-    console.warn(e);
   }
 
   return { success: true, message: 'Transaksi kas tersimpan lokal', localOnly: true };

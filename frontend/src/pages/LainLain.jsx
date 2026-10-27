@@ -10,6 +10,7 @@ export default function LainLain() {
   const vestItems = lainLain.vest || [];
   const fotoItems = lainLain.fotoStudio || [];
 
+  const [activeTab, setActiveTab] = useState('vest'); // 'vest' or 'foto'
   const [editingVest, setEditingVest] = useState(null);
   const [editingFoto, setEditingFoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -107,246 +108,236 @@ export default function LainLain() {
   return (
     <div className="space-y-4 pb-10">
       
-      {/* Header bar */}
-      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-base font-semibold text-[#0F291E]">Lain-Lain (Seragam & Foto Studio)</h1>
-          <p className="text-xs text-[#64748B]">Status iuran non-operasional per anggota</p>
+      {/* Top Segmented Controls */}
+      <div className="flex items-center justify-between">
+        <div className="flex space-x-1 bg-zinc-100 p-1 rounded-md">
+          <button
+            onClick={() => setActiveTab('vest')}
+            className={`px-3 py-1.5 rounded text-xs font-medium transition ${
+              activeTab === 'vest'
+                ? 'bg-white text-zinc-900 shadow-2xs'
+                : 'text-zinc-600 hover:text-zinc-900'
+            }`}
+          >
+            Seragam ({formatRupiah(lainLain.vestTotal || 1270000)})
+          </button>
+          <button
+            onClick={() => setActiveTab('foto')}
+            className={`px-3 py-1.5 rounded text-xs font-medium transition ${
+              activeTab === 'foto'
+                ? 'bg-white text-zinc-900 shadow-2xs'
+                : 'text-zinc-600 hover:text-zinc-900'
+            }`}
+          >
+            Foto Studio ({formatRupiah(lainLain.fotoTotal || 175000)})
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        
-        {/* SECTION 1: VEST */}
-        <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden flex flex-col justify-between">
-          <div>
-            <div className="p-3 bg-[#F8F9FA] border-b border-[#E2E8F0] flex items-center justify-between">
-              <span className="font-semibold text-xs text-[#0F291E]">Seragam Vest</span>
-              <span className="font-semibold tabular-nums text-xs text-[#0F291E]">
-                {formatRupiah(lainLain.vestTotal || 1270000)}
-              </span>
-            </div>
+      {/* SECTION 1: VEST */}
+      {activeTab === 'vest' && (
+        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium">
+                  <th className="py-2.5 px-3 text-center w-10">No</th>
+                  <th className="py-2.5 px-3">Nama</th>
+                  <th className="py-2.5 px-3 text-center w-20">Ukuran</th>
+                  <th className="py-2.5 px-3 text-right w-28">Harga</th>
+                  <th className="py-2.5 px-3 text-center w-28">Status</th>
+                  {role === 'Bendahara' && <th className="py-2.5 px-2 text-center w-10"></th>}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {vestItems.map((item, idx) => {
+                  const isEditing = editingVest && editingVest.idx === idx;
+                  const isLunas = item.keterangan && item.keterangan.toLowerCase().includes('lunas');
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-[#FAFAFA] text-[#64748B] border-b border-[#E2E8F0] text-[11px]">
-                    <th className="py-2 px-3 text-center w-8">No</th>
-                    <th className="py-2 px-3">Nama</th>
-                    <th className="py-2 px-3 text-center w-16">Ukuran</th>
-                    <th className="py-2 px-3 text-right w-24">Harga</th>
-                    <th className="py-2 px-3 text-center w-24">Status</th>
-                    {role === 'Bendahara' && <th className="py-2 px-2 text-center w-8"></th>}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F1F5F9]">
-                  {vestItems.map((item, idx) => {
-                    const isEditing = editingVest && editingVest.idx === idx;
-                    const isLunas = item.keterangan && item.keterangan.toLowerCase().includes('lunas');
-
-                    if (isEditing) {
-                      return (
-                        <tr key={idx} className="bg-amber-50/50">
-                          <td className="py-1.5 px-3 text-center text-[#94A3B8]">{item.no || idx + 1}</td>
-                          <td className="py-1.5 px-3 font-medium text-[#1E293B]">{item.nama}</td>
-                          <td className="py-1 px-2">
-                            <input
-                              type="text"
-                              value={editingVest.ukuran}
-                              onChange={(e) => setEditingVest({ ...editingVest, ukuran: e.target.value })}
-                              className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs text-center font-semibold"
-                            />
-                          </td>
-                          <td className="py-1.5 px-3 text-right tabular-nums">{formatRupiah(item.harga)}</td>
-                          <td className="py-1 px-2">
-                            <select
-                              value={editingVest.keterangan}
-                              onChange={(e) => setEditingVest({ ...editingVest, keterangan: e.target.value })}
-                              className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-[11px]"
-                            >
-                              <option value="Lunas">Lunas</option>
-                              <option value="">Belum Lunas</option>
-                            </select>
-                          </td>
-                          <td className="py-1 px-2 text-center">
-                            <div className="flex items-center space-x-1">
-                              <button
-                                onClick={handleSaveVest}
-                                disabled={submitting}
-                                className="p-1 bg-[#0F291E] text-white rounded hover:bg-[#1B4D3E]"
-                              >
-                                <Check className="w-3 h-3" />
-                              </button>
-                              <button
-                                onClick={() => setEditingVest(null)}
-                                className="p-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-
+                  if (isEditing) {
                     return (
-                      <tr key={idx} className="hover:bg-[#F8F9FA] transition-colors">
-                        <td className="py-2 px-3 text-center text-[#94A3B8] font-mono">{item.no || idx + 1}</td>
-                        <td className="py-2 px-3 font-medium text-[#1E293B]">{item.nama}</td>
-                        <td className="py-2 px-3 text-center font-semibold text-[#0F291E]">{item.ukuran || '-'}</td>
-                        <td className="py-2 px-3 text-right tabular-nums text-[#64748B]">{formatRupiah(item.harga)}</td>
-                        <td className="py-2 px-3 text-center">
-                          {isLunas ? (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              Lunas
-                            </span>
-                          ) : (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                              Ditalangi Kas
-                            </span>
-                          )}
+                      <tr key={idx} className="bg-amber-50/50">
+                        <td className="py-1.5 px-3 text-center text-zinc-400">{item.no || idx + 1}</td>
+                        <td className="py-1.5 px-3 font-medium text-zinc-900">{item.nama}</td>
+                        <td className="py-1 px-2">
+                          <input
+                            type="text"
+                            value={editingVest.ukuran}
+                            onChange={(e) => setEditingVest({ ...editingVest, ukuran: e.target.value })}
+                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-center font-semibold"
+                          />
                         </td>
-                        {role === 'Bendahara' && (
-                          <td className="py-2 px-2 text-center">
+                        <td className="py-1.5 px-3 text-right tabular-nums">{formatRupiah(item.harga)}</td>
+                        <td className="py-1 px-2">
+                          <select
+                            value={editingVest.keterangan}
+                            onChange={(e) => setEditingVest({ ...editingVest, keterangan: e.target.value })}
+                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs"
+                          >
+                            <option value="Lunas">Lunas</option>
+                            <option value="">Belum Lunas</option>
+                          </select>
+                        </td>
+                        <td className="py-1 px-2 text-center">
+                          <div className="flex items-center justify-center space-x-1">
                             <button
-                              onClick={() => handleStartEditVest(idx, item)}
-                              className="p-1 text-[#94A3B8] hover:text-[#0F291E]"
+                              onClick={handleSaveVest}
+                              disabled={submitting}
+                              className="p-1 bg-zinc-900 text-white rounded hover:bg-zinc-800"
                             >
-                              <Edit3 className="w-3.5 h-3.5" />
+                              <Check className="w-3 h-3" />
                             </button>
-                          </td>
-                        )}
+                            <button
+                              onClick={() => setEditingVest(null)}
+                              className="p-1 bg-zinc-200 text-zinc-700 rounded hover:bg-zinc-300"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  }
 
-          <div className="p-2.5 bg-[#FAFAFA] border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#0F291E]">
-            <span>Total Seragam</span>
-            <span className="tabular-nums">{formatRupiah(lainLain.vestTotal || 1270000)}</span>
-          </div>
-        </div>
-
-        {/* SECTION 2: FOTO STUDIO */}
-        <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden flex flex-col justify-between">
-          <div>
-            <div className="p-3 bg-[#F8F9FA] border-b border-[#E2E8F0] flex items-center justify-between">
-              <span className="font-semibold text-xs text-[#0F291E]">Foto Studio</span>
-              <span className="font-semibold tabular-nums text-xs text-[#0F291E]">
-                {formatRupiah(lainLain.fotoTotal || 175000)}
-              </span>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-[#FAFAFA] text-[#64748B] border-b border-[#E2E8F0] text-[11px]">
-                    <th className="py-2 px-2 text-center w-8">No</th>
-                    <th className="py-2 px-3">Nama</th>
-                    <th className="py-2 px-2 text-right">Onomoto</th>
-                    <th className="py-2 px-2 text-right">Kuy Studio</th>
-                    <th className="py-2 px-3 text-right">Jumlah</th>
-                    <th className="py-2 px-2 text-center w-16">Status</th>
-                    {role === 'Bendahara' && <th className="py-2 px-2 text-center w-8"></th>}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F1F5F9]">
-                  {fotoItems.map((item, idx) => {
-                    const isEditing = editingFoto && editingFoto.idx === idx;
-
-                    if (isEditing) {
-                      return (
-                        <tr key={idx} className="bg-amber-50/50">
-                          <td className="py-1.5 px-2 text-center text-[#94A3B8]">{item.no || idx + 1}</td>
-                          <td className="py-1.5 px-3 font-medium text-[#1E293B]">{item.nama}</td>
-                          <td className="py-1 px-1">
-                            <input
-                              type="number"
-                              value={editingFoto.onomoto}
-                              onChange={(e) => setEditingFoto({ ...editingFoto, onomoto: e.target.value })}
-                              className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs text-right"
-                            />
-                          </td>
-                          <td className="py-1 px-1">
-                            <input
-                              type="number"
-                              value={editingFoto.kuyStudio}
-                              onChange={(e) => setEditingFoto({ ...editingFoto, kuyStudio: e.target.value })}
-                              className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs text-right"
-                            />
-                          </td>
-                          <td className="py-1.5 px-3 text-right tabular-nums font-semibold">
-                            {formatRupiah((Number(editingFoto.onomoto) || 0) + (Number(editingFoto.kuyStudio) || 0))}
-                          </td>
-                          <td className="py-1 px-1 text-center">
-                            <input
-                              type="text"
-                              value={editingFoto.keterangan}
-                              onChange={(e) => setEditingFoto({ ...editingFoto, keterangan: e.target.value })}
-                              className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-[10px]"
-                            />
-                          </td>
-                          <td className="py-1 px-2 text-center">
-                            <div className="flex items-center space-x-1">
-                              <button
-                                onClick={handleSaveFoto}
-                                disabled={submitting}
-                                className="p-1 bg-[#0F291E] text-white rounded hover:bg-[#1B4D3E]"
-                              >
-                                <Check className="w-3 h-3" />
-                              </button>
-                              <button
-                                onClick={() => setEditingFoto(null)}
-                                className="p-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-
-                    return (
-                      <tr key={idx} className="hover:bg-[#F8F9FA] transition-colors">
-                        <td className="py-2 px-2 text-center text-[#94A3B8] font-mono">{item.no || idx + 1}</td>
-                        <td className="py-2 px-3 font-medium text-[#1E293B]">{item.nama}</td>
-                        <td className="py-2 px-2 text-right tabular-nums text-[#64748B]">{formatRupiah(item.onomoto)}</td>
-                        <td className="py-2 px-2 text-right tabular-nums text-[#64748B]">{formatRupiah(item.kuyStudio)}</td>
-                        <td className="py-2 px-3 text-right tabular-nums font-semibold text-[#0F291E]">{formatRupiah(item.jumlah)}</td>
-                        <td className="py-2 px-2 text-center">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            {item.keterangan || 'Lunas'}
+                  return (
+                    <tr key={idx} className="hover:bg-zinc-50/50">
+                      <td className="py-2.5 px-3 text-center text-zinc-400 font-mono">{item.no || idx + 1}</td>
+                      <td className="py-2.5 px-3 font-medium text-zinc-900">{item.nama}</td>
+                      <td className="py-2.5 px-3 text-center font-semibold text-zinc-800">{item.ukuran || '-'}</td>
+                      <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.harga)}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        {isLunas ? (
+                          <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                            Lunas
                           </span>
-                        </td>
-                        {role === 'Bendahara' && (
-                          <td className="py-2 px-2 text-center">
-                            <button
-                              onClick={() => handleStartEditFoto(idx, item)}
-                              className="p-1 text-[#94A3B8] hover:text-[#0F291E]"
-                            >
-                              <Edit3 className="w-3.5 h-3.5" />
-                            </button>
-                          </td>
+                        ) : (
+                          <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                            Ditalangi Kas
+                          </span>
                         )}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="p-2.5 bg-[#FAFAFA] border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#0F291E]">
-            <span>Total Foto Studio</span>
-            <span className="tabular-nums">{formatRupiah(lainLain.fotoTotal || 175000)}</span>
+                      </td>
+                      {role === 'Bendahara' && (
+                        <td className="py-2.5 px-2 text-center">
+                          <button
+                            onClick={() => handleStartEditVest(idx, item)}
+                            className="p-1 text-zinc-400 hover:text-zinc-900"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
+      )}
 
-      </div>
+      {/* SECTION 2: FOTO STUDIO */}
+      {activeTab === 'foto' && (
+        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium">
+                  <th className="py-2.5 px-3 text-center w-10">No</th>
+                  <th className="py-2.5 px-3">Nama</th>
+                  <th className="py-2.5 px-3 text-right">Onomoto</th>
+                  <th className="py-2.5 px-3 text-right">Kuy Studio</th>
+                  <th className="py-2.5 px-3 text-right">Jumlah</th>
+                  <th className="py-2.5 px-3 text-center w-20">Status</th>
+                  {role === 'Bendahara' && <th className="py-2.5 px-2 text-center w-10"></th>}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {fotoItems.map((item, idx) => {
+                  const isEditing = editingFoto && editingFoto.idx === idx;
+
+                  if (isEditing) {
+                    return (
+                      <tr key={idx} className="bg-amber-50/50">
+                        <td className="py-1.5 px-3 text-center text-zinc-400">{item.no || idx + 1}</td>
+                        <td className="py-1.5 px-3 font-medium text-zinc-900">{item.nama}</td>
+                        <td className="py-1 px-2">
+                          <input
+                            type="number"
+                            value={editingFoto.onomoto}
+                            onChange={(e) => setEditingFoto({ ...editingFoto, onomoto: e.target.value })}
+                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-right"
+                          />
+                        </td>
+                        <td className="py-1 px-2">
+                          <input
+                            type="number"
+                            value={editingFoto.kuyStudio}
+                            onChange={(e) => setEditingFoto({ ...editingFoto, kuyStudio: e.target.value })}
+                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-right"
+                          />
+                        </td>
+                        <td className="py-1.5 px-3 text-right tabular-nums font-semibold">
+                          {formatRupiah((Number(editingFoto.onomoto) || 0) + (Number(editingFoto.kuyStudio) || 0))}
+                        </td>
+                        <td className="py-1 px-2 text-center">
+                          <input
+                            type="text"
+                            value={editingFoto.keterangan}
+                            onChange={(e) => setEditingFoto({ ...editingFoto, keterangan: e.target.value })}
+                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-center"
+                          />
+                        </td>
+                        <td className="py-1 px-2 text-center">
+                          <div className="flex items-center justify-center space-x-1">
+                            <button
+                              onClick={handleSaveFoto}
+                              disabled={submitting}
+                              className="p-1 bg-zinc-900 text-white rounded hover:bg-zinc-800"
+                            >
+                              <Check className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={() => setEditingFoto(null)}
+                              className="p-1 bg-zinc-200 text-zinc-700 rounded hover:bg-zinc-300"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return (
+                    <tr key={idx} className="hover:bg-zinc-50/50">
+                      <td className="py-2.5 px-3 text-center text-zinc-400 font-mono">{item.no || idx + 1}</td>
+                      <td className="py-2.5 px-3 font-medium text-zinc-900">{item.nama}</td>
+                      <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.onomoto)}</td>
+                      <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.kuyStudio)}</td>
+                      <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-zinc-950">{formatRupiah(item.jumlah)}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                          {item.keterangan || 'Lunas'}
+                        </span>
+                      </td>
+                      {role === 'Bendahara' && (
+                        <td className="py-2.5 px-2 text-center">
+                          <button
+                            onClick={() => handleStartEditFoto(idx, item)}
+                            className="p-1 text-zinc-400 hover:text-zinc-900"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
     </div>
   );
