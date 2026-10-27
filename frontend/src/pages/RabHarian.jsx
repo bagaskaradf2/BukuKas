@@ -141,15 +141,15 @@ export default function RabHarian() {
     <div className="space-y-4 pb-10">
       
       {/* Top Controls Bar */}
-      <div className="bg-white p-4 rounded-lg border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide">RAB Kebutuhan Harian</h1>
-          <p className="text-xs text-zinc-500">Anggaran konsumsi, posko, transportasi, langganan, dan sekre</p>
+          <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-wide">RAB Kebutuhan Harian</h1>
+          <p className="text-xs text-zinc-500 mt-0.5">Anggaran konsumsi, posko, transportasi, langganan, dan sekre</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <div className="text-right">
-            <span className="text-[10px] text-zinc-500 block uppercase">Total Anggaran</span>
+            <span className="text-[10px] text-zinc-400 font-semibold block uppercase">Total Anggaran</span>
             <span className="text-sm font-bold tabular-nums text-zinc-950">
               {formatRupiah(grandTotal)}
             </span>
@@ -161,10 +161,10 @@ export default function RabHarian() {
                 if (activeCategory !== 'ALL') setNewCategory(activeCategory);
                 setIsAddModalOpen(true);
               }}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition"
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Tambah Item</span>
+              <Plus className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Tambah Kebutuhan</span>
             </button>
           )}
         </div>
@@ -174,9 +174,9 @@ export default function RabHarian() {
       <div className="flex space-x-1.5 overflow-x-auto pb-0.5 no-scrollbar">
         <button
           onClick={() => setActiveCategory('ALL')}
-          className={`px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap transition ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
             activeCategory === 'ALL'
-              ? 'bg-zinc-900 text-white'
+              ? 'bg-zinc-950 text-white'
               : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
           }`}
         >
@@ -186,9 +186,9 @@ export default function RabHarian() {
           <button
             key={cat.category}
             onClick={() => setActiveCategory(cat.category)}
-            className={`px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeCategory === cat.category
-                ? 'bg-zinc-900 text-white'
+                ? 'bg-zinc-950 text-white'
                 : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
             }`}
           >
@@ -200,26 +200,14 @@ export default function RabHarian() {
       {/* Tables Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredCategories.map((cat, catIdx) => (
-          <div key={cat.category} className="bg-white rounded-lg border border-zinc-200 overflow-hidden flex flex-col justify-between">
+          <div key={cat.category} className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden flex flex-col justify-between">
             <div>
               <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between">
                 <span className="font-semibold text-xs text-zinc-900">{cat.category}</span>
                 <div className="flex items-center space-x-2">
-                  <span className="font-semibold tabular-nums text-xs text-zinc-950">
+                  <span className="font-bold tabular-nums text-xs text-zinc-950">
                     {formatRupiah(cat.total)}
                   </span>
-                  {role === 'Bendahara' && (
-                    <button
-                      onClick={() => {
-                        setNewCategory(cat.category);
-                        setIsAddModalOpen(true);
-                      }}
-                      title="Tambah baris item"
-                      className="text-zinc-500 hover:text-zinc-900 p-0.5"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -301,8 +289,8 @@ export default function RabHarian() {
                       }
 
                       return (
-                        <tr key={itemIdx} className="hover:bg-zinc-50/50">
-                          <td className="py-2 px-2 text-center text-zinc-400 font-mono">{item.no || itemIdx + 1}</td>
+                        <tr key={itemIdx} className="hover:bg-zinc-50/70">
+                          <td className="py-2.5 px-2.5 text-center text-zinc-400 font-medium tabular-nums">{item.no || itemIdx + 1}</td>
                           <td className="py-2 px-3 font-medium text-zinc-900">{item.kebutuhan}</td>
                           <td className="py-2 px-2 text-center tabular-nums text-zinc-600">
                             {item.volume !== null ? item.volume : '-'}
@@ -343,23 +331,23 @@ export default function RabHarian() {
       {/* Modal Tambah Item Kebutuhan */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-sm w-full border border-zinc-200 shadow-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-100 flex items-center justify-between">
-              <h3 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
+          <div className="bg-white rounded-2xl max-w-sm w-full border border-zinc-200/80 shadow-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+              <h3 className="font-bold text-xs text-zinc-900 uppercase tracking-wide">
                 Tambah Item Kebutuhan RAB
               </h3>
-              <button onClick={() => setIsAddModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">
+              <button onClick={() => setIsAddModalOpen(false)} className="text-zinc-400 hover:text-zinc-600 cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleAddItem} className="p-4 space-y-3 text-xs">
+            <form onSubmit={handleAddItem} className="p-5 space-y-3.5 text-xs">
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Kategori RAB</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Kategori RAB</label>
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded bg-white text-zinc-900 font-medium"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none text-zinc-900 font-medium transition"
                 >
                   <option value="RAB KONSUMSI">RAB Konsumsi</option>
                   <option value="RAB POSKO/KEBERSIHAN">RAB Posko & Kebersihan</option>
@@ -370,56 +358,56 @@ export default function RabHarian() {
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Nama Kebutuhan</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Nama Kebutuhan</label>
                 <input
                   type="text"
                   placeholder="Contoh: Minyak Goreng, Isi Staples"
                   value={newKebutuhan}
                   onChange={(e) => setNewKebutuhan(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Volume</label>
+                  <label className="block text-zinc-700 font-semibold mb-1">Volume</label>
                   <input
                     type="number"
                     min="1"
                     value={newVolume}
                     onChange={(e) => setNewVolume(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-center"
+                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl text-center bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition font-medium tabular-nums"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Satuan</label>
+                  <label className="block text-zinc-700 font-semibold mb-1">Satuan</label>
                   <input
                     type="text"
-                    placeholder="Kg / Hari / Liter / Kali"
+                    placeholder="Kg / Hari / Pcs"
                     value={newSatuan}
                     onChange={(e) => setNewSatuan(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-zinc-200 rounded"
+                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Harga Satuan (Rupiah)</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Harga Satuan (Rupiah)</label>
                 <input
                   type="number"
                   placeholder="25000"
                   value={newHarga}
                   onChange={(e) => setNewHarga(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded tabular-nums font-semibold"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl tabular-nums font-semibold bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                   required
                 />
               </div>
 
-              <div className="p-2 bg-zinc-50 rounded border border-zinc-200 flex justify-between text-xs">
-                <span className="text-zinc-500">Estimasi Jumlah:</span>
+              <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/80 flex justify-between text-xs">
+                <span className="text-zinc-500 font-medium">Estimasi Jumlah:</span>
                 <span className="font-bold tabular-nums text-zinc-950">
                   {formatRupiah((Number(newVolume) || 1) * (Number(newHarga) || 0))}
                 </span>
@@ -429,14 +417,14 @@ export default function RabHarian() {
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3 py-1.5 rounded border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                  className="px-4 py-2 rounded-xl border border-zinc-200 text-zinc-600 hover:bg-zinc-100 font-semibold transition cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white font-medium disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-semibold transition disabled:opacity-50 cursor-pointer shadow-xs"
                 >
                   {submitting ? 'Menyimpan...' : 'Simpan Item'}
                 </button>

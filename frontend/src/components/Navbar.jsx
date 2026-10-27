@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { getLiveExcelDownloadUrl } from '../services/api';
-import { Download, RefreshCw, History, Shield, Eye } from 'lucide-react';
+import { Download, Shield, Eye } from 'lucide-react';
 
 const TABS = [
   { id: 'DASHBOARD', label: 'Dashboard' },
@@ -12,25 +12,32 @@ const TABS = [
   { id: 'LAIN LAIN', label: 'Lain-Lain' },
 ];
 
-export default function Navbar({ onOpenAudit }) {
-  const { activeTab, setActiveTab, role, toggleRole, lastSync, refreshData, loading } = useApp();
+export default function Navbar() {
+  const { activeTab, setActiveTab, role, toggleRole, lastSync } = useApp();
   const excelUrl = getLiveExcelDownloadUrl();
 
   return (
-    <header className="bg-white border-b border-zinc-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-14">
+    <header className="bg-white border-b border-zinc-200/80 sticky top-0 z-40">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16">
           
-          {/* Logo & Navigation Tabs (Desktop) */}
-          <div className="flex items-center space-x-6">
+          {/* Logo & Navigation Tabs */}
+          <div className="flex items-center space-x-8">
             <button 
               onClick={() => setActiveTab('DASHBOARD')}
-              className="font-bold text-base tracking-tight text-zinc-950 flex items-center space-x-2"
+              className="flex items-center space-x-2.5 cursor-pointer text-left"
             >
-              <span className="w-6 h-6 rounded bg-zinc-950 text-white text-xs font-bold flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white font-bold text-sm flex items-center justify-center">
                 B
-              </span>
-              <span>BukuKas</span>
+              </div>
+              <div>
+                <span className="font-bold text-base tracking-tight text-zinc-950 block leading-tight">
+                  BukuKas
+                </span>
+                <span className="text-[10px] text-zinc-400 block font-normal">
+                  Google Sheets Live
+                </span>
+              </div>
             </button>
 
             <nav className="hidden md:flex items-center space-x-1">
@@ -40,10 +47,10 @@ export default function Navbar({ onOpenAudit }) {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                       isActive
                         ? 'bg-zinc-100 text-zinc-950 font-semibold'
-                        : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50'
+                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
                     }`}
                   >
                     {tab.label}
@@ -54,58 +61,33 @@ export default function Navbar({ onOpenAudit }) {
           </div>
 
           {/* Right Controls */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             
-            {/* Live Indicator */}
-            <div className="hidden sm:flex items-center space-x-1.5 px-2 py-1 rounded bg-zinc-50 border border-zinc-200 text-[11px] text-zinc-600">
-              <span className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-amber-500 animate-ping' : 'bg-emerald-500'}`}></span>
-              <span>{lastSync}</span>
-            </div>
-
-            {/* Refresh */}
-            <button
-              onClick={() => refreshData()}
-              disabled={loading}
-              title="Perbarui data"
-              className="p-1.5 text-zinc-500 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            </button>
-
-            {/* Audit Log */}
-            <button
-              onClick={onOpenAudit}
-              title="Riwayat audit"
-              className="p-1.5 text-zinc-500 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition"
-            >
-              <History className="w-3.5 h-3.5" />
-            </button>
-
             {/* Unduh Excel */}
             <a
               href={excelUrl}
               target="_blank"
               rel="noopener noreferrer"
               download="KEUANGAN_LIVE.xlsx"
-              className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"
             >
-              <Download className="w-3 h-3 text-zinc-500" />
-              <span>Unduh .xlsx</span>
+              <Download className="w-3.5 h-3.5 text-zinc-400" />
+              <span>Unduh Excel</span>
             </a>
 
             {/* Role Switcher */}
             <button
               onClick={toggleRole}
-              className="flex items-center space-x-1 px-2.5 py-1.5 rounded-md bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800 transition"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 text-xs font-medium transition cursor-pointer"
             >
               {role === 'Bendahara' ? (
                 <>
-                  <Shield className="w-3 h-3 text-emerald-400" />
+                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Bendahara</span>
                 </>
               ) : (
                 <>
-                  <Eye className="w-3 h-3 text-zinc-400" />
+                  <Eye className="w-3.5 h-3.5 text-zinc-500" />
                   <span>Pembaca</span>
                 </>
               )}
@@ -115,7 +97,7 @@ export default function Navbar({ onOpenAudit }) {
 
         </div>
 
-        {/* Mobile Navigation Tabs */}
+        {/* Mobile Navigation */}
         <div className="flex md:hidden space-x-1 overflow-x-auto py-2 border-t border-zinc-100 no-scrollbar">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -123,10 +105,10 @@ export default function Navbar({ onOpenAudit }) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-2.5 py-1 rounded text-xs font-medium whitespace-nowrap transition-colors ${
+                className={`px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap transition ${
                   isActive
-                    ? 'bg-zinc-900 text-white'
-                    : 'text-zinc-600 hover:bg-zinc-100'
+                    ? 'bg-zinc-900 text-white font-semibold'
+                    : 'text-zinc-500 hover:bg-zinc-100'
                 }`}
               >
                 {tab.label}

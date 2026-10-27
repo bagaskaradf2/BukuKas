@@ -171,28 +171,28 @@ export default function RecordModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full border border-zinc-200 shadow-xl overflow-hidden">
+      <div className="bg-white rounded-2xl max-w-md w-full border border-zinc-200/80 shadow-2xl overflow-hidden">
         
         {/* Modal Header */}
-        <div className="px-5 py-3 border-b border-zinc-100 flex items-center justify-between">
-          <h2 className="font-semibold text-xs text-zinc-900 uppercase tracking-wide">
+        <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
+          <h2 className="font-bold text-sm text-zinc-900 uppercase tracking-wide">
             Catat Transaksi Terintegrasi
           </h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600">
+          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Jenis Switcher */}
-        <div className="px-5 pt-3">
-          <div className="grid grid-cols-2 p-1 bg-zinc-100 rounded-md gap-1">
+        <div className="px-6 pt-4">
+          <div className="grid grid-cols-2 p-1 bg-zinc-100 rounded-xl gap-1">
             <button
               type="button"
               onClick={() => setJenis('Pengeluaran')}
-              className={`py-1.5 text-xs font-medium rounded transition flex items-center justify-center space-x-1.5 ${
+              className={`py-2 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer ${
                 jenis === 'Pengeluaran'
-                  ? 'bg-white text-zinc-900 shadow-2xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
+                  ? 'bg-white text-zinc-950 shadow-2xs'
+                  : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
               <ArrowDownRight className="w-3.5 h-3.5 text-rose-600" />
@@ -201,10 +201,10 @@ export default function RecordModal({ isOpen, onClose }) {
             <button
               type="button"
               onClick={() => setJenis('Pemasukan')}
-              className={`py-1.5 text-xs font-medium rounded transition flex items-center justify-center space-x-1.5 ${
+              className={`py-2 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer ${
                 jenis === 'Pemasukan'
-                  ? 'bg-white text-zinc-900 shadow-2xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
+                  ? 'bg-white text-zinc-950 shadow-2xs'
+                  : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
               <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
@@ -214,14 +214,14 @@ export default function RecordModal({ isOpen, onClose }) {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-3 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 space-y-3.5 text-xs">
           <div>
-            <label className="block text-zinc-600 font-medium mb-1">Tanggal</label>
+            <label className="block text-zinc-700 font-semibold mb-1">Tanggal Transaksi</label>
             <input
               type="date"
               value={tanggal}
               onChange={(e) => setTanggal(e.target.value)}
-              className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900 bg-white"
+              className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
               required
             />
           </div>
@@ -229,23 +229,23 @@ export default function RecordModal({ isOpen, onClose }) {
           {jenis === 'Pengeluaran' ? (
             <>
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Deskripsi Kebutuhan</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Deskripsi Kebutuhan</label>
                 <input
                   type="text"
-                  placeholder="Contoh: Beras 25kg, Gas, Cetak Banner"
+                  placeholder="Contoh: Beras 25kg, Gas Elpiji, Cetak Banner"
                   value={deskripsi}
                   onChange={(e) => setDeskripsi(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Alokasi Anggaran (Otomatis Masuk ke RAB)</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Alokasi Anggaran (Otomatis Masuk ke RAB)</label>
                 <select
                   value={targetAlokasi}
                   onChange={(e) => setTargetAlokasi(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900 bg-white font-medium"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none font-medium transition"
                 >
                   <optgroup label="RAB Kebutuhan Harian">
                     <option value="RAB_KONSUMSI">RAB Konsumsi</option>
@@ -271,37 +271,37 @@ export default function RecordModal({ isOpen, onClose }) {
                 </select>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2.5">
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Volume</label>
+                  <label className="block text-zinc-700 font-semibold mb-1">Volume</label>
                   <input
                     type="number"
                     min="1"
                     value={volume}
                     onChange={(e) => setVolume(e.target.value)}
-                    className="w-full px-2 py-1.5 border border-zinc-200 rounded text-center"
+                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl text-center bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition font-medium tabular-nums"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Satuan</label>
+                  <label className="block text-zinc-700 font-semibold mb-1">Satuan</label>
                   <input
                     type="text"
-                    placeholder="Kg/Kali"
+                    placeholder="Pcs/Kali"
                     value={satuan}
                     onChange={(e) => setSatuan(e.target.value)}
-                    className="w-full px-2 py-1.5 border border-zinc-200 rounded"
+                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-zinc-600 font-medium mb-1">Harga Satuan</label>
+                  <label className="block text-zinc-700 font-semibold mb-1">Harga Satuan</label>
                   <input
                     type="number"
                     placeholder="15000"
                     value={harga}
                     onChange={(e) => setHarga(e.target.value)}
-                    className="w-full px-2 py-1.5 border border-zinc-200 rounded tabular-nums"
+                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl tabular-nums bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition font-medium"
                     required
                   />
                 </div>
@@ -310,15 +310,15 @@ export default function RecordModal({ isOpen, onClose }) {
           ) : (
             <>
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Sumber Dana</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Sumber Dana</label>
                 <div className="grid grid-cols-2 gap-2 mb-2">
                   <button
                     type="button"
                     onClick={() => setSumberTipe('anggota')}
-                    className={`py-1 rounded border text-xs font-medium transition ${
+                    className={`py-1.5 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                       sumberTipe === 'anggota'
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-200 text-zinc-600'
+                        ? 'border-zinc-950 bg-zinc-950 text-white'
+                        : 'border-zinc-200 bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
                     }`}
                   >
                     Iuran Anggota
@@ -326,10 +326,10 @@ export default function RecordModal({ isOpen, onClose }) {
                   <button
                     type="button"
                     onClick={() => setSumberTipe('lain')}
-                    className={`py-1 rounded border text-xs font-medium transition ${
+                    className={`py-1.5 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                       sumberTipe === 'lain'
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-200 text-zinc-600'
+                        ? 'border-zinc-950 bg-zinc-950 text-white'
+                        : 'border-zinc-200 bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
                     }`}
                   >
                     Pendapatan Lain
@@ -340,7 +340,7 @@ export default function RecordModal({ isOpen, onClose }) {
                   <select
                     value={member}
                     onChange={(e) => setMember(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-zinc-200 rounded bg-white text-zinc-900 font-medium"
+                    className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none text-zinc-900 font-semibold transition"
                   >
                     {members.map(m => (
                       <option key={m.name} value={m.name}>{m.name}</option>
@@ -349,21 +349,21 @@ export default function RecordModal({ isOpen, onClose }) {
                 ) : (
                   <input
                     type="text"
-                    placeholder="Keterangan (contoh: Bank Jago, Donasi)"
+                    placeholder="Keterangan (contoh: Donasi Warga, Bank Jago)"
                     value={deskripsi}
                     onChange={(e) => setDeskripsi(e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-zinc-200 rounded text-zinc-900"
+                    className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                     required
                   />
                 )}
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Bulan Iuran</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Bulan Iuran</label>
                 <select
                   value={bulanIuran}
                   onChange={(e) => setBulanIuran(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded bg-white text-zinc-900"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none text-zinc-900 font-medium transition"
                 >
                   {['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER'].map(m => (
                     <option key={m} value={m}>{m}</option>
@@ -372,25 +372,25 @@ export default function RecordModal({ isOpen, onClose }) {
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Nominal (Rupiah)</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Nominal (Rupiah)</label>
                 <input
                   type="number"
                   placeholder="200000"
                   value={nominalMasuk}
                   onChange={(e) => setNominalMasuk(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded font-semibold tabular-nums"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl font-bold tabular-nums text-zinc-950 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-medium mb-1">Metode Setoran</label>
+                <label className="block text-zinc-700 font-semibold mb-1">Metode Setoran</label>
                 <input
                   type="text"
                   placeholder="Transfer Bank, Cash, E-Wallet"
                   value={metode}
                   onChange={(e) => setMetode(e.target.value)}
-                  className="w-full px-2.5 py-1.5 border border-zinc-200 rounded"
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition font-medium"
                   required
                 />
               </div>
@@ -398,8 +398,8 @@ export default function RecordModal({ isOpen, onClose }) {
           )}
 
           {/* Realtime calculation summary */}
-          <div className="p-2.5 bg-zinc-50 rounded border border-zinc-200 flex items-center justify-between text-xs">
-            <span className="text-zinc-500">Total Mutasi Kas:</span>
+          <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/80 flex items-center justify-between text-xs">
+            <span className="text-zinc-500 font-medium">Total Nilai Transaksi:</span>
             <span className="font-bold tabular-nums text-zinc-950 text-sm">
               {formatRupiah(calculatedNominal)}
             </span>
@@ -409,14 +409,14 @@ export default function RecordModal({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+              className="px-4 py-2 rounded-xl border border-zinc-200 text-zinc-600 hover:bg-zinc-100 font-semibold transition cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-white font-medium transition disabled:opacity-50"
+              className="px-5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-semibold transition disabled:opacity-50 cursor-pointer shadow-xs"
             >
               {submitting ? 'Menyimpan...' : 'Catat & Sinkronkan'}
             </button>

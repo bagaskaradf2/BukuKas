@@ -80,14 +80,14 @@ export default function RabProker() {
     <div className="space-y-4 pb-10">
       
       {/* Header bar */}
-      <div className="bg-white p-4 rounded-xl border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide">RAB Program Kerja</h1>
-          <p className="text-xs text-zinc-500">Anggaran 9 blok program kerja terencana</p>
+          <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-wide">RAB Program Kerja</h1>
+          <p className="text-xs text-zinc-500 mt-0.5">Anggaran 9 blok program kerja terencana</p>
         </div>
 
         <div className="text-right">
-          <span className="text-[10px] text-zinc-500 block uppercase">Total Anggaran Proker</span>
+          <span className="text-[10px] text-zinc-400 font-semibold block uppercase">Total Anggaran Proker</span>
           <span className="text-sm font-bold tabular-nums text-zinc-950">
             {formatRupiah(totalAllProker)}
           </span>
@@ -100,9 +100,9 @@ export default function RabProker() {
           <button
             key={grp}
             onClick={() => setActiveGroup(grp)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeGroup === grp
-                ? 'bg-zinc-900 text-white'
+                ? 'bg-zinc-950 text-white'
                 : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
             }`}
           >
@@ -114,7 +114,7 @@ export default function RabProker() {
       {/* Grid of Blocks */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredBlocks.map((block, bIdx) => (
-          <div key={block.title} className="bg-white rounded-xl border border-zinc-200 overflow-hidden flex flex-col justify-between">
+          <div key={block.title} className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden flex flex-col justify-between">
             <div>
               <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between">
                 <div>
@@ -206,8 +206,8 @@ export default function RabProker() {
                       }
 
                       return (
-                        <tr key={itIdx} className="hover:bg-zinc-50/50 transition-colors">
-                          <td className="py-2 px-2 text-center text-zinc-400 font-mono">{item.no || itIdx + 1}</td>
+                        <tr key={itIdx} className="hover:bg-zinc-50/70 transition-colors">
+                          <td className="py-2.5 px-2.5 text-center text-zinc-400 font-medium tabular-nums">{item.no || itIdx + 1}</td>
                           <td className="py-2 px-3 font-medium text-zinc-900">{item.kebutuhan}</td>
                           <td className="py-2 px-2 text-center tabular-nums text-zinc-600">
                             {item.volume !== null ? item.volume : '-'}

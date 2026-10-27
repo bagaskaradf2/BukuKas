@@ -110,23 +110,23 @@ export default function LainLain() {
       
       {/* Top Segmented Controls */}
       <div className="flex items-center justify-between">
-        <div className="flex space-x-1 bg-zinc-100 p-1 rounded-md">
+        <div className="flex space-x-1 bg-zinc-100 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab('vest')}
-            className={`px-3 py-1.5 rounded text-xs font-medium transition ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'vest'
-                ? 'bg-white text-zinc-900 shadow-2xs'
-                : 'text-zinc-600 hover:text-zinc-900'
+                ? 'bg-white text-zinc-950 shadow-2xs'
+                : 'text-zinc-600 hover:text-zinc-950'
             }`}
           >
             Seragam ({formatRupiah(lainLain.vestTotal || 1270000)})
           </button>
           <button
             onClick={() => setActiveTab('foto')}
-            className={`px-3 py-1.5 rounded text-xs font-medium transition ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'foto'
-                ? 'bg-white text-zinc-900 shadow-2xs'
-                : 'text-zinc-600 hover:text-zinc-900'
+                ? 'bg-white text-zinc-950 shadow-2xs'
+                : 'text-zinc-600 hover:text-zinc-950'
             }`}
           >
             Foto Studio ({formatRupiah(lainLain.fotoTotal || 175000)})
@@ -136,7 +136,7 @@ export default function LainLain() {
 
       {/* SECTION 1: VEST */}
       {activeTab === 'vest' && (
-        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
@@ -200,8 +200,8 @@ export default function LainLain() {
                   }
 
                   return (
-                    <tr key={idx} className="hover:bg-zinc-50/50">
-                      <td className="py-2.5 px-3 text-center text-zinc-400 font-mono">{item.no || idx + 1}</td>
+                    <tr key={idx} className="hover:bg-zinc-50/70">
+                      <td className="py-2.5 px-3 text-center text-zinc-400 font-medium tabular-nums">{item.no || idx + 1}</td>
                       <td className="py-2.5 px-3 font-medium text-zinc-900">{item.nama}</td>
                       <td className="py-2.5 px-3 text-center font-semibold text-zinc-800">{item.ukuran || '-'}</td>
                       <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.harga)}</td>
@@ -237,7 +237,7 @@ export default function LainLain() {
 
       {/* SECTION 2: FOTO STUDIO */}
       {activeTab === 'foto' && (
-        <div className="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
@@ -309,8 +309,8 @@ export default function LainLain() {
                   }
 
                   return (
-                    <tr key={idx} className="hover:bg-zinc-50/50">
-                      <td className="py-2.5 px-3 text-center text-zinc-400 font-mono">{item.no || idx + 1}</td>
+                    <tr key={idx} className="hover:bg-zinc-50/70">
+                      <td className="py-2.5 px-3 text-center text-zinc-400 font-medium tabular-nums">{item.no || idx + 1}</td>
                       <td className="py-2.5 px-3 font-medium text-zinc-900">{item.nama}</td>
                       <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.onomoto)}</td>
                       <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.kuyStudio)}</td>
