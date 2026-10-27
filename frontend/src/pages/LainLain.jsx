@@ -207,11 +207,11 @@ export default function LainLain() {
                       <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.harga)}</td>
                       <td className="py-2.5 px-3 text-center">
                         {isLunas ? (
-                          <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                             Lunas
                           </span>
                         ) : (
-                          <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
                             Ditalangi Kas
                           </span>
                         )}
@@ -316,7 +316,7 @@ export default function LainLain() {
                       <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600">{formatRupiah(item.kuyStudio)}</td>
                       <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-zinc-950">{formatRupiah(item.jumlah)}</td>
                       <td className="py-2.5 px-3 text-center">
-                        <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                           {item.keterangan || 'Lunas'}
                         </span>
                       </td>

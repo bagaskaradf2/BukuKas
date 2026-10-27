@@ -161,9 +161,9 @@ export default function RabHarian() {
                 if (activeCategory !== 'ALL') setNewCategory(activeCategory);
                 setIsAddModalOpen(true);
               }}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs active:scale-98"
             >
-              <Plus className="w-3.5 h-3.5 text-emerald-400" />
+              <Plus className="w-3.5 h-3.5" />
               <span>Tambah Kebutuhan</span>
             </button>
           )}

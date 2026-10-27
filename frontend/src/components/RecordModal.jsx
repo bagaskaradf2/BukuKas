@@ -191,7 +191,7 @@ export default function RecordModal({ isOpen, onClose }) {
               onClick={() => setJenis('Pengeluaran')}
               className={`py-2 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer ${
                 jenis === 'Pengeluaran'
-                  ? 'bg-white text-zinc-950 shadow-2xs'
+                  ? 'bg-rose-50 text-rose-700 border border-rose-200/90 shadow-2xs'
                   : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
@@ -203,7 +203,7 @@ export default function RecordModal({ isOpen, onClose }) {
               onClick={() => setJenis('Pemasukan')}
               className={`py-2 text-xs font-semibold rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer ${
                 jenis === 'Pemasukan'
-                  ? 'bg-white text-zinc-950 shadow-2xs'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/90 shadow-2xs'
                   : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
@@ -398,9 +398,15 @@ export default function RecordModal({ isOpen, onClose }) {
           )}
 
           {/* Realtime calculation summary */}
-          <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/80 flex items-center justify-between text-xs">
-            <span className="text-zinc-500 font-medium">Total Nilai Transaksi:</span>
-            <span className="font-bold tabular-nums text-zinc-950 text-sm">
+          <div className={`p-3 rounded-xl border flex items-center justify-between text-xs transition ${
+            jenis === 'Pengeluaran'
+              ? 'bg-rose-50/50 border-rose-200/80'
+              : 'bg-emerald-50/50 border-emerald-200/80'
+          }`}>
+            <span className="text-zinc-600 font-medium">Total Nilai Transaksi:</span>
+            <span className={`font-bold tabular-nums text-sm ${
+              jenis === 'Pengeluaran' ? 'text-rose-600' : 'text-emerald-700'
+            }`}>
               {formatRupiah(calculatedNominal)}
             </span>
           </div>
@@ -416,7 +422,11 @@ export default function RecordModal({ isOpen, onClose }) {
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-semibold transition disabled:opacity-50 cursor-pointer shadow-xs"
+              className={`px-5 py-2 rounded-xl text-white font-semibold transition disabled:opacity-50 cursor-pointer shadow-xs ${
+                jenis === 'Pengeluaran'
+                  ? 'bg-rose-600 hover:bg-rose-700'
+                  : 'bg-emerald-600 hover:bg-emerald-700'
+              }`}
             >
               {submitting ? 'Menyimpan...' : 'Catat & Sinkronkan'}
             </button>

@@ -59,27 +59,27 @@ export default function BbKas() {
 
       {/* Quick Numbers Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
-          <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider block">
-            Total Masuk ({activeMonth})
+        <div className="bg-white p-5 rounded-2xl border border-emerald-100/90 shadow-xs bg-gradient-to-br from-white to-emerald-50/20">
+          <span className="text-[11px] text-emerald-800 font-bold uppercase tracking-wider block">
+            Total Uang Masuk ({activeMonth})
           </span>
-          <span className="text-xl font-bold tabular-nums text-emerald-700 mt-1 block">
+          <span className="text-2xl font-bold tabular-nums text-emerald-700 mt-1.5 block">
             {formatRupiah(totalMasuk)}
           </span>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
-          <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider block">
-            Total Keluar ({activeMonth})
+        <div className="bg-white p-5 rounded-2xl border border-rose-100/90 shadow-xs bg-gradient-to-br from-white to-rose-50/20">
+          <span className="text-[11px] text-rose-800 font-bold uppercase tracking-wider block">
+            Total Uang Keluar ({activeMonth})
           </span>
-          <span className="text-xl font-bold tabular-nums text-zinc-900 mt-1 block">
+          <span className="text-2xl font-bold tabular-nums text-rose-600 mt-1.5 block">
             {formatRupiah(totalKeluar)}
           </span>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
-          <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider block">
-            Saldo Akhir ({activeMonth})
+        <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs">
+          <span className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider block">
+            Saldo Akhir Kas ({activeMonth})
           </span>
-          <span className="text-xl font-bold tabular-nums text-zinc-950 mt-1 block">
+          <span className="text-2xl font-bold tabular-nums text-zinc-950 mt-1.5 block">
             {formatRupiah(latestSaldo)}
           </span>
         </div>
@@ -120,8 +120,8 @@ export default function BbKas() {
                 <th className="py-3 px-3 text-center w-10">No</th>
                 <th className="py-3 px-3 w-24">Tanggal</th>
                 <th className="py-3 px-3">Deskripsi Transaksi</th>
-                <th className="py-3 px-3 text-right w-32">Uang Masuk</th>
-                <th className="py-3 px-3 text-right w-32">Uang Keluar</th>
+                <th className="py-3 px-3 text-right w-32 text-emerald-800">Uang Masuk</th>
+                <th className="py-3 px-3 text-right w-32 text-rose-800">Uang Keluar</th>
                 <th className="py-3 px-4 text-right w-36 font-bold text-zinc-950 bg-zinc-100/60">Saldo Kas</th>
                 <th className="py-3 px-3 w-32">Alokasi / Pos</th>
               </tr>
@@ -138,7 +138,7 @@ export default function BbKas() {
                     <td className="py-3 px-3 text-right tabular-nums text-emerald-700 font-semibold whitespace-nowrap">
                       {tx.masuk > 0 ? formatRupiah(tx.masuk) : '-'}
                     </td>
-                    <td className="py-3 px-3 text-right tabular-nums text-zinc-900 font-semibold whitespace-nowrap">
+                    <td className="py-3 px-3 text-right tabular-nums text-rose-600 font-semibold whitespace-nowrap">
                       {tx.keluar > 0 ? formatRupiah(tx.keluar) : '-'}
                     </td>
                     <td className="py-3 px-4 text-right tabular-nums font-bold text-zinc-950 whitespace-nowrap bg-zinc-50/50">

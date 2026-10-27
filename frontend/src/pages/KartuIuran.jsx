@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { formatRupiah, formatDate, formatNumber } from '../utils/formatters';
-import { Search, ChevronRight, ChevronDown } from 'lucide-react';
+import { Search, ChevronRight, ChevronDown, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const MONTHS = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER'];
+const TARGET_PER_MEMBER = 1600000;
+
+const AVATAR_COLORS = [
+  'bg-emerald-100 text-emerald-800 border-emerald-200',
+  'bg-blue-100 text-blue-800 border-blue-200',
+  'bg-purple-100 text-purple-800 border-purple-200',
+  'bg-amber-100 text-amber-800 border-amber-200',
+  'bg-rose-100 text-rose-800 border-rose-200',
+  'bg-teal-100 text-teal-800 border-teal-200',
+  'bg-indigo-100 text-indigo-800 border-indigo-200',
+  'bg-cyan-100 text-cyan-800 border-cyan-200',
+  'bg-orange-100 text-orange-800 border-orange-200',
+  'bg-violet-100 text-violet-800 border-violet-200',
+];
 
 export default function KartuIuran() {
   const { data } = useApp();
@@ -23,13 +37,13 @@ export default function KartuIuran() {
     <div className="space-y-4">
       
       {/* Top Filter */}
-      <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-zinc-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-wide">
+          <h1 className="text-sm font-bold text-zinc-950 uppercase tracking-wide">
             Kartu Iuran Anggota
           </h1>
           <p className="text-xs text-zinc-500 mt-0.5">
-            Rekap setoran rutin 10 anggota dan pendapatan kas lain
+            Target iuran: <strong className="text-zinc-800 font-semibold">{formatRupiah(TARGET_PER_MEMBER)}</strong> per orang
           </p>
         </div>
 
@@ -41,14 +55,14 @@ export default function KartuIuran() {
               placeholder="Cari nama anggota..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 focus:bg-white transition"
+              className="w-full pl-8 pr-3 py-1.5 bg-zinc-50 rounded-xl border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 focus:bg-white transition"
             />
           </div>
 
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-800 font-medium focus:outline-none focus:border-zinc-400 focus:bg-white transition"
+            className="px-3 py-1.5 bg-zinc-50 rounded-xl border border-zinc-200 text-xs text-zinc-800 font-semibold focus:outline-none focus:border-zinc-400 focus:bg-white transition"
           >
             <option value="ALL">Semua Bulan</option>
             {MONTHS.map(m => (
@@ -59,13 +73,13 @@ export default function KartuIuran() {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-zinc-50 border-b border-zinc-200/80 text-zinc-500 font-semibold text-[11px]">
+              <tr className="bg-zinc-50/80 border-b border-zinc-200/90 text-zinc-500 font-semibold text-[11px]">
                 <th className="py-3 px-3 text-center w-10">No</th>
-                <th className="py-3 px-3 w-40">Nama Anggota</th>
+                <th className="py-3 px-3 w-48">Anggota</th>
                 {MONTHS.map(m => {
                   if (selectedMonth !== 'ALL' && selectedMonth !== m) return null;
                   return (
@@ -74,7 +88,7 @@ export default function KartuIuran() {
                     </th>
                   );
                 })}
-                <th className="py-3 px-4 text-right w-40 bg-zinc-100/60 font-bold text-zinc-950">
+                <th className="py-3 px-4 text-right w-44 bg-zinc-100/60 font-bold text-zinc-950">
                   Total Terkumpul
                 </th>
                 <th className="py-3 px-2 w-8"></th>
@@ -83,6 +97,9 @@ export default function KartuIuran() {
             <tbody className="divide-y divide-zinc-100">
               {filteredMembers.map((m, idx) => {
                 const isExpanded = expandedMember === m.name;
+                const current = Number(m.total) || 0;
+                const isLunas = current >= TARGET_PER_MEMBER;
+                const avatarStyle = AVATAR_COLORS[idx % AVATAR_COLORS.length];
 
                 return (
                   <React.Fragment key={idx}>
@@ -91,7 +108,14 @@ export default function KartuIuran() {
                       className={`hover:bg-zinc-50/80 cursor-pointer transition-colors ${isExpanded ? 'bg-zinc-50/60' : ''}`}
                     >
                       <td className="py-3 px-3 text-center text-zinc-400 font-medium tabular-nums">{idx + 1}</td>
-                      <td className="py-3 px-3 font-semibold text-zinc-900">{m.name}</td>
+                      <td className="py-3 px-3">
+                        <div className="flex items-center space-x-2.5">
+                          <span className={`w-7 h-7 rounded-full border text-[11px] font-bold flex items-center justify-center shrink-0 ${avatarStyle}`}>
+                            {m.name.charAt(0)}
+                          </span>
+                          <span className="font-semibold text-zinc-900">{m.name}</span>
+                        </div>
+                      </td>
                       {MONTHS.map(monthKey => {
                         if (selectedMonth !== 'ALL' && selectedMonth !== monthKey) return null;
                         const sub = m.months[monthKey]?.subtotal || 0;
@@ -101,7 +125,9 @@ export default function KartuIuran() {
                           </td>
                         );
                       })}
-                      <td className="py-3 px-4 text-right tabular-nums font-bold bg-zinc-50/50 text-zinc-950">
+                      <td className={`py-3 px-4 text-right tabular-nums font-bold ${
+                        isLunas ? 'text-emerald-700 bg-emerald-50/30' : 'text-zinc-950 bg-zinc-50/50'
+                      }`}>
                         {formatRupiah(m.total)}
                       </td>
                       <td className="py-3 px-2 text-center text-zinc-400">
@@ -114,8 +140,23 @@ export default function KartuIuran() {
                       <tr className="bg-zinc-50/60">
                         <td colSpan={selectedMonth === 'ALL' ? 11 : 4} className="p-4 sm:p-5 border-y border-zinc-200/80">
                           <div className="space-y-3">
-                            <div className="text-xs font-bold text-zinc-800">
-                              Rincian Mutasi Setoran: <span className="text-zinc-950">{m.name}</span>
+                            <div className="flex items-center justify-between">
+                              <div className="text-xs font-bold text-zinc-900">
+                                Rincian Mutasi Setoran: <span className="text-emerald-700">{m.name}</span>
+                              </div>
+                              <div className="text-xs">
+                                {isLunas ? (
+                                  <span className="inline-flex items-center space-x-1 text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    <span>Lunas Target</span>
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center space-x-1 text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                                    <AlertCircle className="w-3 h-3" />
+                                    <span>Kurang {formatRupiah(TARGET_PER_MEMBER - current)}</span>
+                                  </span>
+                                )}
+                              </div>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -154,14 +195,14 @@ export default function KartuIuran() {
       </div>
 
       {/* Pendapatan Lain-Lain */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs p-5">
+      <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs p-5">
         <div className="flex items-center justify-between pb-3 border-b border-zinc-100 mb-4">
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-wide text-zinc-900">Pendapatan Lain-Lain</h3>
+            <h3 className="font-bold text-xs uppercase tracking-wide text-zinc-950">Pendapatan Lain-Lain</h3>
             <p className="text-xs text-zinc-500 mt-0.5">Iuran non-rutin & kas insidental</p>
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold tabular-nums text-zinc-950">
+            <span className="text-sm font-bold tabular-nums text-emerald-700">
               {formatRupiah(pendapatanLain.total || 900000)}
             </span>
           </div>
@@ -176,7 +217,7 @@ export default function KartuIuran() {
               <div key={mKey} className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 text-xs">
                 <div className="flex justify-between items-center text-[11px] font-bold text-zinc-800 mb-2">
                   <span>{mKey}</span>
-                  <span className="tabular-nums text-zinc-950">{formatRupiah(mData.subtotal)}</span>
+                  <span className="tabular-nums text-emerald-700">{formatRupiah(mData.subtotal)}</span>
                 </div>
                 <div className="space-y-1.5">
                   {mData.entries.map((e, idx) => (

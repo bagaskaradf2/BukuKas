@@ -118,12 +118,18 @@ export default function RabProker() {
             <div>
               <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700 mr-1.5">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mr-2 inline-block ${
+                    block.group === 'PROKER UTAMA' 
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                      : block.group === 'PROKER PENUNJANG'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }`}>
                     {block.group}
                   </span>
-                  <span className="font-semibold text-xs text-zinc-900">{block.title}</span>
+                  <span className="font-bold text-xs text-zinc-900">{block.title}</span>
                 </div>
-                <span className="font-semibold tabular-nums text-xs text-zinc-950">
+                <span className="font-bold tabular-nums text-xs text-zinc-950 bg-white px-2 py-1 rounded-lg border border-zinc-200/80">
                   {formatRupiah(block.total)}
                 </span>
               </div>

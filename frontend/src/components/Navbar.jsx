@@ -27,15 +27,15 @@ export default function Navbar() {
               onClick={() => setActiveTab('DASHBOARD')}
               className="flex items-center space-x-2.5 cursor-pointer text-left"
             >
-              <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white font-bold text-sm flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white font-bold text-sm flex items-center justify-center shadow-xs">
                 B
               </div>
               <div>
                 <span className="font-bold text-base tracking-tight text-zinc-950 block leading-tight">
                   BukuKas
                 </span>
-                <span className="text-[10px] text-zinc-400 block font-normal">
-                  Google Sheets Live
+                <span className="text-[10px] text-emerald-700 font-semibold block">
+                  Spreadsheet Live
                 </span>
               </div>
             </button>
@@ -47,10 +47,10 @@ export default function Navbar() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                       isActive
-                        ? 'bg-zinc-100 text-zinc-950 font-semibold'
-                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
+                        ? 'bg-zinc-950 text-white shadow-2xs'
+                        : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/80'
                     }`}
                   >
                     {tab.label}
@@ -78,7 +78,11 @@ export default function Navbar() {
             {/* Role Switcher */}
             <button
               onClick={toggleRole}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 text-xs font-medium transition cursor-pointer"
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                role === 'Bendahara'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs hover:bg-emerald-100'
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+              }`}
             >
               {role === 'Bendahara' ? (
                 <>
