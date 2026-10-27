@@ -1,0 +1,1959 @@
+{
+  "kartuIuran": {
+    "members": [
+      {
+        "name": "SARAH",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-09-11",
+                "nominal": 1300000.0,
+                "metode": "Transfer Shopeepay"
+              },
+              {
+                "slot": 2,
+                "tanggal": "2026-10-15",
+                "nominal": 300000.0,
+                "metode": ""
+              }
+            ],
+            "subtotal": 1600000
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "AFRIA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-10-06",
+                "nominal": 1600000.0,
+                "metode": "Transfer Mandiri"
+              }
+            ],
+            "subtotal": 1600000
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "AURA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-03-25",
+                "nominal": 400000.0,
+                "metode": "Transfer Bank"
+              }
+            ],
+            "subtotal": 400000
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-10-06",
+                "nominal": 1200000.0,
+                "metode": "Transfer BRI"
+              }
+            ],
+            "subtotal": 1200000
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "HERVI",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-03-27",
+                "nominal": 100000.0,
+                "metode": "Transfer Shopeepay"
+              }
+            ],
+            "subtotal": 100000
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-05-08",
+                "nominal": 200000.0,
+                "metode": "Transfer Seabank"
+              }
+            ],
+            "subtotal": 200000
+          },
+          "JUNI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-06-10",
+                "nominal": 200000.0,
+                "metode": "Transfer Seabank"
+              }
+            ],
+            "subtotal": 200000
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-08-05",
+                "nominal": 1100000.0,
+                "metode": "Transfer Seabank"
+              }
+            ],
+            "subtotal": 1100000
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [],
+            "subtotal": 0
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "YOGA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-05-18",
+                "nominal": 150000.0,
+                "metode": "Transfer Dana"
+              }
+            ],
+            "subtotal": 150000
+          },
+          "JUNI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-06-24",
+                "nominal": 500000.0,
+                "metode": "Transfer Dana"
+              }
+            ],
+            "subtotal": 500000
+          },
+          "JULI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-07-07",
+                "nominal": 950000.0,
+                "metode": "Transfer Seabank"
+              }
+            ],
+            "subtotal": 950000
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [],
+            "subtotal": 0
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "SYIFA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-10-06",
+                "nominal": 1600000.0,
+                "metode": "Transfer BTN"
+              }
+            ],
+            "subtotal": 1600000
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "NIA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-03-27",
+                "nominal": 1200000.0,
+                "metode": "Transfer Bank"
+              }
+            ],
+            "subtotal": 1200000
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-09-28",
+                "nominal": 800000.0,
+                "metode": "Transfer BTN"
+              }
+            ],
+            "subtotal": 800000
+          }
+        },
+        "total": 2000000
+      },
+      {
+        "name": "LIRA",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-03-27",
+                "nominal": 300000.0,
+                "metode": "Transfer Bank"
+              }
+            ],
+            "subtotal": 300000
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-05-05",
+                "nominal": 300000.0,
+                "metode": "Transfer Shopeepay"
+              }
+            ],
+            "subtotal": 300000
+          },
+          "JUNI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JULI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-07-27",
+                "nominal": 300000.0,
+                "metode": "Transfer BTN"
+              }
+            ],
+            "subtotal": 300000
+          },
+          "AGUSTUS": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-08-30",
+                "nominal": 500000.0,
+                "metode": "Transfer BTN"
+              }
+            ],
+            "subtotal": 500000
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-10-12",
+                "nominal": 200000.0,
+                "metode": "Transfer Mandiri"
+              }
+            ],
+            "subtotal": 200000
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "RIZALDI",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-05-08",
+                "nominal": 200000.0,
+                "metode": "Cash di Koat Kopi"
+              }
+            ],
+            "subtotal": 200000
+          },
+          "JUNI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-06-12",
+                "nominal": 100000.0,
+                "metode": "Cash di Bento Kopi"
+              }
+            ],
+            "subtotal": 100000
+          },
+          "JULI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-07-14",
+                "nominal": 200000.0,
+                "metode": "Cash di Kobessah"
+              }
+            ],
+            "subtotal": 200000
+          },
+          "AGUSTUS": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-08-23",
+                "nominal": 1100000.0,
+                "metode": "Transfer Seabank"
+              }
+            ],
+            "subtotal": 1100000
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [],
+            "subtotal": 0
+          }
+        },
+        "total": 1600000
+      },
+      {
+        "name": "REVALDO",
+        "months": {
+          "FEBRUARI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MARET": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "APRIL": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "MEI": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "JUNI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-06-12",
+                "nominal": 300000.0,
+                "metode": "Cash di Bento Kopi"
+              }
+            ],
+            "subtotal": 300000
+          },
+          "JULI": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-07-02",
+                "nominal": 200000.0,
+                "metode": "Transfer Gopay"
+              },
+              {
+                "slot": 2,
+                "tanggal": "2026-07-22",
+                "nominal": -500000.0,
+                "metode": "Transfer Gopay"
+              },
+              {
+                "slot": 3,
+                "tanggal": "2026-07-28",
+                "nominal": 1000000.0,
+                "metode": "Transfer Gopay"
+              },
+              {
+                "slot": 4,
+                "tanggal": "2026-07-28",
+                "nominal": 200000.0,
+                "metode": "Transfer Gopay"
+              }
+            ],
+            "subtotal": 900000
+          },
+          "AGUSTUS": {
+            "entries": [],
+            "subtotal": 0
+          },
+          "SEPTEMBER/OKTOBER": {
+            "entries": [
+              {
+                "slot": 1,
+                "tanggal": "2026-10-07",
+                "nominal": 400000.0,
+                "metode": "Transfer Gopay"
+              }
+            ],
+            "subtotal": 400000
+          }
+        },
+        "total": 1600000
+      }
+    ],
+    "pendapatanLain": {
+      "title": "PENDAPATAN LAIN-LAIN",
+      "months": {
+        "FEBRUARI": {
+          "entries": [],
+          "subtotal": 0
+        },
+        "MARET": {
+          "entries": [],
+          "subtotal": 0
+        },
+        "APRIL": {
+          "entries": [],
+          "subtotal": 0
+        },
+        "MEI": {
+          "entries": [],
+          "subtotal": 0
+        },
+        "JUNI": {
+          "entries": [
+            {
+              "slot": 1,
+              "tanggal": "2026-06-10",
+              "nominal": 50000.0,
+              "keterangan": "Seabank Hervi"
+            },
+            {
+              "slot": 2,
+              "tanggal": "2026-06-10",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Syifa"
+            }
+          ],
+          "subtotal": 100000
+        },
+        "JULI": {
+          "entries": [],
+          "subtotal": 0
+        },
+        "AGUSTUS": {
+          "entries": [
+            {
+              "slot": 1,
+              "tanggal": "2026-08-16",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Nia"
+            },
+            {
+              "slot": 2,
+              "tanggal": "2026-08-19",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Sarah"
+            },
+            {
+              "slot": 3,
+              "tanggal": "2026-08-29",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Syifa"
+            }
+          ],
+          "subtotal": 150000
+        },
+        "SEPTEMBER/OKTOBER": {
+          "entries": [
+            {
+              "slot": 1,
+              "tanggal": "2026-09-11",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Hervi"
+            },
+            {
+              "slot": 2,
+              "tanggal": "2026-09-18",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Rizaldi"
+            },
+            {
+              "slot": 3,
+              "tanggal": "2026-09-18",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Hervi"
+            },
+            {
+              "slot": 4,
+              "tanggal": "2026-10-15",
+              "nominal": 100000.0,
+              "keterangan": "Bank Jago Syifa"
+            },
+            {
+              "slot": 5,
+              "tanggal": "2026-10-15",
+              "nominal": 100000.0,
+              "keterangan": "Bank Jago Sarah"
+            },
+            {
+              "slot": 6,
+              "tanggal": "2026-10-15",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Lira"
+            },
+            {
+              "slot": 7,
+              "tanggal": "2026-10-15",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Yoga"
+            },
+            {
+              "slot": 8,
+              "tanggal": "2026-10-15",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Aura"
+            },
+            {
+              "slot": 9,
+              "tanggal": "2026-10-15",
+              "nominal": 50000.0,
+              "keterangan": "Bank Jago Afria"
+            },
+            {
+              "slot": 10,
+              "tanggal": "2026-10-15",
+              "nominal": 100000.0,
+              "keterangan": "Bank Jago Revaldo"
+            }
+          ],
+          "subtotal": 650000
+        }
+      },
+      "total": 900000
+    },
+    "totalDanaKelompok": 17300000,
+    "totalBersih": 16900000,
+    "uangProker": 7000000.0
+  },
+  "rabHarian": [
+    {
+      "category": "RAB KONSUMSI",
+      "colStart": 1,
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Beras",
+          "volume": 50.0,
+          "satuan": "Kg",
+          "harga": 15000.0,
+          "jumlah": 750000
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Lauk & Sayur & Cabe",
+          "volume": 70.0,
+          "satuan": "Hari",
+          "harga": 70000.0,
+          "jumlah": 4900000
+        },
+        {
+          "row": 8,
+          "no": 3.0,
+          "kebutuhan": "Air Galon",
+          "volume": 35.0,
+          "satuan": "Kali",
+          "harga": 10000.0,
+          "jumlah": 350000
+        },
+        {
+          "row": 9,
+          "no": 4.0,
+          "kebutuhan": "Gas",
+          "volume": 8.0,
+          "satuan": "Tabung",
+          "harga": 22000.0,
+          "jumlah": 176000
+        },
+        {
+          "row": 10,
+          "no": 5.0,
+          "kebutuhan": "Garam",
+          "volume": 1.0,
+          "satuan": "kali",
+          "harga": 10000.0,
+          "jumlah": 10000
+        },
+        {
+          "row": 11,
+          "no": 6.0,
+          "kebutuhan": "Gula Pasir",
+          "volume": 1.0,
+          "satuan": "Kg",
+          "harga": 17000.0,
+          "jumlah": 17000
+        },
+        {
+          "row": 12,
+          "no": 7.0,
+          "kebutuhan": "Bawang Merah",
+          "volume": 3.0,
+          "satuan": "Kali",
+          "harga": 25000.0,
+          "jumlah": 75000
+        },
+        {
+          "row": 13,
+          "no": 8.0,
+          "kebutuhan": "Bawang Putih",
+          "volume": 3.0,
+          "satuan": "Kali",
+          "harga": 25000.0,
+          "jumlah": 75000
+        },
+        {
+          "row": 14,
+          "no": 9.0,
+          "kebutuhan": "Minyak",
+          "volume": 8.0,
+          "satuan": "Liter",
+          "harga": 20000.0,
+          "jumlah": 160000
+        },
+        {
+          "row": 15,
+          "no": 10.0,
+          "kebutuhan": "Penyedap",
+          "volume": 5.0,
+          "satuan": "Kali",
+          "harga": 10000.0,
+          "jumlah": 50000
+        },
+        {
+          "row": 16,
+          "no": 11.0,
+          "kebutuhan": "Gula Jawa",
+          "volume": 1.0,
+          "satuan": "Kg",
+          "harga": 22000.0,
+          "jumlah": 22000
+        },
+        {
+          "row": 17,
+          "no": 12.0,
+          "kebutuhan": "Kecap",
+          "volume": 5.0,
+          "satuan": "Wadah",
+          "harga": 10000.0,
+          "jumlah": 50000
+        }
+      ],
+      "total": 0
+    },
+    {
+      "category": "RAB POSKO/KEBERSIHAN",
+      "colStart": 8,
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Sewa Posko",
+          "volume": 2.0,
+          "satuan": "Bulan",
+          "harga": 750000.0,
+          "jumlah": 1500000
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Air",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 8,
+          "no": 3.0,
+          "kebutuhan": "Listrik",
+          "volume": 2.0,
+          "satuan": "Bulan",
+          "harga": 300000.0,
+          "jumlah": 600000
+        },
+        {
+          "row": 9,
+          "no": 4.0,
+          "kebutuhan": "Kantong Sampah",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 30000.0
+        },
+        {
+          "row": 10,
+          "no": 5.0,
+          "kebutuhan": "Sabun Cuci Piring",
+          "volume": 5.0,
+          "satuan": "Liter",
+          "harga": 30000.0,
+          "jumlah": 150000
+        },
+        {
+          "row": 11,
+          "no": 6.0,
+          "kebutuhan": "Wipol",
+          "volume": 3.0,
+          "satuan": "Liter",
+          "harga": 20000.0,
+          "jumlah": 60000
+        }
+      ],
+      "total": 0
+    },
+    {
+      "category": "RAB TRANSPORTASI",
+      "colStart": 15,
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Sewa Pick Up",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Bensin",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0
+    },
+    {
+      "category": "RAB LANGGANAN",
+      "colStart": 22,
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Canva",
+          "volume": 2.0,
+          "satuan": "Bulan",
+          "harga": 10000.0,
+          "jumlah": 20000
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Capcut",
+          "volume": 2.0,
+          "satuan": "Bulan",
+          "harga": 10000.0,
+          "jumlah": 20000
+        }
+      ],
+      "total": 0
+    },
+    {
+      "category": "RAB SEKRE",
+      "colStart": 29,
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Ngeprint",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 200000.0
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Capcut",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0
+    }
+  ],
+  "rabProker": [
+    {
+      "title": "PENDATAAN MASYARAKAT",
+      "group": "PROKER UTAMA",
+      "items": [
+        {
+          "row": 6,
+          "no": 1.0,
+          "kebutuhan": "Cetak Formulir Pendataan",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 7,
+          "no": 2.0,
+          "kebutuhan": "Alat Tulis Kantor",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 8,
+          "no": 3.0,
+          "kebutuhan": "Stiker Masyarakat",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0,
+      "rowStart": 6,
+      "colStart": 1
+    },
+    {
+      "title": "BIMBINGAN BELAJAR",
+      "group": "PROKER PENUNJANG",
+      "items": [],
+      "total": 0,
+      "rowStart": 6,
+      "colStart": 8
+    },
+    {
+      "title": "PROKER TAMBAHAN",
+      "group": "PROKER TAMBAHAN",
+      "items": [],
+      "total": 0,
+      "rowStart": 6,
+      "colStart": 15
+    },
+    {
+      "title": "PLANG EDUKATIF PADUKUHAN PENGKOL",
+      "group": "PROKER UTAMA",
+      "items": [
+        {
+          "row": 24,
+          "no": 1.0,
+          "kebutuhan": "Papan Akrilik",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 25,
+          "no": 2.0,
+          "kebutuhan": "Cat Kayu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 26,
+          "no": 3.0,
+          "kebutuhan": "Tiang Penyangga Kayu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 27,
+          "no": 4.0,
+          "kebutuhan": "Semen",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 28,
+          "no": 5.0,
+          "kebutuhan": "Pasir",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 29,
+          "no": 6.0,
+          "kebutuhan": "Alat Pertukangan",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 30,
+          "no": 7.0,
+          "kebutuhan": "Stiker Cetakan Watermark",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 31,
+          "no": 8.0,
+          "kebutuhan": "Ember/Pot",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 32,
+          "no": 9.0,
+          "kebutuhan": "Stiker Cetakan RT Dukuh",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0,
+      "rowStart": 24,
+      "colStart": 1
+    },
+    {
+      "title": "TPA",
+      "group": "PROKER PENUNJANG",
+      "items": [],
+      "total": 0,
+      "rowStart": 24,
+      "colStart": 8
+    },
+    {
+      "title": "PEMASANGAN KACA CEMBUUNG",
+      "group": "PROKER UTAMA",
+      "items": [
+        {
+          "row": 42,
+          "no": 1.0,
+          "kebutuhan": "Stiker Reflektor",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 43,
+          "no": 2.0,
+          "kebutuhan": "Semen",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 44,
+          "no": 3.0,
+          "kebutuhan": "Pasir",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 45,
+          "no": 4.0,
+          "kebutuhan": "Pipa Penyangga/Besi",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 46,
+          "no": 5.0,
+          "kebutuhan": "Alat Pertukangan",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 47,
+          "no": 6.0,
+          "kebutuhan": "Paralon",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 48,
+          "no": 7.0,
+          "kebutuhan": "Batu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 49,
+          "no": 8.0,
+          "kebutuhan": "Tutup Paralon",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 50,
+          "no": 9.0,
+          "kebutuhan": "Pilok",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 51,
+          "no": 10.0,
+          "kebutuhan": "Stiker Cetakan Watermark",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0,
+      "rowStart": 42,
+      "colStart": 1
+    },
+    {
+      "title": "JALAN SEHAT DAN POHON HARAPAN",
+      "group": "PROKER UTAMA",
+      "items": [
+        {
+          "row": 60,
+          "no": 1.0,
+          "kebutuhan": "Banner",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 61,
+          "no": 2.0,
+          "kebutuhan": "Sewa Standing Banner",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 62,
+          "no": 3.0,
+          "kebutuhan": "Cat Warna Warni",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 63,
+          "no": 4.0,
+          "kebutuhan": "Cetak Administrasi",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 64,
+          "no": 5.0,
+          "kebutuhan": "Alat Tulis Kantor",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 65,
+          "no": 6.0,
+          "kebutuhan": "Kupon",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 66,
+          "no": 7.0,
+          "kebutuhan": "Doorprize",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 67,
+          "no": 8.0,
+          "kebutuhan": "Konsumsi",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 68,
+          "no": 9.0,
+          "kebutuhan": "Jamuan",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 69,
+          "no": 10.0,
+          "kebutuhan": "Instruktur",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 70,
+          "no": 11.0,
+          "kebutuhan": "Panggung",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 71,
+          "no": 12.0,
+          "kebutuhan": "Sewa Sound",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0,
+      "rowStart": 60,
+      "colStart": 1
+    },
+    {
+      "title": "PETA BENCANA",
+      "group": "PROKER UTAMA",
+      "items": [
+        {
+          "row": 78,
+          "no": 1.0,
+          "kebutuhan": "Jasa Peta Digital",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 79,
+          "no": 2.0,
+          "kebutuhan": "Banner",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 80,
+          "no": 3.0,
+          "kebutuhan": "Tiang Kayu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 81,
+          "no": 4.0,
+          "kebutuhan": "Seng",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 82,
+          "no": 5.0,
+          "kebutuhan": "Alat Tukang",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 83,
+          "no": 6.0,
+          "kebutuhan": "Semen",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 84,
+          "no": 7.0,
+          "kebutuhan": "Batu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 85,
+          "no": 8.0,
+          "kebutuhan": "Pasir",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        },
+        {
+          "row": 86,
+          "no": 9.0,
+          "kebutuhan": "Cat Kayu",
+          "volume": null,
+          "satuan": "",
+          "harga": null,
+          "jumlah": 0
+        }
+      ],
+      "total": 0,
+      "rowStart": 78,
+      "colStart": 1
+    },
+    {
+      "title": "SISTEM PENGELOLAAN SAMPAH",
+      "group": "PROKER UTAMA",
+      "items": [],
+      "total": 0,
+      "rowStart": 96,
+      "colStart": 1
+    }
+  ],
+  "bbKas": {
+    "OKTOBER": [
+      {
+        "row": 7,
+        "bulanLabel": "Okt",
+        "tanggal": 15,
+        "deskripsi": "Dana Kas Awal",
+        "masuk": 17300000.0,
+        "keluar": 0,
+        "saldo": 17300000,
+        "keterangan": ""
+      },
+      {
+        "row": 8,
+        "bulanLabel": "2026.0",
+        "tanggal": null,
+        "deskripsi": "Talangi Vest Sarah & Yoga",
+        "masuk": 0,
+        "keluar": 254000,
+        "saldo": 17046000,
+        "keterangan": ""
+      },
+      {
+        "row": 9,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bayar Premium Canva",
+        "masuk": 0,
+        "keluar": 10000.0,
+        "saldo": 17036000,
+        "keterangan": ""
+      },
+      {
+        "row": 10,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bayar ID Card & Lanyard",
+        "masuk": 0,
+        "keluar": 135000,
+        "saldo": 16901000,
+        "keterangan": ""
+      },
+      {
+        "row": 11,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bayar Gas",
+        "masuk": 0,
+        "keluar": 20000.0,
+        "saldo": 16881000,
+        "keterangan": ""
+      },
+      {
+        "row": 12,
+        "bulanLabel": "",
+        "tanggal": 17,
+        "deskripsi": "Pendapatan Gas",
+        "masuk": 25000.0,
+        "keluar": 0,
+        "saldo": 16906000,
+        "keterangan": ""
+      },
+      {
+        "row": 13,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 58000,
+        "saldo": 16848000,
+        "keterangan": ""
+      },
+      {
+        "row": 14,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Minyak Risky",
+        "masuk": 0,
+        "keluar": 18000.0,
+        "saldo": 16830000,
+        "keterangan": ""
+      },
+      {
+        "row": 15,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Penyedap Rasa",
+        "masuk": 0,
+        "keluar": 11000.0,
+        "saldo": 16819000,
+        "keterangan": ""
+      },
+      {
+        "row": 16,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Gula Pasir",
+        "masuk": 0,
+        "keluar": 10000.0,
+        "saldo": 16809000,
+        "keterangan": ""
+      },
+      {
+        "row": 17,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bawang Merah & Bawang Putih",
+        "masuk": 0,
+        "keluar": 5000.0,
+        "saldo": 16804000,
+        "keterangan": ""
+      },
+      {
+        "row": 18,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Banner KKN",
+        "masuk": 0,
+        "keluar": 45000.0,
+        "saldo": 16759000,
+        "keterangan": "Lain-Lain"
+      },
+      {
+        "row": 19,
+        "bulanLabel": "",
+        "tanggal": 18,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 40000,
+        "saldo": 16719000,
+        "keterangan": ""
+      },
+      {
+        "row": 20,
+        "bulanLabel": "",
+        "tanggal": 19,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 54000,
+        "saldo": 16665000,
+        "keterangan": ""
+      },
+      {
+        "row": 21,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bawang Merah & Bawang Putih",
+        "masuk": 0,
+        "keluar": 20000.0,
+        "saldo": 16645000,
+        "keterangan": ""
+      },
+      {
+        "row": 22,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Penyedap Rasa",
+        "masuk": 0,
+        "keluar": 3000.0,
+        "saldo": 16642000,
+        "keterangan": ""
+      },
+      {
+        "row": 23,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Dus Snack",
+        "masuk": 0,
+        "keluar": 14000.0,
+        "saldo": 16628000,
+        "keterangan": ""
+      },
+      {
+        "row": 24,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Isi Staples",
+        "masuk": 0,
+        "keluar": 2000.0,
+        "saldo": 16626000,
+        "keterangan": ""
+      },
+      {
+        "row": 25,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Isi Galon",
+        "masuk": 0,
+        "keluar": 22000.0,
+        "saldo": 16604000,
+        "keterangan": ""
+      },
+      {
+        "row": 26,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Patungan Konsum",
+        "masuk": 0,
+        "keluar": 87500.0,
+        "saldo": 16516500,
+        "keterangan": ""
+      },
+      {
+        "row": 27,
+        "bulanLabel": "",
+        "tanggal": 20,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 48000,
+        "saldo": 16468500,
+        "keterangan": ""
+      },
+      {
+        "row": 28,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Penyedap Rasa",
+        "masuk": 0,
+        "keluar": 11500.0,
+        "saldo": 16457000,
+        "keterangan": ""
+      },
+      {
+        "row": 29,
+        "bulanLabel": "",
+        "tanggal": 21,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 51000.0,
+        "saldo": 16406000,
+        "keterangan": ""
+      },
+      {
+        "row": 30,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Sabun Cuci Piring",
+        "masuk": 0,
+        "keluar": 4000.0,
+        "saldo": 16402000,
+        "keterangan": ""
+      },
+      {
+        "row": 31,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Wipol",
+        "masuk": 0,
+        "keluar": 5000.0,
+        "saldo": 16397000,
+        "keterangan": ""
+      },
+      {
+        "row": 32,
+        "bulanLabel": "",
+        "tanggal": 22,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 79000,
+        "saldo": 16318000,
+        "keterangan": ""
+      },
+      {
+        "row": 33,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Bayar Gas",
+        "masuk": 0,
+        "keluar": 22000.0,
+        "saldo": 16296000,
+        "keterangan": ""
+      },
+      {
+        "row": 34,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Isi Galon",
+        "masuk": 0,
+        "keluar": 8000.0,
+        "saldo": 16288000,
+        "keterangan": ""
+      },
+      {
+        "row": 35,
+        "bulanLabel": "",
+        "tanggal": 23,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 13000.0,
+        "saldo": 16275000,
+        "keterangan": ""
+      },
+      {
+        "row": 36,
+        "bulanLabel": "",
+        "tanggal": 24,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 59000.0,
+        "saldo": 16216000,
+        "keterangan": ""
+      },
+      {
+        "row": 37,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Isi Galon",
+        "masuk": 0,
+        "keluar": 7000.0,
+        "saldo": 16209000,
+        "keterangan": ""
+      },
+      {
+        "row": 38,
+        "bulanLabel": "",
+        "tanggal": null,
+        "deskripsi": "Minyak Hemart",
+        "masuk": 0,
+        "keluar": 20000.0,
+        "saldo": 16189000,
+        "keterangan": ""
+      },
+      {
+        "row": 39,
+        "bulanLabel": "",
+        "tanggal": 25,
+        "deskripsi": "Lauk Sayur Cabe",
+        "masuk": 0,
+        "keluar": 44000.0,
+        "saldo": 16145000,
+        "keterangan": ""
+      }
+    ],
+    "NOVEMBER": [],
+    "DESEMBER": []
+  },
+  "lainLain": {
+    "vest": [
+      {
+        "row": 3,
+        "no": 1.0,
+        "nama": "Sarah",
+        "ukuran": "XL",
+        "harga": 127000.0,
+        "keterangan": ""
+      },
+      {
+        "row": 4,
+        "no": 2.0,
+        "nama": "Afria",
+        "ukuran": "M",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 5,
+        "no": 3.0,
+        "nama": "Aura",
+        "ukuran": "M",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 6,
+        "no": 4.0,
+        "nama": "Hervi",
+        "ukuran": "XL",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 7,
+        "no": 5.0,
+        "nama": "Yoga",
+        "ukuran": "L",
+        "harga": 127000.0,
+        "keterangan": ""
+      },
+      {
+        "row": 8,
+        "no": 6.0,
+        "nama": "Syifa",
+        "ukuran": "XL",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 9,
+        "no": 7.0,
+        "nama": "Ikhsania",
+        "ukuran": "S",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 10,
+        "no": 8.0,
+        "nama": "Lira",
+        "ukuran": "S",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 11,
+        "no": 9.0,
+        "nama": "Rizaldi",
+        "ukuran": "L",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 12,
+        "no": 10.0,
+        "nama": "Revaldo",
+        "ukuran": "L",
+        "harga": 127000.0,
+        "keterangan": "Lunas"
+      }
+    ],
+    "vestTotal": 1270000,
+    "fotoStudio": [
+      {
+        "row": 3,
+        "no": 1.0,
+        "nama": "Sarah",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 4,
+        "no": 2.0,
+        "nama": "Afria",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 5,
+        "no": 3.0,
+        "nama": "Aura",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 6,
+        "no": 4.0,
+        "nama": "Hervi",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 7,
+        "no": 5.0,
+        "nama": "Yoga",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 8,
+        "no": 6.0,
+        "nama": "Syifa",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 9,
+        "no": 7.0,
+        "nama": "Ikhsania",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 10,
+        "no": 8.0,
+        "nama": "Lira",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 11,
+        "no": 9.0,
+        "nama": "Rizaldi",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      },
+      {
+        "row": 12,
+        "no": 10.0,
+        "nama": "Revaldo",
+        "onomoto": 10000.0,
+        "kuyStudio": 7500.0,
+        "jumlah": 17500,
+        "keterangan": "Lunas"
+      }
+    ],
+    "fotoTotal": 175000
+  }
+}

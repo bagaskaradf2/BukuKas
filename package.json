@@ -1,0 +1,19 @@
+{
+  "name": "bukukas-kkn",
+  "version": "1.0.0",
+  "description": "Sistem Pembukuan dan Keuangan KKN berbasis React dan Google Sheets",
+  "type": "module",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "node backend/src/server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "node backend/src/server.js",
+    "vercel-build": "cd frontend && npm install && npm run build"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
