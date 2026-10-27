@@ -4,8 +4,27 @@ import initialData from '../data/initialData.json';
 
 const AppContext = createContext();
 
+function normalizeData(rawData) {
+  if (!rawData || !rawData.bbKas) return rawData;
+  const clean = JSON.parse(JSON.stringify(rawData));
+  for (const m of Object.keys(clean.bbKas)) {
+    const list = clean.bbKas[m] || [];
+    let lastTgl = 1;
+    for (let i = 0; i < list.length; i++) {
+      const t = list[i];
+      if (t.tanggal !== null && t.tanggal !== undefined && t.tanggal !== '' && t.tanggal !== '-' && !isNaN(t.tanggal)) {
+        lastTgl = Number(t.tanggal);
+        t.tanggal = lastTgl;
+      } else {
+        t.tanggal = lastTgl;
+      }
+    }
+  }
+  return clean;
+}
+
 export function AppProvider({ children }) {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState(() => normalizeData(initialData));
   const [role, setRole] = useState(() => localStorage.getItem('bukukas_user_role') || 'Bendahara');
   const [activeTab, setActiveTab] = useState('DASHBOARD');
   const [status, setStatus] = useState('Sinkron');
@@ -28,7 +47,7 @@ export function AppProvider({ children }) {
     try {
       const res = await fetchAllData();
       if (res && res.data) {
-        setData(res.data);
+        setData(normalizeData(res.data));
         setDataSource(res.source);
         setLastSync(new Date().toLocaleTimeString('id-ID'));
         setStatus('Sinkron');

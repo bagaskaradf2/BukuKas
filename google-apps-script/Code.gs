@@ -500,9 +500,10 @@ function readBbKas(sheet) {
     const m = monthsBb[i];
     const cIdx = m.cStart - 1;
     const txs = [];
+    let lastTanggal = null;
     for (let r = 6; r < 71; r++) {
       const blnLbl = values[r][cIdx];
-      const tgl = values[r][cIdx + 1];
+      const rawTgl = values[r][cIdx + 1];
       const dsk = values[r][cIdx + 2];
       const msk = values[r][cIdx + 3];
       const klr = values[r][cIdx + 4];
@@ -510,10 +511,18 @@ function readBbKas(sheet) {
       const ket = values[r][cIdx + 6];
 
       if (dsk || (msk !== '' && msk !== null && msk !== 0) || (klr !== '' && klr !== null && klr !== 0)) {
+        let tgl = null;
+        if (rawTgl !== '' && rawTgl !== null && !isNaN(rawTgl) && rawTgl !== '-') {
+          tgl = Number(rawTgl);
+          lastTanggal = tgl;
+        } else if (lastTanggal !== null) {
+          tgl = lastTanggal; // Wariskan tanggal dari baris sebelumnya jika kosong atau tanda strip (-)
+        }
+
         txs.push({
           row: r + 1,
           bulanLabel: String(blnLbl || '').trim(),
-          tanggal: tgl === '' ? null : Number(tgl),
+          tanggal: tgl,
           deskripsi: String(dsk || '').trim(),
           masuk: Number(msk) || 0,
           keluar: Number(klr) || 0,

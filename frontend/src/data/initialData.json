@@ -37,13 +37,13 @@
               {
                 "slot": 1,
                 "tanggal": "2026-09-11",
-                "nominal": 1300000.0,
+                "nominal": 1300000,
                 "metode": "Transfer Shopeepay"
               },
               {
                 "slot": 2,
                 "tanggal": "2026-10-15",
-                "nominal": 300000.0,
+                "nominal": 300000,
                 "metode": ""
               }
             ],
@@ -88,7 +88,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-10-06",
-                "nominal": 1600000.0,
+                "nominal": 1600000,
                 "metode": "Transfer Mandiri"
               }
             ],
@@ -109,7 +109,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-03-25",
-                "nominal": 400000.0,
+                "nominal": 400000,
                 "metode": "Transfer Bank"
               }
             ],
@@ -140,7 +140,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-10-06",
-                "nominal": 1200000.0,
+                "nominal": 1200000,
                 "metode": "Transfer BRI"
               }
             ],
@@ -161,7 +161,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-03-27",
-                "nominal": 100000.0,
+                "nominal": 100000,
                 "metode": "Transfer Shopeepay"
               }
             ],
@@ -176,7 +176,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-05-08",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Transfer Seabank"
               }
             ],
@@ -187,7 +187,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-06-10",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Transfer Seabank"
               }
             ],
@@ -202,7 +202,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-08-05",
-                "nominal": 1100000.0,
+                "nominal": 1100000,
                 "metode": "Transfer Seabank"
               }
             ],
@@ -235,7 +235,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-05-18",
-                "nominal": 150000.0,
+                "nominal": 150000,
                 "metode": "Transfer Dana"
               }
             ],
@@ -246,7 +246,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-06-24",
-                "nominal": 500000.0,
+                "nominal": 500000,
                 "metode": "Transfer Dana"
               }
             ],
@@ -257,7 +257,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-07-07",
-                "nominal": 950000.0,
+                "nominal": 950000,
                 "metode": "Transfer Seabank"
               }
             ],
@@ -310,7 +310,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-10-06",
-                "nominal": 1600000.0,
+                "nominal": 1600000,
                 "metode": "Transfer BTN"
               }
             ],
@@ -331,7 +331,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-03-27",
-                "nominal": 1200000.0,
+                "nominal": 1200000,
                 "metode": "Transfer Bank"
               }
             ],
@@ -362,7 +362,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-09-28",
-                "nominal": 800000.0,
+                "nominal": 800000,
                 "metode": "Transfer BTN"
               }
             ],
@@ -383,7 +383,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-03-27",
-                "nominal": 300000.0,
+                "nominal": 300000,
                 "metode": "Transfer Bank"
               }
             ],
@@ -398,7 +398,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-05-05",
-                "nominal": 300000.0,
+                "nominal": 300000,
                 "metode": "Transfer Shopeepay"
               }
             ],
@@ -413,7 +413,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-07-27",
-                "nominal": 300000.0,
+                "nominal": 300000,
                 "metode": "Transfer BTN"
               }
             ],
@@ -424,7 +424,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-08-30",
-                "nominal": 500000.0,
+                "nominal": 500000,
                 "metode": "Transfer BTN"
               }
             ],
@@ -435,7 +435,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-10-12",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Transfer Mandiri"
               }
             ],
@@ -464,7 +464,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-05-08",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Cash di Koat Kopi"
               }
             ],
@@ -475,7 +475,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-06-12",
-                "nominal": 100000.0,
+                "nominal": 100000,
                 "metode": "Cash di Bento Kopi"
               }
             ],
@@ -486,7 +486,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-07-14",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Cash di Kobessah"
               }
             ],
@@ -497,7 +497,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-08-23",
-                "nominal": 1100000.0,
+                "nominal": 1100000,
                 "metode": "Transfer Seabank"
               }
             ],
@@ -534,7 +534,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-06-12",
-                "nominal": 300000.0,
+                "nominal": 300000,
                 "metode": "Cash di Bento Kopi"
               }
             ],
@@ -545,25 +545,25 @@
               {
                 "slot": 1,
                 "tanggal": "2026-07-02",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Transfer Gopay"
               },
               {
                 "slot": 2,
                 "tanggal": "2026-07-22",
-                "nominal": -500000.0,
+                "nominal": -500000,
                 "metode": "Transfer Gopay"
               },
               {
                 "slot": 3,
                 "tanggal": "2026-07-28",
-                "nominal": 1000000.0,
+                "nominal": 1000000,
                 "metode": "Transfer Gopay"
               },
               {
                 "slot": 4,
                 "tanggal": "2026-07-28",
-                "nominal": 200000.0,
+                "nominal": 200000,
                 "metode": "Transfer Gopay"
               }
             ],
@@ -578,7 +578,7 @@
               {
                 "slot": 1,
                 "tanggal": "2026-10-07",
-                "nominal": 400000.0,
+                "nominal": 400000,
                 "metode": "Transfer Gopay"
               }
             ],
@@ -612,13 +612,13 @@
             {
               "slot": 1,
               "tanggal": "2026-06-10",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Seabank Hervi"
             },
             {
               "slot": 2,
               "tanggal": "2026-06-10",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Syifa"
             }
           ],
@@ -633,19 +633,19 @@
             {
               "slot": 1,
               "tanggal": "2026-08-16",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Nia"
             },
             {
               "slot": 2,
               "tanggal": "2026-08-19",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Sarah"
             },
             {
               "slot": 3,
               "tanggal": "2026-08-29",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Syifa"
             }
           ],
@@ -656,61 +656,61 @@
             {
               "slot": 1,
               "tanggal": "2026-09-11",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Hervi"
             },
             {
               "slot": 2,
               "tanggal": "2026-09-18",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Rizaldi"
             },
             {
               "slot": 3,
               "tanggal": "2026-09-18",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Hervi"
             },
             {
               "slot": 4,
               "tanggal": "2026-10-15",
-              "nominal": 100000.0,
+              "nominal": 100000,
               "keterangan": "Bank Jago Syifa"
             },
             {
               "slot": 5,
               "tanggal": "2026-10-15",
-              "nominal": 100000.0,
+              "nominal": 100000,
               "keterangan": "Bank Jago Sarah"
             },
             {
               "slot": 6,
               "tanggal": "2026-10-15",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Lira"
             },
             {
               "slot": 7,
               "tanggal": "2026-10-15",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Yoga"
             },
             {
               "slot": 8,
               "tanggal": "2026-10-15",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Aura"
             },
             {
               "slot": 9,
               "tanggal": "2026-10-15",
-              "nominal": 50000.0,
+              "nominal": 50000,
               "keterangan": "Bank Jago Afria"
             },
             {
               "slot": 10,
               "tanggal": "2026-10-15",
-              "nominal": 100000.0,
+              "nominal": 100000,
               "keterangan": "Bank Jago Revaldo"
             }
           ],
@@ -721,7 +721,7 @@
     },
     "totalDanaKelompok": 17300000,
     "totalBersih": 16900000,
-    "uangProker": 7000000.0
+    "uangProker": 7000000
   },
   "rabHarian": [
     {
@@ -730,110 +730,110 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Beras",
-          "volume": 50.0,
+          "volume": 50,
           "satuan": "Kg",
-          "harga": 15000.0,
+          "harga": 15000,
           "jumlah": 750000
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Lauk & Sayur & Cabe",
-          "volume": 70.0,
+          "volume": 70,
           "satuan": "Hari",
-          "harga": 70000.0,
+          "harga": 70000,
           "jumlah": 4900000
         },
         {
           "row": 8,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Air Galon",
-          "volume": 35.0,
+          "volume": 35,
           "satuan": "Kali",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 350000
         },
         {
           "row": 9,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Gas",
-          "volume": 8.0,
+          "volume": 8,
           "satuan": "Tabung",
-          "harga": 22000.0,
+          "harga": 22000,
           "jumlah": 176000
         },
         {
           "row": 10,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Garam",
-          "volume": 1.0,
+          "volume": 1,
           "satuan": "kali",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 10000
         },
         {
           "row": 11,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Gula Pasir",
-          "volume": 1.0,
+          "volume": 1,
           "satuan": "Kg",
-          "harga": 17000.0,
+          "harga": 17000,
           "jumlah": 17000
         },
         {
           "row": 12,
-          "no": 7.0,
+          "no": 7,
           "kebutuhan": "Bawang Merah",
-          "volume": 3.0,
+          "volume": 3,
           "satuan": "Kali",
-          "harga": 25000.0,
+          "harga": 25000,
           "jumlah": 75000
         },
         {
           "row": 13,
-          "no": 8.0,
+          "no": 8,
           "kebutuhan": "Bawang Putih",
-          "volume": 3.0,
+          "volume": 3,
           "satuan": "Kali",
-          "harga": 25000.0,
+          "harga": 25000,
           "jumlah": 75000
         },
         {
           "row": 14,
-          "no": 9.0,
+          "no": 9,
           "kebutuhan": "Minyak",
-          "volume": 8.0,
+          "volume": 8,
           "satuan": "Liter",
-          "harga": 20000.0,
+          "harga": 20000,
           "jumlah": 160000
         },
         {
           "row": 15,
-          "no": 10.0,
+          "no": 10,
           "kebutuhan": "Penyedap",
-          "volume": 5.0,
+          "volume": 5,
           "satuan": "Kali",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 50000
         },
         {
           "row": 16,
-          "no": 11.0,
+          "no": 11,
           "kebutuhan": "Gula Jawa",
-          "volume": 1.0,
+          "volume": 1,
           "satuan": "Kg",
-          "harga": 22000.0,
+          "harga": 22000,
           "jumlah": 22000
         },
         {
           "row": 17,
-          "no": 12.0,
+          "no": 12,
           "kebutuhan": "Kecap",
-          "volume": 5.0,
+          "volume": 5,
           "satuan": "Wadah",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 50000
         }
       ],
@@ -845,16 +845,16 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Sewa Posko",
-          "volume": 2.0,
+          "volume": 2,
           "satuan": "Bulan",
-          "harga": 750000.0,
+          "harga": 750000,
           "jumlah": 1500000
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Air",
           "volume": null,
           "satuan": "",
@@ -863,38 +863,38 @@
         },
         {
           "row": 8,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Listrik",
-          "volume": 2.0,
+          "volume": 2,
           "satuan": "Bulan",
-          "harga": 300000.0,
+          "harga": 300000,
           "jumlah": 600000
         },
         {
           "row": 9,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Kantong Sampah",
           "volume": null,
           "satuan": "",
           "harga": null,
-          "jumlah": 30000.0
+          "jumlah": 30000
         },
         {
           "row": 10,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Sabun Cuci Piring",
-          "volume": 5.0,
+          "volume": 5,
           "satuan": "Liter",
-          "harga": 30000.0,
+          "harga": 30000,
           "jumlah": 150000
         },
         {
           "row": 11,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Wipol",
-          "volume": 3.0,
+          "volume": 3,
           "satuan": "Liter",
-          "harga": 20000.0,
+          "harga": 20000,
           "jumlah": 60000
         }
       ],
@@ -906,7 +906,7 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Sewa Pick Up",
           "volume": null,
           "satuan": "",
@@ -915,7 +915,7 @@
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Bensin",
           "volume": null,
           "satuan": "",
@@ -931,20 +931,20 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Canva",
-          "volume": 2.0,
+          "volume": 2,
           "satuan": "Bulan",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 20000
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Capcut",
-          "volume": 2.0,
+          "volume": 2,
           "satuan": "Bulan",
-          "harga": 10000.0,
+          "harga": 10000,
           "jumlah": 20000
         }
       ],
@@ -956,16 +956,16 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Ngeprint",
           "volume": null,
           "satuan": "",
           "harga": null,
-          "jumlah": 200000.0
+          "jumlah": 200000
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Capcut",
           "volume": null,
           "satuan": "",
@@ -983,7 +983,7 @@
       "items": [
         {
           "row": 6,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Cetak Formulir Pendataan",
           "volume": null,
           "satuan": "",
@@ -992,7 +992,7 @@
         },
         {
           "row": 7,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Alat Tulis Kantor",
           "volume": null,
           "satuan": "",
@@ -1001,7 +1001,7 @@
         },
         {
           "row": 8,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Stiker Masyarakat",
           "volume": null,
           "satuan": "",
@@ -1035,7 +1035,7 @@
       "items": [
         {
           "row": 24,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Papan Akrilik",
           "volume": null,
           "satuan": "",
@@ -1044,7 +1044,7 @@
         },
         {
           "row": 25,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Cat Kayu",
           "volume": null,
           "satuan": "",
@@ -1053,7 +1053,7 @@
         },
         {
           "row": 26,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Tiang Penyangga Kayu",
           "volume": null,
           "satuan": "",
@@ -1062,7 +1062,7 @@
         },
         {
           "row": 27,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Semen",
           "volume": null,
           "satuan": "",
@@ -1071,7 +1071,7 @@
         },
         {
           "row": 28,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Pasir",
           "volume": null,
           "satuan": "",
@@ -1080,7 +1080,7 @@
         },
         {
           "row": 29,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Alat Pertukangan",
           "volume": null,
           "satuan": "",
@@ -1089,7 +1089,7 @@
         },
         {
           "row": 30,
-          "no": 7.0,
+          "no": 7,
           "kebutuhan": "Stiker Cetakan Watermark",
           "volume": null,
           "satuan": "",
@@ -1098,7 +1098,7 @@
         },
         {
           "row": 31,
-          "no": 8.0,
+          "no": 8,
           "kebutuhan": "Ember/Pot",
           "volume": null,
           "satuan": "",
@@ -1107,7 +1107,7 @@
         },
         {
           "row": 32,
-          "no": 9.0,
+          "no": 9,
           "kebutuhan": "Stiker Cetakan RT Dukuh",
           "volume": null,
           "satuan": "",
@@ -1133,7 +1133,7 @@
       "items": [
         {
           "row": 42,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Stiker Reflektor",
           "volume": null,
           "satuan": "",
@@ -1142,7 +1142,7 @@
         },
         {
           "row": 43,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Semen",
           "volume": null,
           "satuan": "",
@@ -1151,7 +1151,7 @@
         },
         {
           "row": 44,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Pasir",
           "volume": null,
           "satuan": "",
@@ -1160,7 +1160,7 @@
         },
         {
           "row": 45,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Pipa Penyangga/Besi",
           "volume": null,
           "satuan": "",
@@ -1169,7 +1169,7 @@
         },
         {
           "row": 46,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Alat Pertukangan",
           "volume": null,
           "satuan": "",
@@ -1178,7 +1178,7 @@
         },
         {
           "row": 47,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Paralon",
           "volume": null,
           "satuan": "",
@@ -1187,7 +1187,7 @@
         },
         {
           "row": 48,
-          "no": 7.0,
+          "no": 7,
           "kebutuhan": "Batu",
           "volume": null,
           "satuan": "",
@@ -1196,7 +1196,7 @@
         },
         {
           "row": 49,
-          "no": 8.0,
+          "no": 8,
           "kebutuhan": "Tutup Paralon",
           "volume": null,
           "satuan": "",
@@ -1205,7 +1205,7 @@
         },
         {
           "row": 50,
-          "no": 9.0,
+          "no": 9,
           "kebutuhan": "Pilok",
           "volume": null,
           "satuan": "",
@@ -1214,7 +1214,7 @@
         },
         {
           "row": 51,
-          "no": 10.0,
+          "no": 10,
           "kebutuhan": "Stiker Cetakan Watermark",
           "volume": null,
           "satuan": "",
@@ -1232,7 +1232,7 @@
       "items": [
         {
           "row": 60,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Banner",
           "volume": null,
           "satuan": "",
@@ -1241,7 +1241,7 @@
         },
         {
           "row": 61,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Sewa Standing Banner",
           "volume": null,
           "satuan": "",
@@ -1250,7 +1250,7 @@
         },
         {
           "row": 62,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Cat Warna Warni",
           "volume": null,
           "satuan": "",
@@ -1259,7 +1259,7 @@
         },
         {
           "row": 63,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Cetak Administrasi",
           "volume": null,
           "satuan": "",
@@ -1268,7 +1268,7 @@
         },
         {
           "row": 64,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Alat Tulis Kantor",
           "volume": null,
           "satuan": "",
@@ -1277,7 +1277,7 @@
         },
         {
           "row": 65,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Kupon",
           "volume": null,
           "satuan": "",
@@ -1286,7 +1286,7 @@
         },
         {
           "row": 66,
-          "no": 7.0,
+          "no": 7,
           "kebutuhan": "Doorprize",
           "volume": null,
           "satuan": "",
@@ -1295,7 +1295,7 @@
         },
         {
           "row": 67,
-          "no": 8.0,
+          "no": 8,
           "kebutuhan": "Konsumsi",
           "volume": null,
           "satuan": "",
@@ -1304,7 +1304,7 @@
         },
         {
           "row": 68,
-          "no": 9.0,
+          "no": 9,
           "kebutuhan": "Jamuan",
           "volume": null,
           "satuan": "",
@@ -1313,7 +1313,7 @@
         },
         {
           "row": 69,
-          "no": 10.0,
+          "no": 10,
           "kebutuhan": "Instruktur",
           "volume": null,
           "satuan": "",
@@ -1322,7 +1322,7 @@
         },
         {
           "row": 70,
-          "no": 11.0,
+          "no": 11,
           "kebutuhan": "Panggung",
           "volume": null,
           "satuan": "",
@@ -1331,7 +1331,7 @@
         },
         {
           "row": 71,
-          "no": 12.0,
+          "no": 12,
           "kebutuhan": "Sewa Sound",
           "volume": null,
           "satuan": "",
@@ -1349,7 +1349,7 @@
       "items": [
         {
           "row": 78,
-          "no": 1.0,
+          "no": 1,
           "kebutuhan": "Jasa Peta Digital",
           "volume": null,
           "satuan": "",
@@ -1358,7 +1358,7 @@
         },
         {
           "row": 79,
-          "no": 2.0,
+          "no": 2,
           "kebutuhan": "Banner",
           "volume": null,
           "satuan": "",
@@ -1367,7 +1367,7 @@
         },
         {
           "row": 80,
-          "no": 3.0,
+          "no": 3,
           "kebutuhan": "Tiang Kayu",
           "volume": null,
           "satuan": "",
@@ -1376,7 +1376,7 @@
         },
         {
           "row": 81,
-          "no": 4.0,
+          "no": 4,
           "kebutuhan": "Seng",
           "volume": null,
           "satuan": "",
@@ -1385,7 +1385,7 @@
         },
         {
           "row": 82,
-          "no": 5.0,
+          "no": 5,
           "kebutuhan": "Alat Tukang",
           "volume": null,
           "satuan": "",
@@ -1394,7 +1394,7 @@
         },
         {
           "row": 83,
-          "no": 6.0,
+          "no": 6,
           "kebutuhan": "Semen",
           "volume": null,
           "satuan": "",
@@ -1403,7 +1403,7 @@
         },
         {
           "row": 84,
-          "no": 7.0,
+          "no": 7,
           "kebutuhan": "Batu",
           "volume": null,
           "satuan": "",
@@ -1412,7 +1412,7 @@
         },
         {
           "row": 85,
-          "no": 8.0,
+          "no": 8,
           "kebutuhan": "Pasir",
           "volume": null,
           "satuan": "",
@@ -1421,7 +1421,7 @@
         },
         {
           "row": 86,
-          "no": 9.0,
+          "no": 9,
           "kebutuhan": "Cat Kayu",
           "volume": null,
           "satuan": "",
@@ -1449,7 +1449,7 @@
         "bulanLabel": "Okt",
         "tanggal": 15,
         "deskripsi": "Dana Kas Awal",
-        "masuk": 17300000.0,
+        "masuk": 17300000,
         "keluar": 0,
         "saldo": 17300000,
         "keterangan": ""
@@ -1457,7 +1457,7 @@
       {
         "row": 8,
         "bulanLabel": "2026.0",
-        "tanggal": null,
+        "tanggal": 15,
         "deskripsi": "Talangi Vest Sarah & Yoga",
         "masuk": 0,
         "keluar": 254000,
@@ -1467,17 +1467,17 @@
       {
         "row": 9,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 15,
         "deskripsi": "Bayar Premium Canva",
         "masuk": 0,
-        "keluar": 10000.0,
+        "keluar": 10000,
         "saldo": 17036000,
         "keterangan": ""
       },
       {
         "row": 10,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 15,
         "deskripsi": "Bayar ID Card & Lanyard",
         "masuk": 0,
         "keluar": 135000,
@@ -1487,10 +1487,10 @@
       {
         "row": 11,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 15,
         "deskripsi": "Bayar Gas",
         "masuk": 0,
-        "keluar": 20000.0,
+        "keluar": 20000,
         "saldo": 16881000,
         "keterangan": ""
       },
@@ -1499,7 +1499,7 @@
         "bulanLabel": "",
         "tanggal": 17,
         "deskripsi": "Pendapatan Gas",
-        "masuk": 25000.0,
+        "masuk": 25000,
         "keluar": 0,
         "saldo": 16906000,
         "keterangan": ""
@@ -1507,7 +1507,7 @@
       {
         "row": 13,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Lauk Sayur Cabe",
         "masuk": 0,
         "keluar": 58000,
@@ -1517,50 +1517,50 @@
       {
         "row": 14,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Minyak Risky",
         "masuk": 0,
-        "keluar": 18000.0,
+        "keluar": 18000,
         "saldo": 16830000,
         "keterangan": ""
       },
       {
         "row": 15,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Penyedap Rasa",
         "masuk": 0,
-        "keluar": 11000.0,
+        "keluar": 11000,
         "saldo": 16819000,
         "keterangan": ""
       },
       {
         "row": 16,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Gula Pasir",
         "masuk": 0,
-        "keluar": 10000.0,
+        "keluar": 10000,
         "saldo": 16809000,
         "keterangan": ""
       },
       {
         "row": 17,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Bawang Merah & Bawang Putih",
         "masuk": 0,
-        "keluar": 5000.0,
+        "keluar": 5000,
         "saldo": 16804000,
         "keterangan": ""
       },
       {
         "row": 18,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 17,
         "deskripsi": "Banner KKN",
         "masuk": 0,
-        "keluar": 45000.0,
+        "keluar": 45000,
         "saldo": 16759000,
         "keterangan": "Lain-Lain"
       },
@@ -1587,60 +1587,60 @@
       {
         "row": 21,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Bawang Merah & Bawang Putih",
         "masuk": 0,
-        "keluar": 20000.0,
+        "keluar": 20000,
         "saldo": 16645000,
         "keterangan": ""
       },
       {
         "row": 22,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Penyedap Rasa",
         "masuk": 0,
-        "keluar": 3000.0,
+        "keluar": 3000,
         "saldo": 16642000,
         "keterangan": ""
       },
       {
         "row": 23,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Dus Snack",
         "masuk": 0,
-        "keluar": 14000.0,
+        "keluar": 14000,
         "saldo": 16628000,
         "keterangan": ""
       },
       {
         "row": 24,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Isi Staples",
         "masuk": 0,
-        "keluar": 2000.0,
+        "keluar": 2000,
         "saldo": 16626000,
         "keterangan": ""
       },
       {
         "row": 25,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Isi Galon",
         "masuk": 0,
-        "keluar": 22000.0,
+        "keluar": 22000,
         "saldo": 16604000,
         "keterangan": ""
       },
       {
         "row": 26,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 19,
         "deskripsi": "Patungan Konsum",
         "masuk": 0,
-        "keluar": 87500.0,
+        "keluar": 87500,
         "saldo": 16516500,
         "keterangan": ""
       },
@@ -1657,10 +1657,10 @@
       {
         "row": 28,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 20,
         "deskripsi": "Penyedap Rasa",
         "masuk": 0,
-        "keluar": 11500.0,
+        "keluar": 11500,
         "saldo": 16457000,
         "keterangan": ""
       },
@@ -1670,27 +1670,27 @@
         "tanggal": 21,
         "deskripsi": "Lauk Sayur Cabe",
         "masuk": 0,
-        "keluar": 51000.0,
+        "keluar": 51000,
         "saldo": 16406000,
         "keterangan": ""
       },
       {
         "row": 30,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 21,
         "deskripsi": "Sabun Cuci Piring",
         "masuk": 0,
-        "keluar": 4000.0,
+        "keluar": 4000,
         "saldo": 16402000,
         "keterangan": ""
       },
       {
         "row": 31,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 21,
         "deskripsi": "Wipol",
         "masuk": 0,
-        "keluar": 5000.0,
+        "keluar": 5000,
         "saldo": 16397000,
         "keterangan": ""
       },
@@ -1707,20 +1707,20 @@
       {
         "row": 33,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 22,
         "deskripsi": "Bayar Gas",
         "masuk": 0,
-        "keluar": 22000.0,
+        "keluar": 22000,
         "saldo": 16296000,
         "keterangan": ""
       },
       {
         "row": 34,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 22,
         "deskripsi": "Isi Galon",
         "masuk": 0,
-        "keluar": 8000.0,
+        "keluar": 8000,
         "saldo": 16288000,
         "keterangan": ""
       },
@@ -1730,7 +1730,7 @@
         "tanggal": 23,
         "deskripsi": "Lauk Sayur Cabe",
         "masuk": 0,
-        "keluar": 13000.0,
+        "keluar": 13000,
         "saldo": 16275000,
         "keterangan": ""
       },
@@ -1740,27 +1740,27 @@
         "tanggal": 24,
         "deskripsi": "Lauk Sayur Cabe",
         "masuk": 0,
-        "keluar": 59000.0,
+        "keluar": 59000,
         "saldo": 16216000,
         "keterangan": ""
       },
       {
         "row": 37,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 24,
         "deskripsi": "Isi Galon",
         "masuk": 0,
-        "keluar": 7000.0,
+        "keluar": 7000,
         "saldo": 16209000,
         "keterangan": ""
       },
       {
         "row": 38,
         "bulanLabel": "",
-        "tanggal": null,
+        "tanggal": 24,
         "deskripsi": "Minyak Hemart",
         "masuk": 0,
-        "keluar": 20000.0,
+        "keluar": 20000,
         "saldo": 16189000,
         "keterangan": ""
       },
@@ -1770,7 +1770,7 @@
         "tanggal": 25,
         "deskripsi": "Lauk Sayur Cabe",
         "masuk": 0,
-        "keluar": 44000.0,
+        "keluar": 44000,
         "saldo": 16145000,
         "keterangan": ""
       }
@@ -1782,82 +1782,82 @@
     "vest": [
       {
         "row": 3,
-        "no": 1.0,
+        "no": 1,
         "nama": "Sarah",
         "ukuran": "XL",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": ""
       },
       {
         "row": 4,
-        "no": 2.0,
+        "no": 2,
         "nama": "Afria",
         "ukuran": "M",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 5,
-        "no": 3.0,
+        "no": 3,
         "nama": "Aura",
         "ukuran": "M",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 6,
-        "no": 4.0,
+        "no": 4,
         "nama": "Hervi",
         "ukuran": "XL",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 7,
-        "no": 5.0,
+        "no": 5,
         "nama": "Yoga",
         "ukuran": "L",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": ""
       },
       {
         "row": 8,
-        "no": 6.0,
+        "no": 6,
         "nama": "Syifa",
         "ukuran": "XL",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 9,
-        "no": 7.0,
+        "no": 7,
         "nama": "Ikhsania",
         "ukuran": "S",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 10,
-        "no": 8.0,
+        "no": 8,
         "nama": "Lira",
         "ukuran": "S",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 11,
-        "no": 9.0,
+        "no": 9,
         "nama": "Rizaldi",
         "ukuran": "L",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       },
       {
         "row": 12,
-        "no": 10.0,
+        "no": 10,
         "nama": "Revaldo",
         "ukuran": "L",
-        "harga": 127000.0,
+        "harga": 127000,
         "keterangan": "Lunas"
       }
     ],
@@ -1865,91 +1865,91 @@
     "fotoStudio": [
       {
         "row": 3,
-        "no": 1.0,
+        "no": 1,
         "nama": "Sarah",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 4,
-        "no": 2.0,
+        "no": 2,
         "nama": "Afria",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 5,
-        "no": 3.0,
+        "no": 3,
         "nama": "Aura",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 6,
-        "no": 4.0,
+        "no": 4,
         "nama": "Hervi",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 7,
-        "no": 5.0,
+        "no": 5,
         "nama": "Yoga",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 8,
-        "no": 6.0,
+        "no": 6,
         "nama": "Syifa",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 9,
-        "no": 7.0,
+        "no": 7,
         "nama": "Ikhsania",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 10,
-        "no": 8.0,
+        "no": 8,
         "nama": "Lira",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 11,
-        "no": 9.0,
+        "no": 9,
         "nama": "Rizaldi",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       },
       {
         "row": 12,
-        "no": 10.0,
+        "no": 10,
         "nama": "Revaldo",
-        "onomoto": 10000.0,
-        "kuyStudio": 7500.0,
+        "onomoto": 10000,
+        "kuyStudio": 7500,
         "jumlah": 17500,
         "keterangan": "Lunas"
       }
