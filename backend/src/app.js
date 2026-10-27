@@ -36,7 +36,7 @@ function loadLocalData() {
 }
 
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao';
-const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || '';
+const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwIOsOelyDxvWfsMruLyFHUSUZJEKj3Xux1yg3rveZ-0E9k0M1RT3XFi_pnccy7aJXx/exec';
 
 // Health check
 app.get('/api/health', (req, res) => {
