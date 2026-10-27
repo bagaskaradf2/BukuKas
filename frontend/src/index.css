@@ -2,9 +2,10 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: #F8F6F0;
-    color: #1A2E26;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F8F9FA;
+    color: #1E293B;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
@@ -13,21 +14,21 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Custom ledger table scrollbar */
+/* Minimal ledger scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F0EDE4;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C8C2B4;
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #A39C8D;
+  background: #94A3B8;
 }

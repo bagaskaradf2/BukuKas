@@ -1,19 +1,13 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import MetricCard from '../components/MetricCard';
-import { formatRupiah, formatDate } from '../utils/formatters';
+import { formatRupiah } from '../utils/formatters';
 import { 
   Wallet, 
   ArrowUpRight, 
   ArrowDownRight, 
-  Users, 
   PieChart, 
-  TrendingUp, 
-  AlertCircle, 
-  CheckCircle2, 
-  FileSpreadsheet,
-  Calendar,
-  Sparkles
+  ArrowRight
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -21,7 +15,6 @@ export default function Dashboard() {
 
   const kartuIuran = data?.kartuIuran || {};
   const members = kartuIuran.members || [];
-  const pendapatanLain = kartuIuran.pendapatanLain || {};
   const totalDanaKelompok = kartuIuran.totalDanaKelompok || 17300000;
   const uangProker = kartuIuran.uangProker || 7000000;
 
@@ -29,163 +22,147 @@ export default function Dashboard() {
   const bbKasOktober = data?.bbKas?.OKTOBER || [];
   const latestTx = bbKasOktober.length > 0 ? bbKasOktober[bbKasOktober.length - 1] : null;
   const saldoSaatIni = latestTx ? latestTx.saldo : 16145000;
-
-  // Total Keluar di Buku Kas
   const totalPengeluaranKas = bbKasOktober.reduce((acc, curr) => acc + (Number(curr.keluar) || 0), 0);
 
   // Total RAB Harian
   const rabHarian = data?.rabHarian || [];
   const totalRabHarian = rabHarian.reduce((acc, cat) => acc + (Number(cat.total) || 0), 0);
 
-  // Member completion count (target Rp 1.600.000)
   const TARGET_PER_MEMBER = 1600000;
   const completedMembers = members.filter(m => (Number(m.total) || 0) >= TARGET_PER_MEMBER).length;
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-5 pb-10">
       
-      {/* Welcome Banner */}
-      <div className="bg-[#123326] rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-sm border border-[#0D281E]">
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#1B4332] text-[#A7D7C5] text-xs font-semibold mb-3 border border-[#2D6A4F]">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>AGENDA IURAN & KEUANGAN KKN M UNY 2026/2027</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-            Laporan Real-Time Kas & Anggaran KKN
-          </h1>
-          <p className="text-xs sm:text-sm text-[#A7D7C5] leading-relaxed">
-            "Ya Allah lancarkan dan mudahkan rencana kami, usaha kami, rezeki kami supaya KKN-nya besok lancar, sugih, sehat, sukses, aamiin! 💗"
-          </p>
-        </div>
-        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-[#2D6A4F]/20 rounded-full blur-2xl pointer-events-none"></div>
-      </div>
-
-      {/* KPI Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <MetricCard
           title="Saldo Kas Saat Ini"
           amount={formatRupiah(saldoSaatIni)}
-          subtitle="Tercatat di Buku Kas Oktober"
+          subtitle="Buku Kas Terkini"
           icon={Wallet}
           variant="forest"
           badge="Live"
         />
         <MetricCard
-          title="Total Dana Kelompok"
+          title="Total Pemasukan"
           amount={formatRupiah(totalDanaKelompok)}
-          subtitle={`Iuran Anggota + Pendapatan Lain`}
+          subtitle="Iuran & Pendapatan Lain"
           icon={ArrowUpRight}
-          variant="default"
         />
         <MetricCard
-          title="Total Pengeluaran Kas"
+          title="Total Pengeluaran"
           amount={formatRupiah(totalPengeluaranKas)}
-          subtitle={`${bbKasOktober.length} transaksi di BB KAS`}
+          subtitle={`${bbKasOktober.length} transaksi kas tercatat`}
           icon={ArrowDownRight}
-          variant="default"
         />
         <MetricCard
-          title="Anggaran Terencana (RAB)"
+          title="Total Rencana Anggaran"
           amount={formatRupiah(totalRabHarian + uangProker)}
-          subtitle={`RAB Harian + Alokasi Proker`}
+          subtitle="RAB Harian + Alokasi Proker"
           icon={PieChart}
-          variant="default"
         />
       </div>
 
-      {/* 2 Column Layout: Status Iuran Anggota & Ringkasan Alokasi */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Grid: Iuran Progress & Budget Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         
-        {/* Progress Iuran Anggota (2 cols) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-[#E2DDCF] shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* Progress Iuran Anggota (2 Cols) */}
+        <div className="lg:col-span-2 bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-2xs">
+          <div className="flex items-center justify-between pb-3.5 border-b border-[#F1F5F9]">
             <div>
-              <h2 className="text-base font-bold text-[#123326]">Progress Iuran Anggota</h2>
-              <p className="text-xs text-[#6C757D]">Target baku per anggota: {formatRupiah(TARGET_PER_MEMBER)}</p>
+              <h2 className="text-sm font-semibold text-[#0F291E]">Ringkasan Iuran Anggota</h2>
+              <p className="text-xs text-[#64748B]">Target wajib: {formatRupiah(TARGET_PER_MEMBER)} / anggota</p>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E8F5E9] text-[#1B4332] border border-[#74C69D]">
-              {completedMembers} dari {members.length} Lunas
+            <span className="px-2.5 py-1 rounded text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+              {completedMembers} dari {members.length} Tercapai
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="mt-3.5 divide-y divide-[#F1F5F9]">
             {members.map((m, idx) => {
               const current = Number(m.total) || 0;
               const percentage = Math.min(100, Math.round((current / TARGET_PER_MEMBER) * 100));
               const isOver = current > TARGET_PER_MEMBER;
               return (
-                <div key={idx} className="p-3 rounded-xl bg-[#FAF8F3] border border-[#EAE5D9] hover:bg-[#F4F1EA] transition">
-                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold mb-1.5">
-                    <span className="text-[#123326] flex items-center">
-                      <span className="w-5 h-5 rounded-full bg-[#1B4332] text-white text-[11px] font-bold inline-flex items-center justify-center mr-2">
-                        {idx + 1}
-                      </span>
-                      {m.name}
+                <div key={idx} className="py-2.5 flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-2.5 w-1/3 min-w-[120px]">
+                    <span className="w-5 h-5 rounded bg-[#F1F5F9] text-[#64748B] text-[11px] font-medium flex items-center justify-center">
+                      {idx + 1}
                     </span>
-                    <div className="text-right">
-                      <span className="tabular-nums font-bold text-[#1B4332]">{formatRupiah(current)}</span>
-                      {isOver && (
-                        <span className="text-[10px] text-emerald-600 font-semibold ml-2">
-                          (+{formatRupiah(current - TARGET_PER_MEMBER)})
-                        </span>
-                      )}
+                    <span className="font-medium text-[#1E293B] truncate">{m.name}</span>
+                  </div>
+
+                  <div className="flex-1 px-4 hidden sm:block">
+                    <div className="w-full h-1.5 rounded-full bg-[#E2E8F0] overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${percentage >= 100 ? 'bg-[#0F291E]' : 'bg-amber-500'}`}
+                        style={{ width: `${percentage}%` }}
+                      ></div>
                     </div>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-[#E2DDCF] overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        percentage >= 100 ? 'bg-[#2D6A4F]' : 'bg-amber-500'
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    ></div>
+
+                  <div className="text-right">
+                    <span className="tabular-nums font-semibold text-[#0F291E]">
+                      {formatRupiah(current)}
+                    </span>
+                    {isOver && (
+                      <span className="text-[10px] text-emerald-600 font-medium ml-1.5">
+                        (+{formatRupiah(current - TARGET_PER_MEMBER)})
+                      </span>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-4 pt-4 border-t border-[#EAE5D9] flex items-center justify-between text-xs">
-            <span className="text-[#6C757D]">Pendapatan Lain-lain Terkumpul:</span>
-            <span className="font-bold tabular-nums text-[#123326]">{formatRupiah(pendapatanLain.total || 900000)}</span>
+          <div className="mt-3 pt-3 border-t border-[#F1F5F9] flex items-center justify-between text-xs text-[#64748B]">
+            <button
+              onClick={() => setActiveTab('KARTU IURAN')}
+              className="text-[#0F291E] font-medium hover:underline inline-flex items-center space-x-1"
+            >
+              <span>Buka Kartu Iuran Lengkap</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            <span className="tabular-nums font-medium text-[#0F291E]">
+              Total Masuk: {formatRupiah(totalDanaKelompok)}
+            </span>
           </div>
         </div>
 
-        {/* Ringkasan Rencana Anggaran (1 col) */}
-        <div className="space-y-6">
+        {/* Ringkasan Anggaran (1 Col) */}
+        <div className="space-y-5">
           
           {/* RAB Harian Box */}
-          <div className="bg-white rounded-2xl p-6 border border-[#E2DDCF] shadow-xs">
-            <h2 className="text-base font-bold text-[#123326] mb-4">RAB Kebutuhan Harian</h2>
-            <div className="space-y-2.5 text-xs">
+          <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-2xs">
+            <h2 className="text-sm font-semibold text-[#0F291E] mb-3">RAB Kebutuhan Harian</h2>
+            <div className="space-y-2 text-xs">
               {rabHarian.map((cat, idx) => (
-                <div key={idx} className="flex items-center justify-between py-2 border-b border-[#F0EDE4] last:border-0">
-                  <span className="text-[#4A5D53] font-medium">{cat.category.replace('RAB ', '')}</span>
-                  <span className="tabular-nums font-bold text-[#123326]">{formatRupiah(cat.total)}</span>
+                <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#F8F9FA] last:border-0">
+                  <span className="text-[#64748B]">{cat.category.replace('RAB ', '')}</span>
+                  <span className="tabular-nums font-medium text-[#1E293B]">{formatRupiah(cat.total)}</span>
                 </div>
               ))}
-              <div className="pt-2 flex items-center justify-between font-bold text-[#123326] text-sm">
-                <span>Total RAB Harian</span>
-                <span className="tabular-nums text-[#2D6A4F]">{formatRupiah(totalRabHarian)}</span>
+              <div className="pt-2 flex items-center justify-between font-semibold text-[#0F291E] text-xs border-t border-[#E2E8F0]">
+                <span>Total Harian</span>
+                <span className="tabular-nums">{formatRupiah(totalRabHarian)}</span>
               </div>
             </div>
           </div>
 
-          {/* Uang Proker Card */}
-          <div className="bg-[#FAF8F3] rounded-2xl p-6 border border-[#D5CFC1] shadow-xs">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase tracking-wider font-semibold text-[#52796F]">Alokasi Proker</span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1B4332] text-white">Master</span>
+          {/* Alokasi Proker Card */}
+          <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-2xs">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-semibold text-[#64748B] uppercase">Alokasi Program Kerja</span>
+              <span className="text-xs font-semibold tabular-nums text-[#0F291E]">{formatRupiah(uangProker)}</span>
             </div>
-            <div className="text-2xl font-bold tabular-nums text-[#123326]">
-              {formatRupiah(uangProker)}
-            </div>
-            <p className="text-xs text-[#6C757D] mt-1">
-              Khusus dialokasikan untuk 9 blok Program Kerja KKN di Padukuhan Pengkol.
+            <p className="text-xs text-[#64748B] mt-1.5">
+              Dialokasikan untuk 9 blok program kerja terencana.
             </p>
             <button
               onClick={() => setActiveTab('RAB PROKER')}
-              className="mt-4 w-full py-2 px-3 rounded-lg bg-[#123326] hover:bg-[#1B4332] text-white text-xs font-semibold transition"
+              className="mt-3.5 w-full py-2 px-3 rounded-md bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#0F291E] text-xs font-medium transition text-center"
             >
               Lihat Detail RAB Proker &rarr;
             </button>
@@ -195,50 +172,51 @@ export default function Dashboard() {
 
       </div>
 
-      {/* Transaksi Terakhir di Buku Kas */}
-      <div className="bg-white rounded-2xl p-6 border border-[#E2DDCF] shadow-xs">
-        <div className="flex items-center justify-between mb-4">
+      {/* Aktivitas Terakhir di Buku Kas */}
+      <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-2xs">
+        <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#F1F5F9]">
           <div>
-            <h2 className="text-base font-bold text-[#123326]">Aktivitas Terakhir di Buku Kas (Oktober)</h2>
-            <p className="text-xs text-[#6C757D]">Menampilkan 6 transaksi terkini dari tab BB KAS</p>
+            <h2 className="text-sm font-semibold text-[#0F291E]">Transaksi Terkini di Buku Kas</h2>
+            <p className="text-xs text-[#64748B]">Menampilkan mutasi kas terbaru (Oktober)</p>
           </div>
           <button
             onClick={() => setActiveTab('BB KAS')}
-            className="text-xs font-semibold text-[#2D6A4F] hover:text-[#1B4332] underline"
+            className="text-xs font-medium text-[#0F291E] hover:underline inline-flex items-center space-x-1"
           >
-            Buka Seluruh Buku Kas &rarr;
+            <span>Buku Kas Lengkap</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#E2DDCF] bg-[#FAF8F3] text-[#4A5D53]">
-                <th className="py-2.5 px-3 font-semibold">Tgl</th>
-                <th className="py-2.5 px-3 font-semibold">Deskripsi</th>
-                <th className="py-2.5 px-3 font-semibold text-right">Masuk</th>
-                <th className="py-2.5 px-3 font-semibold text-right">Keluar</th>
-                <th className="py-2.5 px-3 font-semibold text-right">Saldo Berjalan</th>
-                <th className="py-2.5 px-3 font-semibold">Keterangan</th>
+              <tr className="border-b border-[#E2E8F0] text-[#64748B] text-[11px]">
+                <th className="py-2 px-3 font-semibold w-16">Tanggal</th>
+                <th className="py-2 px-3 font-semibold">Deskripsi</th>
+                <th className="py-2 px-3 font-semibold text-right w-28">Masuk</th>
+                <th className="py-2 px-3 font-semibold text-right w-28">Keluar</th>
+                <th className="py-2 px-3 font-semibold text-right w-32">Saldo</th>
+                <th className="py-2 px-3 font-semibold w-24">Kategori</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F0EDE4]">
+            <tbody className="divide-y divide-[#F1F5F9]">
               {bbKasOktober.slice(-6).reverse().map((tx, idx) => (
-                <tr key={idx} className="hover:bg-[#FAF8F3] transition">
-                  <td className="py-2.5 px-3 font-medium text-[#123326]">
+                <tr key={idx} className="hover:bg-[#F8F9FA] transition-colors">
+                  <td className="py-2 px-3 text-[#64748B]">
                     {tx.tanggal ? `Okt ${tx.tanggal}` : '-'}
                   </td>
-                  <td className="py-2.5 px-3 font-medium text-[#123326]">{tx.deskripsi}</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums text-emerald-700 font-semibold">
+                  <td className="py-2 px-3 font-medium text-[#1E293B]">{tx.deskripsi}</td>
+                  <td className="py-2 px-3 text-right tabular-nums text-emerald-700 font-medium">
                     {tx.masuk > 0 ? formatRupiah(tx.masuk) : '-'}
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums text-rose-700 font-semibold">
+                  <td className="py-2 px-3 text-right tabular-nums text-rose-700 font-medium">
                     {tx.keluar > 0 ? formatRupiah(tx.keluar) : '-'}
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums font-bold text-[#123326]">
+                  <td className="py-2 px-3 text-right tabular-nums font-semibold text-[#0F291E]">
                     {formatRupiah(tx.saldo)}
                   </td>
-                  <td className="py-2.5 px-3 text-[#6C757D]">{tx.keterangan || '-'}</td>
+                  <td className="py-2 px-3 text-[#64748B] text-[11px]">{tx.keterangan || '-'}</td>
                 </tr>
               ))}
             </tbody>

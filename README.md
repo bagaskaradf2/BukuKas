@@ -1,107 +1,60 @@
-# BukuKas KKN — Sistem Keuangan KKN React & Google Sheets
+# BukuKas — Sistem Pembukuan & Keuangan (React + Google Sheets)
 
-> **Nama Proyek:** BukuKas KKN  
-> **Unit KKN:** KKN M UNY 2026/2027 — Padukuhan Pengkol, Sriharjo  
-> **Spreadsheet Sumber (Single Source of Truth):** [Google Sheets Keuangan KKN](https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit?usp=sharing)  
-> **Spreadsheet ID:** `1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao`  
-> **Frontend:** React JS + Tailwind CSS (Vite)  
-> **Backend/Integrasi:** Google Apps Script Web App + Node.js / Vercel Serverless  
+Sistem pembukuan web responsif berbasis **React + Tailwind CSS** dengan **Google Sheets** sebagai *single source of truth*.
 
----
-
-## 📌 Ringkasan Proyek
-
-BukuKas KKN adalah aplikasi web responsif modern bertema **ledger / buku kas klasik hijau hutan dan kertas gading** untuk mencatat, mengelola, dan memantau seluruh arus kas, iuran anggota, dan rencana anggaran belanja (RAB) KKN secara real-time.
-
-Semua data tersinkronisasi langsung dengan Google Sheets tanpa merusak formula, struktur baris/kolom, atau merged cells yang sudah ada.
-
-### Fitur Utama
-
-1. **Dashboard Eksekutif**:
-   - Saldo Kas Aktif Real-time (dari Buku Kas)
-   - Total Dana Kelompok (Iuran 10 Anggota + Pendapatan Lain)
-   - Total Realisasi Pengeluaran Kas
-   - Monitoring Progres Iuran per Anggota (Target Rp 1.600.000 / orang)
-   - 6 Transaksi Terkini Buku Kas
-2. **KARTU IURAN**:
-   - Form catat setoran iuran anggota (Sarah, Afria, Aura, Hervi, Yoga, Syifa, Nia, Lira, Rizaldi, Revaldo)
-   - Pencatatan Pendapatan Lain-lain (Bank Jago, Seabank)
-   - Mode Tampilan Kartu & Mode Tampilan Grid Asli (Replika Sheet)
-   - Proteksi slot (maks 5 slot per bulan per anggota) dan formula read-only.
-3. **RAB HARIAN**:
-   - 5 Bagian Kebutuhan: Konsumsi, Posko/Kebersihan, Transportasi, Langganan, Sekre
-   - Rumus otomatis: `Jumlah = Volume × Harga Satuan`
-   - Edit inline bagi Bendahara tanpa merusak formula subtotal/total.
-4. **RAB PROKER**:
-   - 9 Blok Program Kerja (Proker Utama, Proker Penunjang, Proker Tambahan, Insidental)
-   - Subtotal dan total anggaran proker.
-5. **BB KAS (Buku Besar Kas)**:
-   - Pencatatan transaksi harian Masuk (Debit) dan Keluar (Kredit)
-   - Perhitungan Saldo Berjalan otomatis (`Saldo = Saldo Sblm + Masuk - Keluar`)
-   - Filter per bulan (Oktober, November, Desember) dan tipe transaksi.
-6. **LAIN LAIN**:
-   - Status Seragam Vest 10 anggota
-   - Biaya Foto Studio (Onomoto & Kuy Studio)
-7. **Unduh Excel (.xlsx)**:
-   - 1-Klik unduh snapshot `.xlsx` langsung dari Google Sheets.
-8. **Role & Hak Akses**:
-   - **Bendahara**: Menambah & mengubah data.
-   - **Pembaca**: Mode pemantauan read-only.
-9. **Log Audit**:
-   - Mencatat setiap waktu penambahan/perubahan transaksi.
+- **Spreadsheet Target:** [Google Sheets Keuangan](https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit?usp=sharing)
+- **Spreadsheet ID:** `1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao`
+- **Font Utama:** Poppins & JetBrains Mono (tabular numerals)
 
 ---
 
-## 🚀 Cara Menghubungkan Google Sheets via Apps Script (Paling Mudah & Efektif)
+## Modul & Struktur Tab
 
-Menggunakan Google Apps Script adalah metode paling efektif karena berjalan langsung di Google Sheets tanpa perlu kartu kredit / Google Cloud Service Account yang rumit:
-
-1. Buka spreadsheet [Keuangan KKN](https://docs.google.com/spreadsheets/d/1LTrn9T9qN0WdpalnD_IvWrc2cGjNEuKP/edit).
-2. Klik menu **Extensions (Ekstensi)** > **Apps Script**.
-3. Buka file `google-apps-script/Code.gs` di repository ini, salin seluruh kodenya, dan paste ke editor Apps Script.
-4. Klik icon **Save (Simpan)**.
-5. Klik tombol biru **Deploy** di pojok kanan atas > **New deployment**.
-6. Pilih jenis **Web app**.
-   - **Description:** `BukuKas KKN API`
-   - **Execute as:** `Me` (email Anda)
-   - **Who has access:** `Anyone` (Siapa saja)
-7. Klik **Deploy**, salin **Web app URL** yang berakhiran `/exec`.
-8. Buka menu **Pengaturan & Script** di web BukuKas KKN, tempel URL tersebut, dan klik **Simpan URL**.
-9. Selesai! Web Anda kini terhubung dua arah secara live ke Google Sheets.
+1. **Dashboard:** Ringkasan KPI saldo berjalan, total pemasukan, total pengeluaran, progress iuran anggota, dan transaksi kas terkini.
+2. **Kartu Iuran:** Tabel matriks setoran bulanan tiap anggota, pendapatan lain-lain, dan drawer detail transaksi.
+3. **RAB Harian:** Tabel anggaran kebutuhan operasional (Konsumsi, Posko, Transportasi, Langganan, Sekre) dengan rumus otomatis `Volume × Harga Satuan`.
+4. **RAB Proker:** 9 blok program kerja terencana dan insidental.
+5. **Buku Kas:** Arus kas harian debit & kredit dengan kalkulasi saldo berjalan otomatis (`Saldo Sebelumnya + Masuk - Keluar`).
+6. **Lain-Lain:** Pengelolaan seragam vest & foto studio.
+7. **Unduh Excel (.xlsx):** Tombol ekspor langsung dari Google Sheets live.
+8. **Log Audit:** Riwayat pencatatan setiap aksi mutasi.
 
 ---
 
-## 🌐 Cara Deploy ke Vercel
+## Konfigurasi Lingkungan (.env)
 
-Aplikasi ini sudah 100% siap dideploy ke Vercel:
-
-1. Push folder proyek ini ke repository GitHub atau GitLab Anda:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: inisialisasi BukuKas KKN React Google Sheets"
-   git branch -M main
-   git remote add origin <URL_REPO_ANDA>
-   git push -u origin main
-   ```
-2. Buka dashboard [Vercel](https://vercel.com) > **Add New Project**.
-3. Pilih repository GitHub Anda.
-4. (Opsional) Pada bagian **Environment Variables**, tambahkan:
-   - `VITE_APPS_SCRIPT_URL`: URL Web App Apps Script Anda.
-5. Klik **Deploy**.
-6. Vercel akan otomatis menjalankan build sesuai `vercel.json` dan aplikasi siap diakses dari HP maupun laptop!
-
----
-
-## 💻 Menjalankan di Komputer Lokal
+Pengaturan Apps Script dikonfigurasi langsung via environment variables:
 
 ```bash
-# 1. Jalankan frontend development server
-npm run dev:frontend
-
-# Atau masuk ke direktori frontend:
-cd frontend
-npm run dev
+# File .env atau Environment Variables di Vercel:
+VITE_APPS_SCRIPT_URL=https://script.google.com/macros/s/AKfycb.../exec
+APPS_SCRIPT_URL=https://script.google.com/macros/s/AKfycb.../exec
+GOOGLE_SPREADSHEET_ID=1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao
 ```
 
-Aplikasi akan berjalan di `http://localhost:5173`.
+---
+
+## Pemasangan Google Apps Script
+
+1. Buka [Google Sheets](https://docs.google.com/spreadsheets/d/1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao/edit?usp=sharing).
+2. Menu **Ekstensi** > **Apps Script**.
+3. Salin isi [`google-apps-script/Code.gs`](google-apps-script/Code.gs) ke editor Apps Script.
+4. Simpan (`Ctrl + S`), klik **Deploy** > **New deployment**.
+5. Pilih **Web app**:
+   - *Execute as:* `Me`
+   - *Who has access:* `Anyone`
+6. Salin URL Web App (`.../exec`) dan masukkan ke variabel `VITE_APPS_SCRIPT_URL` di `.env` atau Vercel Settings.
+
+---
+
+## Deployment ke Vercel
+
+1. Push repository ke GitHub / GitLab:
+   ```bash
+   git add .
+   git commit -m "feat: perbarui UI/UX anti ai-slop dan konfigurasi env"
+   git push origin main
+   ```
+2. Di Vercel Dashboard, klik **Add New Project** > pilih repository ini.
+3. Tambahkan environment variable `VITE_APPS_SCRIPT_URL` (URL Web App Apps Script).
+4. Klik **Deploy**. Selesai.

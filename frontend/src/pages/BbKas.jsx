@@ -1,26 +1,15 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { formatRupiah, formatNumber } from '../utils/formatters';
+import { formatRupiah } from '../utils/formatters';
 import { saveKasTransaction } from '../services/api';
-import { 
-  BookOpen, 
-  Plus, 
-  Search, 
-  Filter, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  Wallet, 
-  Lock, 
-  CheckCircle2,
-  Calendar
-} from 'lucide-react';
+import { Plus, Search, Filter, X } from 'lucide-react';
 
 export default function BbKas() {
   const { data, setData, role, showToast, refreshLogs } = useApp();
   const bbKas = data?.bbKas || {};
 
   const [activeMonth, setActiveMonth] = useState('OKTOBER');
-  const [filterType, setFilterType] = useState('ALL'); // 'ALL', 'MASUK', 'KELUAR'
+  const [filterType, setFilterType] = useState('ALL');
   const [search, setSearch] = useState('');
 
   // Modal State
@@ -46,7 +35,6 @@ export default function BbKas() {
     return true;
   });
 
-  // Calculations for current month
   const totalMasuk = currentMonthTxs.reduce((s, t) => s + (Number(t.masuk) || 0), 0);
   const totalKeluar = currentMonthTxs.reduce((s, t) => s + (Number(t.keluar) || 0), 0);
   const latestSaldo = currentMonthTxs.length > 0 ? currentMonthTxs[currentMonthTxs.length - 1].saldo : 0;
@@ -66,18 +54,18 @@ export default function BbKas() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.nominal || Number(formData.nominal) <= 0) {
-      showToast('Nominal transaksi harus berupa angka positif!', 'error');
+      showToast('Nominal harus berupa angka positif.', 'error');
       return;
     }
     if (!formData.deskripsi.trim()) {
-      showToast('Deskripsi transaksi wajib diisi!', 'error');
+      showToast('Deskripsi transaksi wajib diisi.', 'error');
       return;
     }
 
     setSubmitting(true);
     try {
       const numNominal = Number(formData.nominal);
-      const res = await saveKasTransaction({
+      await saveKasTransaction({
         bulan: formData.bulan,
         tanggal: Number(formData.tanggal),
         deskripsi: formData.deskripsi.trim(),
@@ -86,208 +74,157 @@ export default function BbKas() {
         keterangan: formData.keterangan.trim()
       }, role);
 
-      if (res.error) {
-        showToast(res.error, 'error');
-      } else {
-        showToast(`Transaksi '${formData.deskripsi}' Rp ${numNominal.toLocaleString('id-ID')} berhasil dicatat!`, 'success');
-        
-        // Update local state directly
-        setData(prev => {
-          const next = JSON.parse(JSON.stringify(prev));
-          const list = next.bbKas[formData.bulan] || [];
-          const lastBalance = list.length > 0 ? list[list.length - 1].saldo : 17300000;
-          const nextBalance = formData.tipe === 'Masuk' ? lastBalance + numNominal : lastBalance - numNominal;
+      setData(prev => {
+        const next = JSON.parse(JSON.stringify(prev));
+        const list = next.bbKas[formData.bulan] || [];
+        const lastBalance = list.length > 0 ? list[list.length - 1].saldo : 17300000;
+        const nextBalance = formData.tipe === 'Masuk' ? lastBalance + numNominal : lastBalance - numNominal;
 
-          list.push({
-            row: list.length + 8,
-            bulanLabel: '',
-            tanggal: Number(formData.tanggal),
-            deskripsi: formData.deskripsi.trim(),
-            masuk: formData.tipe === 'Masuk' ? numNominal : 0,
-            keluar: formData.tipe === 'Keluar' ? numNominal : 0,
-            saldo: nextBalance,
-            keterangan: formData.keterangan.trim()
-          });
-          next.bbKas[formData.bulan] = list;
-          return next;
+        list.push({
+          row: list.length + 8,
+          bulanLabel: '',
+          tanggal: Number(formData.tanggal),
+          deskripsi: formData.deskripsi.trim(),
+          masuk: formData.tipe === 'Masuk' ? numNominal : 0,
+          keluar: formData.tipe === 'Keluar' ? numNominal : 0,
+          saldo: nextBalance,
+          keterangan: formData.keterangan.trim()
         });
+        next.bbKas[formData.bulan] = list;
+        return next;
+      });
 
-        setIsModalOpen(false);
-        refreshLogs();
-      }
+      showToast(`Transaksi kas berhasil dicatat.`, 'success');
+      setIsModalOpen(false);
+      refreshLogs();
     } catch (err) {
-      showToast('Gagal mencatat kas: ' + err.message, 'error');
+      showToast('Gagal mencatat transaksi: ' + err.message, 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-4 pb-10">
       
-      {/* Title & Actions Bar */}
-      <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E2DDCF] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#123326] tracking-tight">BUKU BESAR KAS KKN (BB KAS)</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E8F5E9] text-[#1B4332] border border-[#74C69D]">
-              Tab Sheet: BB KAS
-            </span>
-          </div>
-          <p className="text-xs text-[#6C757D] mt-1">
-            Arus Kas Masuk & Keluar Harian beserta Saldo Berjalan (Oktober, November, Desember 2026)
-          </p>
+      {/* Month Selector & Controls */}
+      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center space-x-2">
+          {['OKTOBER', 'NOVEMBER', 'DESEMBER'].map(m => (
+            <button
+              key={m}
+              onClick={() => setActiveMonth(m)}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                activeMonth === m
+                  ? 'bg-[#0F291E] text-white'
+                  : 'bg-[#F8F9FA] text-[#64748B] hover:bg-[#E2E8F0]'
+              }`}
+            >
+              {m}
+            </button>
+          ))}
         </div>
 
         {role === 'Bendahara' && (
           <button
             onClick={handleOpenAdd}
-            className="flex items-center space-x-1.5 px-4 py-2.5 rounded-lg bg-[#123326] hover:bg-[#1B4332] text-white text-xs font-semibold transition shadow-xs"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-[#0F291E] hover:bg-[#1B4D3E] text-white text-xs font-medium transition"
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Catat Transaksi Kas Baru</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Catat Transaksi Kas</span>
           </button>
         )}
       </div>
 
-      {/* Month Tabs */}
-      <div className="flex space-x-2 overflow-x-auto pb-1 no-scrollbar">
-        {['OKTOBER', 'NOVEMBER', 'DESEMBER'].map(m => (
-          <button
-            key={m}
-            onClick={() => setActiveMonth(m)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-2 ${
-              activeMonth === m
-                ? 'bg-[#123326] text-white shadow-xs'
-                : 'bg-white text-[#4A5D53] border border-[#E2DDCF] hover:bg-[#F4F1EA]'
-            }`}
-          >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Bulan {m}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/20 text-[#A7D7C5]">
-              {(bbKas[m] || []).length} Tx
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Monthly Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-[#E2DDCF] shadow-xs">
-          <span className="text-xs text-[#6C757D] block mb-1">Total Pemasukan ({activeMonth})</span>
-          <div className="text-lg font-bold tabular-nums text-emerald-700 flex items-center">
-            <ArrowUpRight className="w-4 h-4 mr-1 text-emerald-600" />
+      {/* Quick Numbers Bar */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-2xs">
+          <span className="text-[11px] text-[#64748B] block">Total Masuk ({activeMonth})</span>
+          <span className="text-base font-bold tabular-nums text-emerald-700">
             {formatRupiah(totalMasuk)}
-          </div>
+          </span>
         </div>
-
-        <div className="bg-white p-4 rounded-xl border border-[#E2DDCF] shadow-xs">
-          <span className="text-xs text-[#6C757D] block mb-1">Total Pengeluaran ({activeMonth})</span>
-          <div className="text-lg font-bold tabular-nums text-rose-700 flex items-center">
-            <ArrowDownRight className="w-4 h-4 mr-1 text-rose-600" />
+        <div className="bg-white p-3.5 rounded-xl border border-[#E2E8F0] shadow-2xs">
+          <span className="text-[11px] text-[#64748B] block">Total Keluar ({activeMonth})</span>
+          <span className="text-base font-bold tabular-nums text-rose-700">
             {formatRupiah(totalKeluar)}
-          </div>
+          </span>
         </div>
-
-        <div className="bg-[#123326] text-white p-4 rounded-xl border border-[#0D281E] shadow-xs">
-          <span className="text-xs text-[#95D5B2] block mb-1">Saldo Akhir Berjalan ({activeMonth})</span>
-          <div className="text-xl font-bold tabular-nums text-white flex items-center">
-            <Wallet className="w-4 h-4 mr-1 text-[#74C69D]" />
+        <div className="bg-[#0F291E] text-white p-3.5 rounded-xl border border-[#1A382B] shadow-2xs">
+          <span className="text-[11px] text-[#95D5B2] block">Saldo Akhir Berjalan ({activeMonth})</span>
+          <span className="text-base font-bold tabular-nums text-white">
             {formatRupiah(latestSaldo)}
-          </div>
+          </span>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row items-center gap-3">
-        <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-[#8D99AE] absolute left-3.5 top-1/2 -translate-y-1/2" />
+      {/* Search & Filter */}
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Cari deskripsi transaksi kas (Lauk, Gas, Banner, dll)..."
+            placeholder="Cari transaksi..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-[#E2DDCF] text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#1B4332]"
+            className="w-full pl-8 pr-3 py-1.5 bg-white rounded-md border border-[#E2E8F0] text-xs focus:outline-none focus:ring-1 focus:ring-[#0F291E]"
           />
         </div>
 
-        <div className="flex items-center space-x-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-[#6C757D]" />
+        <div className="flex items-center space-x-1">
+          <Filter className="w-3.5 h-3.5 text-[#64748B]" />
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 bg-white rounded-xl border border-[#E2DDCF] text-xs sm:text-sm font-medium text-[#123326] focus:outline-none focus:ring-2 focus:ring-[#1B4332]"
+            className="px-2.5 py-1.5 bg-white rounded-md border border-[#E2E8F0] text-xs text-[#1E293B] focus:outline-none"
           >
-            <option value="ALL">Semua Tipe Transaksi</option>
-            <option value="MASUK">Pemasukan (Debit)</option>
-            <option value="KELUAR">Pengeluaran (Kredit)</option>
+            <option value="ALL">Semua Tipe</option>
+            <option value="MASUK">Pemasukan</option>
+            <option value="KELUAR">Pengeluaran</option>
           </select>
         </div>
       </div>
 
       {/* Ledger Table */}
-      <div className="bg-white rounded-2xl border border-[#E2DDCF] shadow-xs overflow-hidden">
-        <div className="p-4 bg-[#FAF8F3] border-b border-[#E2DDCF] flex items-center justify-between text-xs">
-          <span className="font-bold text-[#123326] flex items-center">
-            <BookOpen className="w-4 h-4 mr-1.5 text-[#2D6A4F]" />
-            Buku Kas {activeMonth} (Maks 71 baris template)
-          </span>
-          <span className="text-[11px] text-[#6C757D] flex items-center">
-            <Lock className="w-3 h-3 mr-1 text-[#2D6A4F]" />
-            Formula Saldo: <code className="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded font-mono ml-1">=SaldoSblm + Masuk - Keluar</code>
-          </span>
-        </div>
-
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
+        <div className="overflow-x-auto max-h-[550px] overflow-y-auto">
           <table className="w-full text-left text-xs border-collapse">
-            <thead className="sticky top-0 bg-[#123326] text-white z-10 text-[11px]">
+            <thead className="sticky top-0 bg-[#0F291E] text-white z-10 text-[11px]">
               <tr>
-                <th className="py-2.5 px-3 font-semibold text-center w-12 border-r border-[#1B4332]">No</th>
-                <th className="py-2.5 px-3 font-semibold w-20 border-r border-[#1B4332]">Tanggal</th>
-                <th className="py-2.5 px-4 font-semibold border-r border-[#1B4332]">Deskripsi Transaksi</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-32 border-r border-[#1B4332]">Uang Masuk</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-32 border-r border-[#1B4332]">Uang Keluar</th>
-                <th className="py-2.5 px-3 font-semibold text-right w-36 border-r border-[#1B4332] bg-[#0D281E]">
-                  Saldo Berjalan
-                </th>
-                <th className="py-2.5 px-3 font-semibold w-32">Keterangan</th>
+                <th className="py-2.5 px-3 font-semibold text-center w-10">No</th>
+                <th className="py-2.5 px-3 font-semibold w-20">Tanggal</th>
+                <th className="py-2.5 px-3 font-semibold">Deskripsi</th>
+                <th className="py-2.5 px-3 font-semibold text-right w-28">Uang Masuk</th>
+                <th className="py-2.5 px-3 font-semibold text-right w-28">Uang Keluar</th>
+                <th className="py-2.5 px-3 font-semibold text-right w-32 bg-[#091D15]">Saldo Berjalan</th>
+                <th className="py-2.5 px-3 font-semibold w-28">Keterangan</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F0EDE4]">
+            <tbody className="divide-y divide-[#F1F5F9]">
               {filteredTxs.length > 0 ? (
                 filteredTxs.map((tx, idx) => (
-                  <tr key={idx} className="hover:bg-[#FAF8F3] transition">
-                    <td className="py-2 px-3 text-center text-[#8D99AE] font-mono border-r border-[#F0EDE4]">
-                      {idx + 1}
-                    </td>
-                    <td className="py-2 px-3 font-medium text-[#123326] border-r border-[#F0EDE4]">
+                  <tr key={idx} className="hover:bg-[#F8F9FA] transition-colors">
+                    <td className="py-2 px-3 text-center text-[#94A3B8] font-mono">{idx + 1}</td>
+                    <td className="py-2 px-3 text-[#64748B]">
                       {tx.tanggal ? `${activeMonth.slice(0, 3)} ${tx.tanggal}` : '-'}
                     </td>
-                    <td className="py-2 px-4 font-medium text-[#123326] border-r border-[#F0EDE4]">
-                      {tx.deskripsi}
-                    </td>
-                    <td className="py-2 px-3 text-right tabular-nums text-emerald-800 font-semibold border-r border-[#F0EDE4]">
+                    <td className="py-2 px-3 font-medium text-[#1E293B]">{tx.deskripsi}</td>
+                    <td className="py-2 px-3 text-right tabular-nums text-emerald-700 font-medium">
                       {tx.masuk > 0 ? formatRupiah(tx.masuk) : '-'}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums text-rose-800 font-semibold border-r border-[#F0EDE4]">
+                    <td className="py-2 px-3 text-right tabular-nums text-rose-700 font-medium">
                       {tx.keluar > 0 ? formatRupiah(tx.keluar) : '-'}
                     </td>
-                    <td className="py-2 px-3 text-right tabular-nums font-bold text-[#123326] bg-slate-50/50 border-r border-[#F0EDE4]">
+                    <td className="py-2 px-3 text-right tabular-nums font-semibold text-[#0F291E] bg-[#FAFAFA]">
                       {formatRupiah(tx.saldo)}
                     </td>
-                    <td className="py-2 px-3 text-[#52796F] text-[11px]">
-                      {tx.keterangan ? (
-                        <span className="px-2 py-0.5 rounded bg-[#FAF8F3] border border-[#E2DDCF] font-medium">
-                          {tx.keterangan}
-                        </span>
-                      ) : '-'}
-                    </td>
+                    <td className="py-2 px-3 text-[#64748B] text-[11px]">{tx.keterangan || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-xs text-[#8D99AE]">
-                    Tidak ada transaksi untuk filter yang dipilih pada bulan {activeMonth}.
+                  <td colSpan={7} className="text-center py-8 text-xs text-[#94A3B8]">
+                    Tidak ada transaksi untuk filter yang dipilih.
                   </td>
                 </tr>
               )}
@@ -296,29 +233,24 @@ export default function BbKas() {
         </div>
       </div>
 
-      {/* INPUT MODAL */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full border border-[#D5CFC1] shadow-2xl overflow-hidden animate-scale-up">
-            <div className="bg-[#123326] text-white px-6 py-4 flex items-center justify-between">
-              <h3 className="font-bold text-base text-[#E8F5E9]">
-                Catat Transaksi Buku Kas Baru
-              </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-white/70 hover:text-white"
-              >
-                ✕
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-sm w-full border border-[#E2E8F0] shadow-xl overflow-hidden">
+            <div className="bg-[#0F291E] text-white px-5 py-3.5 flex items-center justify-between">
+              <h3 className="font-semibold text-sm">Catat Transaksi Buku Kas</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-white/70 hover:text-white">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-5 space-y-3.5 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Bulan Buku Kas</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Bulan</label>
                 <select
                   value={formData.bulan}
                   onChange={(e) => setFormData({ ...formData, bulan: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#E2DDCF] rounded-lg text-xs font-semibold text-[#123326]"
+                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md font-medium text-[#1E293B]"
                 >
                   <option value="OKTOBER">OKTOBER</option>
                   <option value="NOVEMBER">NOVEMBER</option>
@@ -327,79 +259,79 @@ export default function BbKas() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Tanggal (Hari 1-31)</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Tanggal (Hari 1-31)</label>
                 <input
                   type="number"
                   min="1"
                   max="31"
                   value={formData.tanggal}
                   onChange={(e) => setFormData({ ...formData, tanggal: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#E2DDCF] rounded-lg text-xs font-semibold tabular-nums"
+                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md tabular-nums font-semibold"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Tipe Transaksi</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Tipe Transaksi</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, tipe: 'Keluar' })}
-                    className={`py-2 text-xs font-semibold rounded-lg border transition ${
+                    className={`py-1.5 font-medium rounded-md border transition ${
                       formData.tipe === 'Keluar'
-                        ? 'bg-rose-50 text-rose-800 border-rose-400'
-                        : 'border-[#E2DDCF] text-[#6C757D]'
+                        ? 'bg-rose-50 text-rose-800 border-rose-300'
+                        : 'border-[#E2E8F0] text-[#64748B]'
                     }`}
                   >
-                    Pengeluaran (Keluar)
+                    Pengeluaran
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, tipe: 'Masuk' })}
-                    className={`py-2 text-xs font-semibold rounded-lg border transition ${
+                    className={`py-1.5 font-medium rounded-md border transition ${
                       formData.tipe === 'Masuk'
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-400'
-                        : 'border-[#E2DDCF] text-[#6C757D]'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        : 'border-[#E2E8F0] text-[#64748B]'
                     }`}
                   >
-                    Pemasukan (Masuk)
+                    Pemasukan
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Deskripsi Transaksi</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Deskripsi</label>
                 <input
                   type="text"
-                  placeholder="Contoh: Lauk Sayur Cabe, Bayar Gas, Sabun Cuci"
+                  placeholder="Lauk sayur, galon, dll"
                   value={formData.deskripsi}
                   onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#E2DDCF] rounded-lg text-xs font-medium"
+                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Nominal (Rupiah)</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Nominal (Rupiah)</label>
                 <input
                   type="number"
-                  placeholder="Contoh: 45000"
+                  placeholder="50000"
                   value={formData.nominal}
                   onChange={(e) => setFormData({ ...formData, nominal: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#E2DDCF] rounded-lg text-xs font-semibold tabular-nums"
+                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md tabular-nums font-semibold"
                   required
                   min="500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#123326] mb-1">Keterangan / Kategori (Opsional)</label>
+                <label className="block font-medium text-[#1E293B] mb-1">Keterangan / Kategori</label>
                 <input
                   type="text"
-                  placeholder="Contoh: Konsumsi, Lain-Lain, Posko"
+                  placeholder="Konsumsi, Posko, dll"
                   value={formData.keterangan}
                   onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#E2DDCF] rounded-lg text-xs font-medium"
+                  className="w-full px-2.5 py-1.5 border border-[#E2E8F0] rounded-md"
                 />
               </div>
 
@@ -407,16 +339,16 @@ export default function BbKas() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-[#E2DDCF] rounded-lg text-xs font-semibold text-[#6C757D] hover:bg-[#FAF8F3]"
+                  className="px-3 py-1.5 border border-[#E2E8F0] rounded-md text-[#64748B]"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-[#123326] hover:bg-[#1B4332] text-white rounded-lg text-xs font-semibold transition disabled:opacity-50"
+                  className="px-3 py-1.5 bg-[#0F291E] hover:bg-[#1B4D3E] text-white rounded-md font-medium transition disabled:opacity-50"
                 >
-                  {submitting ? 'Menyimpan...' : 'Simpan Transaksi Kas'}
+                  {submitting ? 'Menyimpan...' : 'Simpan'}
                 </button>
               </div>
             </form>

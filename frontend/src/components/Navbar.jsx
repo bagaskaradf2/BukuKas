@@ -1,162 +1,104 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
 import { getLiveExcelDownloadUrl } from '../services/api';
 import { 
   Download, 
   RefreshCw, 
-  ShieldCheck, 
+  Shield, 
   Eye, 
-  ExternalLink, 
-  History, 
-  FileSpreadsheet,
-  CheckCircle2,
-  Clock,
-  Menu,
-  X
+  History
 } from 'lucide-react';
 
 export default function Navbar({ onOpenAudit }) {
-  const { role, toggleRole, status, lastSync, refreshData, loading, dataSource } = useApp();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  const { role, toggleRole, status, lastSync, refreshData, loading } = useApp();
   const excelUrl = getLiveExcelDownloadUrl();
 
   return (
-    <header className="bg-[#123326] text-white border-b border-[#0A1F17] sticky top-0 z-40 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="bg-[#0F291E] text-white border-b border-[#1A382B] sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14">
           
-          {/* Logo & Identitas */}
+          {/* Logo & Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-[#2D6A4F] flex items-center justify-center text-white shadow-inner font-bold text-lg tracking-wider border border-[#40916C]">
+            <div className="w-8 h-8 rounded-md bg-[#1B4D3E] flex items-center justify-center text-white font-bold text-sm tracking-wide border border-[#2D6A4F]">
               BK
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-lg tracking-tight text-[#E8F5E9]">BukuKas KKN</span>
-                <span className="text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.5 rounded bg-[#1B4332] text-[#A7D7C5] border border-[#2D6A4F]">
-                  M UNY
-                </span>
-              </div>
-              <p className="text-xs text-[#95D5B2] font-medium hidden sm:block">
-                Pengkol, Sriharjo • Sub-Source: Google Sheets
-              </p>
+              <span className="font-semibold text-base tracking-tight text-white">BukuKas</span>
+              <span className="text-xs text-[#95D5B2] font-normal ml-2 hidden sm:inline">
+                Sistem Pembukuan & Kas
+              </span>
             </div>
           </div>
 
-          {/* Status & Quick Actions (Desktop) */}
-          <div className="hidden md:flex items-center space-x-3">
+          {/* Right Action Controls */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
             
-            {/* Status Sync Badge */}
-            <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-[#0D281E] border border-[#2D6A4F]/60 text-xs">
+            {/* Status Indicator */}
+            <div className="hidden sm:flex items-center space-x-2 px-2.5 py-1 rounded-md bg-[#091D15] border border-[#1A382B] text-xs">
               <span className={`w-2 h-2 rounded-full ${loading ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`}></span>
               <span className="text-[#D8F3DC] font-medium">{status}</span>
-              <span className="text-[#74C69D] text-[11px] flex items-center">
-                <Clock className="w-3 h-3 ml-1 mr-0.5 inline opacity-70" />
-                {lastSync}
-              </span>
+              <span className="text-[#74C69D] text-[11px] opacity-75">{lastSync}</span>
             </div>
 
-            {/* Refresh Button */}
+            {/* Refresh */}
             <button
               onClick={() => refreshData()}
               disabled={loading}
-              title="Perbarui Data dari Google Sheets"
-              className="p-2 rounded-lg bg-[#1B4332] hover:bg-[#2D6A4F] text-[#D8F3DC] transition border border-[#2D6A4F] disabled:opacity-50"
+              title="Sinkronkan dengan Google Sheets"
+              className="p-1.5 rounded-md text-[#D8F3DC] hover:bg-[#1B4D3E] transition disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
 
-            {/* Audit Log Button */}
+            {/* Log Audit */}
             <button
               onClick={onOpenAudit}
-              title="Lihat Log Audit & Riwayat Perubahan"
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-[#1B4332] hover:bg-[#2D6A4F] text-xs text-[#D8F3DC] font-medium transition border border-[#2D6A4F]"
+              title="Riwayat Perubahan"
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md hover:bg-[#1B4D3E] text-xs text-[#D8F3DC] font-medium transition"
             >
               <History className="w-3.5 h-3.5" />
-              <span>Log Audit</span>
+              <span className="hidden sm:inline">Audit</span>
             </button>
 
-            {/* Unduh Excel (.xlsx) */}
+            {/* Unduh Excel */}
             <a
               href={excelUrl}
               target="_blank"
               rel="noopener noreferrer"
-              download="KEUANGAN_KKN_LIVE.xlsx"
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#2D6A4F] hover:bg-[#40916C] text-xs font-semibold text-white shadow-sm transition border border-[#52B788]"
+              download="KEUANGAN_LIVE.xlsx"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-[#1B4D3E] hover:bg-[#25634F] text-xs font-medium text-white transition border border-[#2D6A4F]"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Unduh Excel (.xlsx)</span>
+              <span className="hidden sm:inline">Unduh Excel</span>
             </a>
 
             {/* Role Switcher */}
             <button
               onClick={toggleRole}
-              title={`Klik untuk berganti ke mode ${role === 'Bendahara' ? 'Pembaca' : 'Bendahara'}`}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
+              title={`Beralih mode (Saat ini: ${role})`}
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition border ${
                 role === 'Bendahara'
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
-                  : 'bg-blue-500/20 text-blue-300 border-blue-500/40 hover:bg-blue-500/30'
+                  ? 'bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20'
+                  : 'bg-blue-500/10 text-blue-300 border-blue-500/30 hover:bg-blue-500/20'
               }`}
             >
               {role === 'Bendahara' ? (
                 <>
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Akses: Bendahara</span>
+                  <Shield className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Bendahara</span>
                 </>
               ) : (
                 <>
                   <Eye className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Akses: Pembaca</span>
+                  <span>Pembaca</span>
                 </>
               )}
             </button>
+
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center space-x-2">
-            <button
-              onClick={() => refreshData()}
-              disabled={loading}
-              className="p-1.5 rounded bg-[#1B4332] text-[#D8F3DC]"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg bg-[#1B4332] text-[#D8F3DC]"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
         </div>
-
-        {/* Mobile dropdown menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-3 border-t border-[#1B4332] space-y-2">
-            <div className="flex items-center justify-between py-1 text-xs text-[#A7D7C5]">
-              <span>Status: {status}</span>
-              <span>Sync: {lastSync}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <a
-                href={excelUrl}
-                download="KEUANGAN_KKN_LIVE.xlsx"
-                className="flex items-center justify-center space-x-1 py-2 px-3 rounded bg-[#2D6A4F] text-xs font-semibold text-white text-center"
-              >
-                <Download className="w-3.5 h-3.5 mr-1" />
-                <span>Unduh Excel</span>
-              </a>
-              <button
-                onClick={toggleRole}
-                className="py-2 px-3 rounded bg-[#1B4332] text-xs font-semibold text-[#D8F3DC] text-center border border-[#2D6A4F]"
-              >
-                Mode: {role}
-              </button>
-            </div>
-          </div>
-        )}
-
       </div>
     </header>
   );

@@ -11,7 +11,6 @@ import RabHarian from './pages/RabHarian';
 import RabProker from './pages/RabProker';
 import BbKas from './pages/BbKas';
 import LainLain from './pages/LainLain';
-import Settings from './pages/Settings';
 
 export default function App() {
   const { activeTab, toast } = useApp();
@@ -31,37 +30,35 @@ export default function App() {
         return <BbKas />;
       case 'LAIN LAIN':
         return <LainLain />;
-      case 'PENGATURAN':
-        return <Settings />;
       default:
         return <Dashboard />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] flex flex-col selection:bg-[#1B4332] selection:text-white">
-      {/* Top Navbar */}
+    <div className="min-h-screen bg-[#F8F9FA] flex flex-col text-[#1E293B]">
+      {/* Header */}
       <Navbar onOpenAudit={() => setIsAuditOpen(true)} />
 
-      {/* Tab Navigation */}
+      {/* Tabs */}
       <TabNavigation />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      {/* Main Content */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5">
         {renderActivePage()}
       </main>
 
-      {/* Toast Notification */}
+      {/* Toast Alert */}
       <Toast toast={toast} onClose={() => {}} />
 
       {/* Audit Modal */}
       <AuditModal isOpen={isAuditOpen} onClose={() => setIsAuditOpen(false)} />
 
-      {/* Simple Footer */}
-      <footer className="bg-[#FAF8F3] border-t border-[#E2DDCF] py-4 text-center text-xs text-[#6C757D]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>BukuKas KKN M UNY 2026/2027 • Padukuhan Pengkol, Sriharjo</span>
-          <span className="text-[#8D99AE]">Single Source of Truth: Google Sheets Live</span>
+      {/* Minimal Footer */}
+      <footer className="bg-white border-t border-[#E2E8F0] py-3 text-center text-xs text-[#94A3B8]">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-1.5">
+          <span>BukuKas — Sistem Pembukuan Terintegrasi</span>
+          <span>Google Sheets Live Source</span>
         </div>
       </footer>
     </div>

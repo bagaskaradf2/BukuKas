@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { formatRupiah, formatNumber } from '../utils/formatters';
+import { formatRupiah } from '../utils/formatters';
 import { updateRabProker } from '../services/api';
-import { 
-  Briefcase, 
-  Edit3, 
-  Check, 
-  X, 
-  Lock, 
-  FolderCheck, 
-  Sparkles,
-  Info
-} from 'lucide-react';
+import { Edit3, Check, X } from 'lucide-react';
 
 export default function RabProker() {
   const { data, setData, role, showToast, refreshLogs } = useApp();
@@ -69,57 +60,49 @@ export default function RabProker() {
           it.satuan = editingItem.satuan;
           it.harga = hrgNum;
           it.jumlah = newJumlah;
-
           block.total = block.items.reduce((s, curr) => s + (Number(curr.jumlah) || 0), 0);
         }
         return next;
       });
 
-      showToast(`Item proker '${editingItem.kebutuhan}' berhasil disimpan!`, 'success');
+      showToast(`Item '${editingItem.kebutuhan}' berhasil disimpan.`, 'success');
       setEditingItem(null);
       refreshLogs();
     } catch (err) {
-      showToast('Gagal memperbarui item RAB Proker: ' + err.message, 'error');
+      showToast('Gagal memperbarui item: ' + err.message, 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-4 pb-10">
       
-      {/* Title & Overview */}
-      <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E2DDCF] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header bar */}
+      <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#123326] tracking-tight">RAB PROKER</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E8F5E9] text-[#1B4332] border border-[#74C69D]">
-              Tab Sheet: RAB PROKER
-            </span>
-          </div>
-          <p className="text-xs text-[#6C757D] mt-1">
-            Rencana Anggaran dan Biaya 9 Program Kerja KKN di Padukuhan Pengkol
-          </p>
+          <h1 className="text-base font-semibold text-[#0F291E]">RAB Program Kerja</h1>
+          <p className="text-xs text-[#64748B]">Anggaran 9 blok program kerja terencana</p>
         </div>
 
-        <div className="bg-[#FAF8F3] px-4 py-3 rounded-xl border border-[#E2DDCF] text-right">
-          <span className="text-xs text-[#6C757D] block">Total Anggaran Proker</span>
-          <span className="text-xl font-bold tabular-nums text-[#123326]">
+        <div className="text-right">
+          <span className="text-[11px] text-[#64748B] block">Total Anggaran Proker</span>
+          <span className="text-base font-bold tabular-nums text-[#0F291E]">
             {formatRupiah(totalAllProker)}
           </span>
         </div>
       </div>
 
       {/* Filter by Group */}
-      <div className="flex space-x-2 overflow-x-auto pb-1 no-scrollbar">
+      <div className="flex space-x-1.5 overflow-x-auto pb-0.5 no-scrollbar">
         {['ALL', 'PROKER UTAMA', 'PROKER PENUNJANG', 'PROKER TAMBAHAN'].map(grp => (
           <button
             key={grp}
             onClick={() => setActiveGroup(grp)}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition ${
               activeGroup === grp
-                ? 'bg-[#123326] text-white shadow-xs'
-                : 'bg-white text-[#4A5D53] border border-[#E2DDCF] hover:bg-[#F4F1EA]'
+                ? 'bg-[#0F291E] text-white'
+                : 'bg-white text-[#64748B] border border-[#E2E8F0] hover:bg-[#F8F9FA]'
             }`}
           >
             {grp === 'ALL' ? 'Semua Proker (9)' : grp}
@@ -127,55 +110,50 @@ export default function RabProker() {
         ))}
       </div>
 
-      {/* Grid of Proker Blocks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Grid of Blocks */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredBlocks.map((block, bIdx) => (
-          <div key={block.title} className="bg-white rounded-2xl border border-[#E2DDCF] shadow-xs overflow-hidden flex flex-col justify-between">
+          <div key={block.title} className="bg-white rounded-xl border border-[#E2E8F0] shadow-2xs overflow-hidden flex flex-col justify-between">
             <div>
-              {/* Header */}
-              <div className="p-4 bg-[#FAF8F3] border-b border-[#E2DDCF] flex items-center justify-between">
+              <div className="p-3 bg-[#F8F9FA] border-b border-[#E2E8F0] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1B4332] text-white inline-block mb-1">
+                  <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#0F291E] text-white mr-1.5">
                     {block.group}
                   </span>
-                  <h3 className="font-bold text-sm text-[#123326] tracking-tight">{block.title}</h3>
+                  <span className="font-semibold text-xs text-[#0F291E]">{block.title}</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-[11px] text-[#6C757D] block">Total Kebutuhan</span>
-                  <span className="font-bold tabular-nums text-sm text-[#1B4332]">
-                    {formatRupiah(block.total)}
-                  </span>
-                </div>
+                <span className="font-semibold tabular-nums text-xs text-[#0F291E]">
+                  {formatRupiah(block.total)}
+                </span>
               </div>
 
-              {/* Table */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-[#FAF8F3] text-[#4A5D53] border-b border-[#E2DDCF] text-[11px]">
-                      <th className="py-2 px-2.5 font-semibold text-center w-8">No</th>
-                      <th className="py-2 px-3 font-semibold">Kebutuhan</th>
-                      <th className="py-2 px-2.5 font-semibold text-center w-14">Vol</th>
-                      <th className="py-2 px-2.5 font-semibold w-16">Satuan</th>
-                      <th className="py-2 px-3 font-semibold text-right w-24">Harga</th>
-                      <th className="py-2 px-3 font-semibold text-right w-28">Jumlah</th>
-                      {role === 'Bendahara' && <th className="py-2 px-2 font-semibold text-center w-10">Aksi</th>}
+                    <tr className="bg-[#FAFAFA] text-[#64748B] border-b border-[#E2E8F0] text-[11px]">
+                      <th className="py-2 px-2 text-center w-8">No</th>
+                      <th className="py-2 px-3">Kebutuhan</th>
+                      <th className="py-2 px-2 text-center w-12">Vol</th>
+                      <th className="py-2 px-2 w-14">Satuan</th>
+                      <th className="py-2 px-2.5 text-right w-20">Harga</th>
+                      <th className="py-2 px-3 text-right w-24">Jumlah</th>
+                      {role === 'Bendahara' && <th className="py-2 px-2 text-center w-8"></th>}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#F0EDE4]">
+                  <tbody className="divide-y divide-[#F1F5F9]">
                     {block.items.map((item, itIdx) => {
                       const isEditing = editingItem && editingItem.bIdx === bIdx && editingItem.itIdx === itIdx;
 
                       if (isEditing) {
                         return (
-                          <tr key={itIdx} className="bg-amber-50/60">
-                            <td className="py-2 px-2 text-center text-[#8D99AE]">{item.no || itIdx + 1}</td>
+                          <tr key={itIdx} className="bg-amber-50/50">
+                            <td className="py-1.5 px-2 text-center text-[#94A3B8]">{item.no || itIdx + 1}</td>
                             <td className="py-1 px-2">
                               <input
                                 type="text"
                                 value={editingItem.kebutuhan}
                                 onChange={(e) => setEditingItem({ ...editingItem, kebutuhan: e.target.value })}
-                                className="w-full px-2 py-1 bg-white border border-amber-400 rounded text-xs"
+                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs"
                               />
                             </td>
                             <td className="py-1 px-1">
@@ -183,7 +161,7 @@ export default function RabProker() {
                                 type="number"
                                 value={editingItem.volume}
                                 onChange={(e) => setEditingItem({ ...editingItem, volume: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-400 rounded text-xs text-center"
+                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs text-center"
                               />
                             </td>
                             <td className="py-1 px-1">
@@ -191,36 +169,34 @@ export default function RabProker() {
                                 type="text"
                                 value={editingItem.satuan}
                                 onChange={(e) => setEditingItem({ ...editingItem, satuan: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-400 rounded text-xs"
+                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs"
                               />
                             </td>
-                            <td className="py-1 px-2">
+                            <td className="py-1 px-1">
                               <input
                                 type="number"
                                 value={editingItem.harga}
                                 onChange={(e) => setEditingItem({ ...editingItem, harga: e.target.value })}
-                                className="w-full px-2 py-1 bg-white border border-amber-400 rounded text-xs text-right"
+                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs text-right"
                               />
                             </td>
-                            <td className="py-2 px-3 text-right tabular-nums text-xs font-semibold text-[#123326]">
+                            <td className="py-1.5 px-3 text-right tabular-nums text-xs font-semibold">
                               {formatRupiah((Number(editingItem.volume) || 0) * (Number(editingItem.harga) || 0))}
                             </td>
                             <td className="py-1 px-2 text-center">
-                              <div className="flex items-center justify-center space-x-1">
+                              <div className="flex items-center space-x-1">
                                 <button
                                   onClick={handleSaveEdit}
                                   disabled={submitting}
-                                  className="p-1 bg-[#123326] text-white rounded hover:bg-[#1B4332]"
-                                  title="Simpan"
+                                  className="p-1 bg-[#0F291E] text-white rounded hover:bg-[#1B4D3E]"
                                 >
-                                  <Check className="w-3.5 h-3.5" />
+                                  <Check className="w-3 h-3" />
                                 </button>
                                 <button
                                   onClick={() => setEditingItem(null)}
                                   className="p-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                                  title="Batal"
                                 >
-                                  <X className="w-3.5 h-3.5" />
+                                  <X className="w-3 h-3" />
                                 </button>
                               </div>
                             </td>
@@ -229,25 +205,25 @@ export default function RabProker() {
                       }
 
                       return (
-                        <tr key={itIdx} className="hover:bg-[#FAF8F3] transition">
-                          <td className="py-2.5 px-2 text-center text-[#8D99AE] font-mono">{item.no || itIdx + 1}</td>
-                          <td className="py-2.5 px-3 font-medium text-[#123326]">{item.kebutuhan}</td>
-                          <td className="py-2.5 px-2.5 text-center tabular-nums text-[#4A5D53]">
+                        <tr key={itIdx} className="hover:bg-[#F8F9FA] transition-colors">
+                          <td className="py-2 px-2 text-center text-[#94A3B8] font-mono">{item.no || itIdx + 1}</td>
+                          <td className="py-2 px-3 font-medium text-[#1E293B]">{item.kebutuhan}</td>
+                          <td className="py-2 px-2 text-center tabular-nums text-[#64748B]">
                             {item.volume !== null ? item.volume : '-'}
                           </td>
-                          <td className="py-2.5 px-2.5 text-[#6C757D]">{item.satuan || '-'}</td>
-                          <td className="py-2.5 px-3 text-right tabular-nums text-[#4A5D53]">
+                          <td className="py-2 px-2 text-[#64748B] text-[11px]">{item.satuan || '-'}</td>
+                          <td className="py-2 px-2.5 text-right tabular-nums text-[#64748B]">
                             {item.harga ? formatRupiah(item.harga) : '-'}
                           </td>
-                          <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-[#123326]">
+                          <td className="py-2 px-3 text-right tabular-nums font-semibold text-[#1E293B]">
                             {formatRupiah(item.jumlah)}
                           </td>
                           {role === 'Bendahara' && (
-                            <td className="py-2.5 px-2 text-center">
+                            <td className="py-2 px-2 text-center">
                               <button
                                 onClick={() => handleStartEdit(bIdx, itIdx, item, block.colStart)}
-                                className="p-1 text-[#6C757D] hover:text-[#123326] rounded transition"
-                                title="Edit Baris Item Ini"
+                                className="p-1 text-[#94A3B8] hover:text-[#0F291E]"
+                                title="Edit"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
                               </button>
@@ -261,15 +237,9 @@ export default function RabProker() {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="p-3 bg-[#FAF8F3] border-t border-[#E2DDCF] flex items-center justify-between text-xs font-bold text-[#123326]">
-              <span className="flex items-center">
-                <Lock className="w-3 h-3 text-[#2D6A4F] mr-1" />
-                JUMLAH {block.title}
-              </span>
-              <span className="tabular-nums text-[#1B4332] text-sm">
-                {formatRupiah(block.total)}
-              </span>
+            <div className="p-2.5 bg-[#FAFAFA] border-t border-[#E2E8F0] flex items-center justify-between text-xs font-semibold text-[#0F291E]">
+              <span>Subtotal {block.title}</span>
+              <span className="tabular-nums">{formatRupiah(block.total)}</span>
             </div>
           </div>
         ))}
