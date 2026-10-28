@@ -48,7 +48,12 @@ function normalizeData(rawData) {
 export function AppProvider({ children }) {
   // Tanpa data dummy di awal: data mulai dari null / kosong hingga berhasil fetch dari spreadsheet
   const [data, setData] = useState(null);
-  const [role, setRole] = useState(() => localStorage.getItem('bukukas_user_role') || 'Bendahara');
+  // Default role adalah 'Pembaca'. Pengguna harus login untuk menjadi 'Bendahara'
+  const [role, setRole] = useState(() => {
+    const saved = localStorage.getItem('bukukas_auth');
+    return saved === 'Bendahara' ? 'Bendahara' : 'Pembaca';
+  });
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('DASHBOARD');
   const [status, setStatus] = useState('Menghubungkan...');
   const [dataSource, setDataSource] = useState(null);
@@ -109,12 +114,24 @@ export function AppProvider({ children }) {
     };
   }, [refreshData]);
 
-  const toggleRole = () => {
-    const nextRole = role === 'Bendahara' ? 'Pembaca' : 'Bendahara';
-    setRole(nextRole);
-    localStorage.setItem('bukukas_user_role', nextRole);
-    showToast(`Mode akses: ${nextRole}`, 'info');
-  };
+  const login = useCallback((username, password) => {
+    const cleanUser = String(username || '').trim().toLowerCase();
+    const cleanPass = String(password || '').trim();
+
+    if (cleanUser === 'bendahara' && cleanPass === 'bendahara123') {
+      setRole('Bendahara');
+      localStorage.setItem('bukukas_auth', 'Bendahara');
+      return { success: true };
+    }
+    return { success: false, message: 'Username atau password salah. Silakan coba lagi.' };
+  }, []);
+
+  const logout = useCallback(() => {
+    setRole('Pembaca');
+    localStorage.removeItem('bukukas_auth');
+    localStorage.removeItem('bukukas_user_role');
+    showToast('Berhasil keluar. Mode akses kembali ke Pembaca.', 'info');
+  }, [showToast]);
 
   const updateLocalData = (updater) => {
     setData((prev) => {
@@ -130,7 +147,10 @@ export function AppProvider({ children }) {
         data,
         setData: updateLocalData,
         role,
-        toggleRole,
+        login,
+        logout,
+        isLoginModalOpen,
+        setIsLoginModalOpen,
         activeTab,
         setActiveTab,
         status,

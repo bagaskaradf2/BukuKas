@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { formatRupiah } from '../utils/formatters';
+import { getLiveSpreadsheetUrl } from '../services/api';
 import { 
   ArrowRight, 
   Plus, 
@@ -8,7 +9,8 @@ import {
   ArrowUpRight, 
   Wallet, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -37,13 +39,25 @@ export default function Dashboard() {
         </div>
 
         {role === 'Bendahara' && (
-          <button
-            onClick={() => setIsRecordModalOpen(true)}
-            className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs active:scale-98"
-          >
-            <Plus className="w-4 h-4 text-white" />
-            <span>Catat Transaksi</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            <a
+              href={getLiveSpreadsheetUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-xs font-semibold transition cursor-pointer shadow-2xs"
+              title="Buka Google Spreadsheet Live"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
+              <span>Buka Spreadsheet</span>
+            </a>
+            <button
+              onClick={() => setIsRecordModalOpen(true)}
+              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs active:scale-98"
+            >
+              <Plus className="w-4 h-4 text-white" />
+              <span>Catat Transaksi</span>
+            </button>
+          </div>
         )}
       </div>
 

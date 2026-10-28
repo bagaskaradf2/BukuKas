@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { getLiveExcelDownloadUrl } from '../services/api';
-import { Download, Shield, Eye } from 'lucide-react';
+import { getLiveExcelDownloadUrl, getLiveSpreadsheetUrl } from '../services/api';
+import { Download, Shield, ExternalLink, LogIn, LogOut } from 'lucide-react';
 
 const TABS = [
   { id: 'DASHBOARD', label: 'Dashboard' },
@@ -13,8 +13,9 @@ const TABS = [
 ];
 
 export default function Navbar() {
-  const { activeTab, setActiveTab, role, toggleRole, lastSync } = useApp();
+  const { activeTab, setActiveTab, role, logout, setIsLoginModalOpen } = useApp();
   const excelUrl = getLiveExcelDownloadUrl();
+  const spreadsheetUrl = getLiveSpreadsheetUrl();
 
   return (
     <header className="bg-white border-b border-zinc-200/80 sticky top-0 z-40">
@@ -53,7 +54,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Controls */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2.5">
             
             {/* Unduh Excel */}
             <a
@@ -61,29 +62,53 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               download="KEUANGAN_LIVE.xlsx"
-              className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"
             >
               <Download className="w-3.5 h-3.5 text-zinc-400" />
               <span>Unduh Excel</span>
             </a>
 
-            {/* Role Switcher */}
-            <button
-              onClick={toggleRole}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 text-xs font-semibold transition cursor-pointer"
-            >
-              {role === 'Bendahara' ? (
-                <>
-                  <Shield className="w-3.5 h-3.5 text-zinc-700" />
-                  <span>Bendahara</span>
-                </>
-              ) : (
-                <>
-                  <Eye className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>Pembaca</span>
-                </>
-              )}
-            </button>
+            {/* Mode Bendahara Controls */}
+            {role === 'Bendahara' ? (
+              <div className="flex items-center space-x-2">
+                {/* Tombol Direct ke Google Spreadsheet */}
+                <a
+                  href={spreadsheetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 text-emerald-800 border border-emerald-200/90 text-xs font-semibold transition cursor-pointer shadow-2xs"
+                  title="Buka Google Spreadsheet Live"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Spreadsheet</span>
+                </a>
+
+                {/* Badge Status Bendahara & Tombol Keluar */}
+                <div className="flex items-center space-x-1">
+                  <span className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 text-zinc-800 text-xs font-semibold">
+                    <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Bendahara</span>
+                  </span>
+                  <button
+                    onClick={logout}
+                    title="Keluar dari akun Bendahara"
+                    className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-zinc-200 text-zinc-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 text-xs font-medium transition cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Keluar</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Mode Pembaca: Tombol Login Bendahara */
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition cursor-pointer shadow-2xs active:scale-98"
+              >
+                <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Login Bendahara</span>
+              </button>
+            )}
 
           </div>
 

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Toast from './components/Toast';
 import AuditModal from './components/AuditModal';
 import RecordModal from './components/RecordModal';
+import LoginModal from './components/LoginModal';
 
 import Dashboard from './pages/Dashboard';
 import KartuIuran from './pages/KartuIuran';
@@ -13,7 +14,7 @@ import BbKas from './pages/BbKas';
 import LainLain from './pages/LainLain';
 
 export default function App() {
-  const { activeTab, toast, isRecordModalOpen, setIsRecordModalOpen } = useApp();
+  const { activeTab, toast, isRecordModalOpen, setIsRecordModalOpen, isLoginModalOpen, setIsLoginModalOpen } = useApp();
   const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   const renderActivePage = () => {
@@ -46,6 +47,7 @@ export default function App() {
       <Toast toast={toast} onClose={() => {}} />
       <AuditModal isOpen={isAuditOpen} onClose={() => setIsAuditOpen(false)} />
       <RecordModal isOpen={isRecordModalOpen} onClose={() => setIsRecordModalOpen(false)} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
 
       <footer className="border-t border-zinc-200/80 bg-white py-4 mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-zinc-400">

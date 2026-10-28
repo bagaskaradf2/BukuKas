@@ -71,6 +71,10 @@ export async function fetchAllData() {
   return { data: null, source: 'offline', lastSync: null };
 }
 
+export function getLiveSpreadsheetUrl() {
+  return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
+}
+
 export function getLiveExcelDownloadUrl() {
   return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=xlsx`;
 }
