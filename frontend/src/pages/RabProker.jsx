@@ -5,14 +5,19 @@ import { updateRabProker } from '../services/api';
 import { Edit3, Check, X } from 'lucide-react';
 
 export default function RabProker() {
-  const { data, setData, role, showToast, refreshLogs, refreshData } = useApp();
+  const { data, setData, role, showToast, refreshLogs, loading } = useApp();
   const rabProker = data?.rabProker || [];
 
   const [activeGroup, setActiveGroup] = useState('ALL');
   const [editingItem, setEditingItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const totalAllProker = rabProker.reduce((acc, b) => acc + (Number(b.total) || 0), 0);
+  const getBlockSubtotal = (b) => {
+    const sum = (b.items || []).reduce((acc, it) => acc + (Number(it.jumlah) || 0), 0);
+    return sum > 0 ? sum : (Number(b.total) || 0);
+  };
+
+  const totalAllProker = rabProker.reduce((acc, b) => acc + getBlockSubtotal(b), 0);
 
   const filteredBlocks = activeGroup === 'ALL'
     ? rabProker
@@ -80,29 +85,35 @@ export default function RabProker() {
     <div className="space-y-4 pb-10">
       
       {/* Header bar */}
-      <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-wide">RAB Program Kerja</h1>
-          <p className="text-xs text-zinc-500 mt-0.5">Anggaran 9 blok program kerja terencana</p>
+          <h1 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            RAB Program Kerja
+          </h1>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Anggaran 9 blok program kerja (Utama, Penunjang, dan Tambahan)
+          </p>
         </div>
 
         <div className="text-right">
-          <span className="text-[10px] text-zinc-400 font-semibold block uppercase">Total Anggaran Proker</span>
-          <span className="text-sm font-bold tabular-nums text-zinc-950">
+          <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wider">
+            Total Anggaran Proker
+          </span>
+          <span className="text-2xl sm:text-3xl font-bold tabular-nums text-emerald-700">
             {formatRupiah(totalAllProker)}
           </span>
         </div>
       </div>
 
-      {/* Filter by Group */}
-      <div className="flex space-x-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+      {/* Filter by Group (Emerald Palette) */}
+      <div className="flex space-x-2 overflow-x-auto pb-0.5 no-scrollbar">
         {['ALL', 'PROKER UTAMA', 'PROKER PENUNJANG', 'PROKER TAMBAHAN'].map(grp => (
           <button
             key={grp}
             onClick={() => setActiveGroup(grp)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               activeGroup === grp
-                ? 'bg-zinc-950 text-white'
+                ? 'bg-emerald-600 text-white shadow-xs'
                 : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
             }`}
           >
@@ -112,27 +123,24 @@ export default function RabProker() {
       </div>
 
       {/* Grid of Blocks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {filteredBlocks.map((block, bIdx) => (
-          <div key={block.title} className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden flex flex-col justify-between">
-            <div>
-              <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between">
-                <div>
-                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md mr-2 inline-block ${
-                    block.group === 'PROKER UTAMA' 
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                      : block.group === 'PROKER PENUNJANG'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-amber-50 text-amber-700 border border-amber-200'
-                  }`}>
-                    {block.group}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {filteredBlocks.map((block, bIdx) => {
+          const subtotalBlk = getBlockSubtotal(block);
+
+          return (
+            <div key={block.title} className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden flex flex-col justify-between">
+              <div>
+                <div className="px-4 py-3 bg-zinc-50/70 border-b border-zinc-200/90 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {block.group}
+                    </span>
+                    <span className="font-bold text-xs text-zinc-900">{block.title}</span>
+                  </div>
+                  <span className="font-bold tabular-nums text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200/90">
+                    Subtotal: {formatRupiah(subtotalBlk)}
                   </span>
-                  <span className="font-bold text-xs text-zinc-900">{block.title}</span>
                 </div>
-                <span className="font-bold tabular-nums text-xs text-zinc-950 bg-white px-2 py-1 rounded-lg border border-zinc-200/80">
-                  {formatRupiah(block.total)}
-                </span>
-              </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
@@ -153,14 +161,14 @@ export default function RabProker() {
 
                       if (isEditing) {
                         return (
-                          <tr key={itIdx} className="bg-amber-50/50">
+                          <tr key={itIdx} className="bg-emerald-50/40">
                             <td className="py-1.5 px-2 text-center text-zinc-400">{item.no || itIdx + 1}</td>
                             <td className="py-1 px-2">
                               <input
                                 type="text"
                                 value={editingItem.kebutuhan}
                                 onChange={(e) => setEditingItem({ ...editingItem, kebutuhan: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs"
+                                className="w-full px-1.5 py-1 bg-white border border-emerald-300 rounded text-xs focus:outline-none"
                               />
                             </td>
                             <td className="py-1 px-1">
@@ -168,7 +176,7 @@ export default function RabProker() {
                                 type="number"
                                 value={editingItem.volume}
                                 onChange={(e) => setEditingItem({ ...editingItem, volume: e.target.value })}
-                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs text-center"
+                                className="w-full px-1 py-1 bg-white border border-emerald-300 rounded text-xs text-center focus:outline-none"
                               />
                             </td>
                             <td className="py-1 px-1">
@@ -176,7 +184,7 @@ export default function RabProker() {
                                 type="text"
                                 value={editingItem.satuan}
                                 onChange={(e) => setEditingItem({ ...editingItem, satuan: e.target.value })}
-                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs"
+                                className="w-full px-1 py-1 bg-white border border-emerald-300 rounded text-xs focus:outline-none"
                               />
                             </td>
                             <td className="py-1 px-1">
@@ -184,7 +192,7 @@ export default function RabProker() {
                                 type="number"
                                 value={editingItem.harga}
                                 onChange={(e) => setEditingItem({ ...editingItem, harga: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs text-right"
+                                className="w-full px-1.5 py-1 bg-white border border-emerald-300 rounded text-xs text-right focus:outline-none"
                               />
                             </td>
                             <td className="py-1.5 px-3 text-right tabular-nums text-xs font-semibold">
@@ -243,13 +251,20 @@ export default function RabProker() {
               </div>
             </div>
 
-            <div className="px-3.5 py-2 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between text-xs font-semibold text-zinc-900">
-              <span>Subtotal {block.title}</span>
-              <span className="tabular-nums">{formatRupiah(block.total)}</span>
+            <div className="px-4 py-2.5 bg-zinc-50/70 border-t border-zinc-200/90 flex items-center justify-between text-xs font-semibold text-zinc-950">
+              <span className="text-zinc-500 font-medium">Subtotal {block.title} ({block.items.length} kebutuhan)</span>
+              <span className="font-bold tabular-nums text-emerald-700 text-sm">{formatRupiah(subtotalBlk)}</span>
             </div>
           </div>
-        ))}
+        );
+      })}
       </div>
+
+      {filteredBlocks.length === 0 && (
+        <div className="bg-white rounded-2xl border border-zinc-200/90 p-12 text-center text-xs text-zinc-400">
+          {loading ? 'Memuat data RAB Program Kerja dari Google Spreadsheet...' : 'Belum ada data RAB Program Kerja dari Google Spreadsheet.'}
+        </div>
+      )}
 
     </div>
   );

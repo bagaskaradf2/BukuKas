@@ -5,7 +5,7 @@ import { updateVest, updateFotoStudio } from '../services/api';
 import { Edit3, Check, X } from 'lucide-react';
 
 export default function LainLain() {
-  const { data, setData, role, showToast, refreshLogs } = useApp();
+  const { data, setData, role, showToast, refreshLogs, loading } = useApp();
   const lainLain = data?.lainLain || {};
   const vestItems = lainLain.vest || [];
   const fotoItems = lainLain.fotoStudio || [];
@@ -119,7 +119,7 @@ export default function LainLain() {
                 : 'text-zinc-600 hover:text-zinc-950'
             }`}
           >
-            Seragam ({formatRupiah(lainLain.vestTotal || 1270000)})
+            Seragam ({formatRupiah(lainLain.vestTotal || 0)})
           </button>
           <button
             onClick={() => setActiveTab('foto')}
@@ -129,7 +129,7 @@ export default function LainLain() {
                 : 'text-zinc-600 hover:text-zinc-950'
             }`}
           >
-            Foto Studio ({formatRupiah(lainLain.fotoTotal || 175000)})
+            Foto Studio ({formatRupiah(lainLain.fotoTotal || 0)})
           </button>
         </div>
       </div>
@@ -150,13 +150,20 @@ export default function LainLain() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
-                {vestItems.map((item, idx) => {
+                {vestItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center py-10 text-xs text-zinc-400">
+                      {loading ? 'Memuat data seragam...' : 'Belum ada data seragam dari Google Spreadsheet.'}
+                    </td>
+                  </tr>
+                ) : (
+                  vestItems.map((item, idx) => {
                   const isEditing = editingVest && editingVest.idx === idx;
                   const isLunas = item.keterangan && item.keterangan.toLowerCase().includes('lunas');
 
                   if (isEditing) {
                     return (
-                      <tr key={idx} className="bg-amber-50/50">
+                      <tr key={idx} className="bg-emerald-50/40">
                         <td className="py-1.5 px-3 text-center text-zinc-400">{item.no || idx + 1}</td>
                         <td className="py-1.5 px-3 font-medium text-zinc-900">{item.nama}</td>
                         <td className="py-1 px-2">
@@ -164,7 +171,7 @@ export default function LainLain() {
                             type="text"
                             value={editingVest.ukuran}
                             onChange={(e) => setEditingVest({ ...editingVest, ukuran: e.target.value })}
-                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-center font-semibold"
+                            className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs text-center font-semibold focus:outline-none"
                           />
                         </td>
                         <td className="py-1.5 px-3 text-right tabular-nums">{formatRupiah(item.harga)}</td>
@@ -172,7 +179,7 @@ export default function LainLain() {
                           <select
                             value={editingVest.keterangan}
                             onChange={(e) => setEditingVest({ ...editingVest, keterangan: e.target.value })}
-                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs"
+                            className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs focus:outline-none"
                           >
                             <option value="Lunas">Lunas</option>
                             <option value="">Belum Lunas</option>
@@ -211,7 +218,7 @@ export default function LainLain() {
                             Lunas
                           </span>
                         ) : (
-                          <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          <span className="text-[10px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
                             Ditalangi Kas
                           </span>
                         )}
@@ -228,7 +235,8 @@ export default function LainLain() {
                       )}
                     </tr>
                   );
-                })}
+                })
+              )}
               </tbody>
             </table>
           </div>
@@ -252,12 +260,19 @@ export default function LainLain() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
-                {fotoItems.map((item, idx) => {
+                {fotoItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-10 text-xs text-zinc-400">
+                      {loading ? 'Memuat data foto studio...' : 'Belum ada data foto studio dari Google Spreadsheet.'}
+                    </td>
+                  </tr>
+                ) : (
+                  fotoItems.map((item, idx) => {
                   const isEditing = editingFoto && editingFoto.idx === idx;
 
                   if (isEditing) {
                     return (
-                      <tr key={idx} className="bg-amber-50/50">
+                      <tr key={idx} className="bg-emerald-50/40">
                         <td className="py-1.5 px-3 text-center text-zinc-400">{item.no || idx + 1}</td>
                         <td className="py-1.5 px-3 font-medium text-zinc-900">{item.nama}</td>
                         <td className="py-1 px-2">
@@ -265,7 +280,7 @@ export default function LainLain() {
                             type="number"
                             value={editingFoto.onomoto}
                             onChange={(e) => setEditingFoto({ ...editingFoto, onomoto: e.target.value })}
-                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-right"
+                            className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs text-right focus:outline-none"
                           />
                         </td>
                         <td className="py-1 px-2">
@@ -273,7 +288,7 @@ export default function LainLain() {
                             type="number"
                             value={editingFoto.kuyStudio}
                             onChange={(e) => setEditingFoto({ ...editingFoto, kuyStudio: e.target.value })}
-                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-right"
+                            className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs text-right focus:outline-none"
                           />
                         </td>
                         <td className="py-1.5 px-3 text-right tabular-nums font-semibold">
@@ -284,7 +299,7 @@ export default function LainLain() {
                             type="text"
                             value={editingFoto.keterangan}
                             onChange={(e) => setEditingFoto({ ...editingFoto, keterangan: e.target.value })}
-                            className="w-full px-2 py-1 bg-white border border-amber-300 rounded text-xs text-center"
+                            className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs text-center focus:outline-none"
                           />
                         </td>
                         <td className="py-1 px-2 text-center">
@@ -332,7 +347,8 @@ export default function LainLain() {
                       )}
                     </tr>
                   );
-                })}
+                })
+              )}
               </tbody>
             </table>
           </div>

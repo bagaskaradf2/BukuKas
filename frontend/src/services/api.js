@@ -1,5 +1,3 @@
-import initialData from '../data/initialData.json';
-
 const SPREADSHEET_ID = '1We1fNStv2OeVgItursLI0pDYmLjVqZ3PfrBnyx2jaao';
 const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwIOsOelyDxvWfsMruLyFHUSUZJEKj3Xux1yg3rveZ-0E9k0M1RT3XFi_pnccy7aJXx/exec';
 const STORAGE_KEY_AUDIT_LOGS = 'bukukas_audit_logs';
@@ -69,8 +67,8 @@ export async function fetchAllData() {
     console.warn('Proxy API error:', err);
   }
 
-  // 3. Bundled dataset
-  return { data: initialData, source: 'seed', lastSync: new Date().toLocaleTimeString('id-ID') };
+  // 3. Tanpa dummy data - jika belum connect ke spreadsheet maka kosong
+  return { data: null, source: 'offline', lastSync: null };
 }
 
 export function getLiveExcelDownloadUrl() {

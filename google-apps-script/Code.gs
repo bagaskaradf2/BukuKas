@@ -400,7 +400,7 @@ function readRabHarian(sheet) {
     const cat = categories[i];
     const cIdx = cat.colStart - 1;
     const items = [];
-    for (let r = 5; r < 19; r++) {
+    for (let r = 5; r < 24; r++) {
       const no = values[r][cIdx];
       const keb = values[r][cIdx + 1];
       const vol = values[r][cIdx + 2];
@@ -420,7 +420,8 @@ function readRabHarian(sheet) {
         });
       }
     }
-    const total = values[19][cIdx + 5] || 0;
+    const calculatedTotal = items.reduce((sum, it) => sum + (Number(it.jumlah) || 0), 0);
+    const total = calculatedTotal > 0 ? calculatedTotal : (Number(values[24] && values[24][cIdx + 5]) || 0);
     result.push({
       category: cat.category,
       colStart: cat.colStart,
@@ -472,7 +473,8 @@ function readRabProker(sheet) {
         });
       }
     }
-    const tot = values[b.totalRow - 1][cIdx + 5] || 0;
+    const calculatedTotal = items.reduce((sum, it) => sum + (Number(it.jumlah) || 0), 0);
+    const tot = calculatedTotal > 0 ? calculatedTotal : (Number(values[b.totalRow - 1] && values[b.totalRow - 1][cIdx + 5]) || 0);
     result.push({
       title: b.title,
       group: b.group,

@@ -69,7 +69,7 @@ export default function RecordModal({ isOpen, onClose }) {
 
         // A. Mutasi Buku Kas
         const kasList = next.bbKas[bulanKas] || [];
-        const prevSaldo = kasList.length > 0 ? kasList[kasList.length - 1].saldo : 17300000;
+        const prevSaldo = kasList.length > 0 ? kasList[kasList.length - 1].saldo : (next?.kartuIuran?.totalDanaKelompok || 0);
         const newSaldo = jenis === 'Pemasukan' ? prevSaldo + calculatedNominal : prevSaldo - calculatedNominal;
 
         kasList.push({

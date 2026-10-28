@@ -76,12 +76,12 @@ app.get('/api/data', async (req, res) => {
           }
         }
       } catch (scriptErr) {
-        console.warn('Apps script fetch error, fallback to local cache:', scriptErr.message);
+        console.warn('Apps script fetch error:', scriptErr.message);
       }
     }
 
-    const data = loadLocalData();
-    res.json({ source: 'local-seed', data });
+    // Tanpa dummy seed: jika belum connect, kembalikan null
+    res.json({ source: 'offline', data: null, error: 'Belum terhubung ke Google Spreadsheet' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

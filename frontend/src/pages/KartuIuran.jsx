@@ -7,7 +7,7 @@ const MONTHS = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 
 const TARGET_PER_MEMBER = 1600000;
 
 export default function KartuIuran() {
-  const { data } = useApp();
+  const { data, loading } = useApp();
   const kartuIuran = data?.kartuIuran || {};
   const members = kartuIuran.members || [];
   const pendapatanLain = kartuIuran.pendapatanLain || {};
@@ -82,7 +82,14 @@ export default function KartuIuran() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
-              {filteredMembers.map((m, idx) => {
+              {filteredMembers.length === 0 ? (
+                <tr>
+                  <td colSpan={selectedMonth === 'ALL' ? 11 : 4} className="py-12 text-center text-xs text-zinc-400">
+                    {loading ? 'Memuat data kartu iuran dari Google Spreadsheet...' : 'Belum ada data anggota (data kosong atau belum terhubung ke Spreadsheet).'}
+                  </td>
+                </tr>
+              ) : (
+                filteredMembers.map((m, idx) => {
                 const isExpanded = expandedMember === m.name;
                 const current = Number(m.total) || 0;
                 const isLunas = current >= TARGET_PER_MEMBER;
@@ -130,7 +137,7 @@ export default function KartuIuran() {
                                     <span>Lunas Target</span>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center space-x-1 text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                                  <span className="inline-flex items-center space-x-1 text-rose-700 font-semibold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
                                     <AlertCircle className="w-3 h-3" />
                                     <span>Kurang {formatRupiah(TARGET_PER_MEMBER - current)}</span>
                                   </span>
@@ -167,7 +174,8 @@ export default function KartuIuran() {
                     )}
                   </React.Fragment>
                 );
-              })}
+              })
+            )}
             </tbody>
           </table>
         </div>

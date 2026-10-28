@@ -4,7 +4,7 @@ import { formatRupiah } from '../utils/formatters';
 import { Search } from 'lucide-react';
 
 export default function BbKas() {
-  const { data } = useApp();
+  const { data, loading } = useApp();
   const bbKas = data?.bbKas || {};
 
   const [activeMonth, setActiveMonth] = useState('OKTOBER');
@@ -150,7 +150,7 @@ export default function BbKas() {
               ) : (
                 <tr>
                   <td colSpan={7} className="text-center py-10 text-xs text-zinc-400">
-                    Tidak ada transaksi untuk filter yang dipilih.
+                    {loading ? 'Memuat data Buku Kas dari Google Spreadsheet...' : 'Belum ada transaksi mutasi kas tercatat di Google Spreadsheet.'}
                   </td>
                 </tr>
               )}

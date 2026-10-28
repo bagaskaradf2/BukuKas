@@ -1,36 +1,59 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { fetchAllData, getAuditLogs } from '../services/api';
-import initialData from '../data/initialData.json';
+import Toast from '../components/Toast';
+import RecordModal from '../components/RecordModal';
 
 const AppContext = createContext();
 
 function normalizeData(rawData) {
-  if (!rawData || !rawData.bbKas) return rawData;
+  if (!rawData) return rawData;
   const clean = JSON.parse(JSON.stringify(rawData));
-  for (const m of Object.keys(clean.bbKas)) {
-    const list = clean.bbKas[m] || [];
-    let lastTgl = 1;
-    for (let i = 0; i < list.length; i++) {
-      const t = list[i];
-      if (t.tanggal !== null && t.tanggal !== undefined && t.tanggal !== '' && t.tanggal !== '-' && !isNaN(t.tanggal)) {
-        lastTgl = Number(t.tanggal);
-        t.tanggal = lastTgl;
-      } else {
-        t.tanggal = lastTgl;
+
+  // 1. Forward-fill tanggal di BB Kas
+  if (clean.bbKas) {
+    for (const m of Object.keys(clean.bbKas)) {
+      const list = clean.bbKas[m] || [];
+      let lastTgl = 1;
+      for (let i = 0; i < list.length; i++) {
+        const t = list[i];
+        if (t.tanggal !== null && t.tanggal !== undefined && t.tanggal !== '' && t.tanggal !== '-' && !isNaN(t.tanggal)) {
+          lastTgl = Number(t.tanggal);
+          t.tanggal = lastTgl;
+        } else {
+          t.tanggal = lastTgl;
+        }
       }
     }
   }
+
+  // 2. Hitung subtotal dan total anggaran RAB Harian
+  if (clean.rabHarian && Array.isArray(clean.rabHarian)) {
+    clean.rabHarian.forEach(cat => {
+      const sum = (cat.items || []).reduce((s, it) => s + (Number(it.jumlah) || 0), 0);
+      cat.total = sum > 0 ? sum : (Number(cat.total) || 0);
+    });
+  }
+
+  // 3. Hitung subtotal dan total anggaran RAB Proker
+  if (clean.rabProker && Array.isArray(clean.rabProker)) {
+    clean.rabProker.forEach(blk => {
+      const sum = (blk.items || []).reduce((s, it) => s + (Number(it.jumlah) || 0), 0);
+      blk.total = sum > 0 ? sum : (Number(blk.total) || 0);
+    });
+  }
+
   return clean;
 }
 
 export function AppProvider({ children }) {
-  const [data, setData] = useState(() => normalizeData(initialData));
+  // Tanpa data dummy di awal: data mulai dari null / kosong hingga berhasil fetch dari spreadsheet
+  const [data, setData] = useState(null);
   const [role, setRole] = useState(() => localStorage.getItem('bukukas_user_role') || 'Bendahara');
   const [activeTab, setActiveTab] = useState('DASHBOARD');
-  const [status, setStatus] = useState('Sinkron');
-  const [dataSource, setDataSource] = useState('seed');
-  const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString('id-ID'));
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('Menghubungkan...');
+  const [dataSource, setDataSource] = useState(null);
+  const [lastSync, setLastSync] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [logs, setLogs] = useState(getAuditLogs);
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
@@ -51,20 +74,25 @@ export function AppProvider({ children }) {
         setDataSource(res.source);
         setLastSync(new Date().toLocaleTimeString('id-ID'));
         setStatus('Sinkron');
-        if (!silent) showToast('Data tersinkronisasi otomatis.', 'success');
+        if (!silent) showToast('Data live spreadsheet berhasil dimuat.', 'success');
+      } else {
+        // Jika belum terhubung atau kosong
+        setStatus('Belum Terhubung');
+        if (!silent) showToast('Belum terhubung ke spreadsheet.', 'error');
       }
     } catch (err) {
       console.warn(err);
       setStatus('Offline');
+      if (!silent) showToast('Gagal memuat: ' + err.message, 'error');
     } finally {
-      if (!silent) setLoading(false);
+      setLoading(false);
     }
   }, [showToast]);
 
   // Realtime Auto-sync (Background polling + Window Focus)
   useEffect(() => {
-    // Initial fetch
-    refreshData(true);
+    // Initial fetch dari spreadsheet
+    refreshData(false);
 
     // Auto sync on window focus
     const onFocus = () => refreshData(true);

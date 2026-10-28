@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { formatRupiah } from '../utils/formatters';
-import { updateRabHarian, addRabHarianItem } from '../services/api';
-import { Edit3, Check, X, Plus } from 'lucide-react';
+import { updateRabHarian } from '../services/api';
+import { Edit3, Check, X } from 'lucide-react';
 
 export default function RabHarian() {
-  const { data, setData, role, showToast, refreshLogs, refreshData } = useApp();
+  const { data, setData, role, showToast, refreshLogs, loading } = useApp();
   const rabHarian = data?.rabHarian || [];
 
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [editingItem, setEditingItem] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Add Item Modal
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newCategory, setNewCategory] = useState('RAB KONSUMSI');
-  const [newKebutuhan, setNewKebutuhan] = useState('');
-  const [newVolume, setNewVolume] = useState('1');
-  const [newSatuan, setNewSatuan] = useState('Kali');
-  const [newHarga, setNewHarga] = useState('');
+  // Hitung subtotal tiap kategori secara aman & akurat
+  const getCatSubtotal = (cat) => {
+    const sum = (cat.items || []).reduce((acc, it) => acc + (Number(it.jumlah) || 0), 0);
+    return sum > 0 ? sum : (Number(cat.total) || 0);
+  };
 
-  const grandTotal = rabHarian.reduce((acc, cat) => acc + (Number(cat.total) || 0), 0);
+  // Grand total anggaran dari seluruh kategori
+  const grandTotal = rabHarian.reduce((acc, cat) => acc + getCatSubtotal(cat), 0);
 
   const filteredCategories = activeCategory === 'ALL'
     ? rabHarian
@@ -83,354 +82,204 @@ export default function RabHarian() {
     }
   };
 
-  const handleAddItem = async (e) => {
-    e.preventDefault();
-    if (!newKebutuhan.trim()) {
-      showToast('Nama kebutuhan wajib diisi.', 'error');
-      return;
-    }
-    const volNum = Number(newVolume) || 1;
-    const hrgNum = Number(newHarga) || 0;
-    const jmlNum = volNum * hrgNum;
-
-    setSubmitting(true);
-    try {
-      // 1. Optimistic update
-      setData(prev => {
-        const next = JSON.parse(JSON.stringify(prev));
-        const cat = next.rabHarian.find(c => c.category === newCategory);
-        if (cat) {
-          cat.items.push({
-            row: cat.items.length + 6,
-            no: cat.items.length + 1,
-            kebutuhan: newKebutuhan.trim(),
-            volume: volNum,
-            satuan: newSatuan.trim(),
-            harga: hrgNum,
-            jumlah: jmlNum
-          });
-          cat.total += jmlNum;
-        }
-        return next;
-      });
-
-      // 2. Kirim ke API / Apps Script
-      await addRabHarianItem({
-        category: newCategory,
-        kebutuhan: newKebutuhan.trim(),
-        volume: volNum,
-        satuan: newSatuan.trim(),
-        harga: hrgNum
-      }, role);
-
-      showToast(`Item '${newKebutuhan}' berhasil ditambahkan ke ${newCategory}.`, 'success');
-      setIsAddModalOpen(false);
-      setNewKebutuhan('');
-      setNewVolume('1');
-      setNewHarga('');
-      refreshLogs();
-      refreshData(true);
-    } catch (err) {
-      showToast('Gagal menambah item: ' + err.message, 'error');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
-    <div className="space-y-4 pb-10">
+    <div className="space-y-5 pb-10">
       
       {/* Top Controls Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white p-5 rounded-2xl border border-zinc-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-wide">RAB Kebutuhan Harian</h1>
-          <p className="text-xs text-zinc-500 mt-0.5">Anggaran konsumsi, posko, transportasi, langganan, dan sekre</p>
+          <h1 className="text-base font-bold text-zinc-950 uppercase tracking-wide">
+            RAB Kebutuhan Harian
+          </h1>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Anggaran operasional: konsumsi, posko, transportasi, langganan & sekre
+          </p>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <span className="text-[10px] text-zinc-400 font-semibold block uppercase">Total Anggaran</span>
-            <span className="text-sm font-bold tabular-nums text-zinc-950">
-              {formatRupiah(grandTotal)}
-            </span>
-          </div>
-
-          {role === 'Bendahara' && (
-            <button
-              onClick={() => {
-                if (activeCategory !== 'ALL') setNewCategory(activeCategory);
-                setIsAddModalOpen(true);
-              }}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs active:scale-98"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Tambah Kebutuhan</span>
-            </button>
-          )}
+        <div className="text-left sm:text-right">
+          <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wider">
+            Total Anggaran Harian
+          </span>
+          <span className="text-2xl sm:text-3xl font-bold tabular-nums text-emerald-700">
+            {formatRupiah(grandTotal)}
+          </span>
         </div>
       </div>
 
-      {/* Category Pills */}
-      <div className="flex space-x-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+      {/* Category Pills (Emerald Palette) */}
+      <div className="flex space-x-2 overflow-x-auto pb-0.5 no-scrollbar">
         <button
           onClick={() => setActiveCategory('ALL')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
             activeCategory === 'ALL'
-              ? 'bg-zinc-950 text-white'
+              ? 'bg-emerald-600 text-white shadow-xs'
               : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
           }`}
         >
           Semua ({rabHarian.length})
         </button>
-        {rabHarian.map(cat => (
-          <button
-            key={cat.category}
-            onClick={() => setActiveCategory(cat.category)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-              activeCategory === cat.category
-                ? 'bg-zinc-950 text-white'
-                : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
-            }`}
-          >
-            {cat.category.replace('RAB ', '')} ({formatRupiah(cat.total)})
-          </button>
-        ))}
+        {rabHarian.map(cat => {
+          const catSub = getCatSubtotal(cat);
+          return (
+            <button
+              key={cat.category}
+              onClick={() => setActiveCategory(cat.category)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                activeCategory === cat.category
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50'
+              }`}
+            >
+              {cat.category.replace('RAB ', '')} ({formatRupiah(catSub)})
+            </button>
+          );
+        })}
       </div>
 
       {/* Tables Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {filteredCategories.map((cat, catIdx) => (
-          <div key={cat.category} className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden flex flex-col justify-between">
-            <div>
-              <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between">
-                <span className="font-semibold text-xs text-zinc-900">{cat.category}</span>
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold tabular-nums text-xs text-zinc-950">
-                    {formatRupiah(cat.total)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {filteredCategories.map((cat, catIdx) => {
+          const subtotalCat = getCatSubtotal(cat);
+
+          return (
+            <div key={cat.category} className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden flex flex-col justify-between">
+              <div>
+                {/* Header Kategori dengan Subtotal yang Sangat Jelas */}
+                <div className="px-4 py-3 bg-zinc-50/70 border-b border-zinc-200/90 flex items-center justify-between">
+                  <span className="font-bold text-xs text-zinc-950 uppercase tracking-wide">
+                    {cat.category}
+                  </span>
+                  <span className="px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200/90 font-bold tabular-nums text-xs shadow-2xs">
+                    Subtotal: {formatRupiah(subtotalCat)}
                   </span>
                 </div>
-              </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-white text-zinc-500 border-b border-zinc-100 text-[11px]">
-                      <th className="py-2 px-2.5 text-center w-8">No</th>
-                      <th className="py-2 px-3">Kebutuhan</th>
-                      <th className="py-2 px-2 text-center w-12">Vol</th>
-                      <th className="py-2 px-2 w-14">Satuan</th>
-                      <th className="py-2 px-2.5 text-right w-20">Harga</th>
-                      <th className="py-2 px-3 text-right w-24">Jumlah</th>
-                      {role === 'Bendahara' && <th className="py-2 px-2 text-center w-8"></th>}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-100">
-                    {cat.items.map((item, itemIdx) => {
-                      const isEditing = editingItem && editingItem.catIdx === catIdx && editingItem.itemIdx === itemIdx;
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-white text-zinc-500 border-b border-zinc-100 text-[11px] font-semibold">
+                        <th className="py-2.5 px-3 text-center w-8">No</th>
+                        <th className="py-2.5 px-3">Kebutuhan</th>
+                        <th className="py-2.5 px-2 text-center w-12">Vol</th>
+                        <th className="py-2.5 px-2 w-14">Satuan</th>
+                        <th className="py-2.5 px-3 text-right w-24">Harga</th>
+                        <th className="py-2.5 px-4 text-right w-28">Jumlah</th>
+                        {role === 'Bendahara' && <th className="py-2.5 px-2 text-center w-8"></th>}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100">
+                      {cat.items.map((item, itemIdx) => {
+                        const isEditing = editingItem && editingItem.catIdx === catIdx && editingItem.itemIdx === itemIdx;
 
-                      if (isEditing) {
+                        if (isEditing) {
+                          return (
+                            <tr key={itemIdx} className="bg-emerald-50/40">
+                              <td className="py-1.5 px-2 text-center text-zinc-400">{item.no || itemIdx + 1}</td>
+                              <td className="py-1 px-2">
+                                <input
+                                  type="text"
+                                  value={editingItem.kebutuhan}
+                                  onChange={(e) => setEditingItem({ ...editingItem, kebutuhan: e.target.value })}
+                                  className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-1 px-1">
+                                <input
+                                  type="number"
+                                  value={editingItem.volume}
+                                  onChange={(e) => setEditingItem({ ...editingItem, volume: e.target.value })}
+                                  className="w-full px-1 py-1 bg-white border border-emerald-300 rounded text-xs text-center font-medium focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-1 px-1">
+                                <input
+                                  type="text"
+                                  value={editingItem.satuan}
+                                  onChange={(e) => setEditingItem({ ...editingItem, satuan: e.target.value })}
+                                  className="w-full px-1 py-1 bg-white border border-emerald-300 rounded text-xs focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-1 px-1">
+                                <input
+                                  type="number"
+                                  value={editingItem.harga}
+                                  onChange={(e) => setEditingItem({ ...editingItem, harga: e.target.value })}
+                                  className="w-full px-2 py-1 bg-white border border-emerald-300 rounded text-xs text-right font-medium tabular-nums focus:outline-none"
+                                />
+                              </td>
+                              <td className="py-1.5 px-4 text-right tabular-nums text-xs font-bold text-zinc-950">
+                                {formatRupiah((Number(editingItem.volume) || 0) * (Number(editingItem.harga) || 0))}
+                              </td>
+                              <td className="py-1 px-2 text-center">
+                                <div className="flex items-center space-x-1">
+                                  <button
+                                    onClick={handleSaveEdit}
+                                    disabled={submitting}
+                                    className="p-1 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                                  >
+                                    <Check className="w-3 h-3" />
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingItem(null)}
+                                    className="p-1 bg-zinc-200 text-zinc-700 rounded hover:bg-zinc-300"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        }
+
                         return (
-                          <tr key={itemIdx} className="bg-amber-50/50">
-                            <td className="py-1.5 px-2 text-center text-zinc-400">{item.no || itemIdx + 1}</td>
-                            <td className="py-1 px-2">
-                              <input
-                                type="text"
-                                value={editingItem.kebutuhan}
-                                onChange={(e) => setEditingItem({ ...editingItem, kebutuhan: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs"
-                              />
+                          <tr key={itemIdx} className="hover:bg-zinc-50/70 transition-colors">
+                            <td className="py-2.5 px-3 text-center text-zinc-400 font-medium tabular-nums">{item.no || itemIdx + 1}</td>
+                            <td className="py-2.5 px-3 font-semibold text-zinc-900">{item.kebutuhan}</td>
+                            <td className="py-2.5 px-2 text-center tabular-nums text-zinc-600 font-medium">
+                              {item.volume !== null ? item.volume : '-'}
                             </td>
-                            <td className="py-1 px-1">
-                              <input
-                                type="number"
-                                value={editingItem.volume}
-                                onChange={(e) => setEditingItem({ ...editingItem, volume: e.target.value })}
-                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs text-center"
-                              />
+                            <td className="py-2.5 px-2 text-zinc-500 text-[11px]">{item.satuan || '-'}</td>
+                            <td className="py-2.5 px-3 text-right tabular-nums text-zinc-600 font-medium">
+                              {item.harga ? formatRupiah(item.harga) : '-'}
                             </td>
-                            <td className="py-1 px-1">
-                              <input
-                                type="text"
-                                value={editingItem.satuan}
-                                onChange={(e) => setEditingItem({ ...editingItem, satuan: e.target.value })}
-                                className="w-full px-1 py-1 bg-white border border-amber-300 rounded text-xs"
-                              />
+                            <td className="py-2.5 px-4 text-right tabular-nums font-bold text-zinc-950">
+                              {formatRupiah(item.jumlah)}
                             </td>
-                            <td className="py-1 px-1">
-                              <input
-                                type="number"
-                                value={editingItem.harga}
-                                onChange={(e) => setEditingItem({ ...editingItem, harga: e.target.value })}
-                                className="w-full px-1.5 py-1 bg-white border border-amber-300 rounded text-xs text-right"
-                              />
-                            </td>
-                            <td className="py-1.5 px-3 text-right tabular-nums text-xs font-semibold">
-                              {formatRupiah((Number(editingItem.volume) || 0) * (Number(editingItem.harga) || 0))}
-                            </td>
-                            <td className="py-1 px-2 text-center">
-                              <div className="flex items-center space-x-1">
+                            {role === 'Bendahara' && (
+                              <td className="py-2.5 px-2 text-center">
                                 <button
-                                  onClick={handleSaveEdit}
-                                  disabled={submitting}
-                                  className="p-1 bg-zinc-900 text-white rounded hover:bg-zinc-800"
+                                  onClick={() => handleStartEdit(catIdx, itemIdx, item, cat.colStart)}
+                                  className="p-1 text-zinc-400 hover:text-zinc-900 cursor-pointer"
                                 >
-                                  <Check className="w-3 h-3" />
+                                  <Edit3 className="w-3.5 h-3.5" />
                                 </button>
-                                <button
-                                  onClick={() => setEditingItem(null)}
-                                  className="p-1 bg-zinc-200 text-zinc-700 rounded hover:bg-zinc-300"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              </div>
-                            </td>
+                              </td>
+                            )}
                           </tr>
                         );
-                      }
-
-                      return (
-                        <tr key={itemIdx} className="hover:bg-zinc-50/70">
-                          <td className="py-2.5 px-2.5 text-center text-zinc-400 font-medium tabular-nums">{item.no || itemIdx + 1}</td>
-                          <td className="py-2 px-3 font-medium text-zinc-900">{item.kebutuhan}</td>
-                          <td className="py-2 px-2 text-center tabular-nums text-zinc-600">
-                            {item.volume !== null ? item.volume : '-'}
-                          </td>
-                          <td className="py-2 px-2 text-zinc-600 text-[11px]">{item.satuan || '-'}</td>
-                          <td className="py-2 px-2.5 text-right tabular-nums text-zinc-600">
-                            {item.harga ? formatRupiah(item.harga) : '-'}
-                          </td>
-                          <td className="py-2 px-3 text-right tabular-nums font-semibold text-zinc-900">
-                            {formatRupiah(item.jumlah)}
-                          </td>
-                          {role === 'Bendahara' && (
-                            <td className="py-2 px-2 text-center">
-                              <button
-                                onClick={() => handleStartEdit(catIdx, itemIdx, item, cat.colStart)}
-                                className="p-1 text-zinc-400 hover:text-zinc-900"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                              </button>
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="px-3.5 py-2 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between text-xs font-semibold text-zinc-900">
-              <span>Subtotal {cat.category.replace('RAB ', '')}</span>
-              <span className="tabular-nums">{formatRupiah(cat.total)}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal Tambah Item Kebutuhan */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full border border-zinc-200/80 shadow-2xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
-              <h3 className="font-bold text-xs text-zinc-900 uppercase tracking-wide">
-                Tambah Item Kebutuhan RAB
-              </h3>
-              <button onClick={() => setIsAddModalOpen(false)} className="text-zinc-400 hover:text-zinc-600 cursor-pointer">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddItem} className="p-5 space-y-3.5 text-xs">
-              <div>
-                <label className="block text-zinc-700 font-semibold mb-1">Kategori RAB</label>
-                <select
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none text-zinc-900 font-medium transition"
-                >
-                  <option value="RAB KONSUMSI">RAB Konsumsi</option>
-                  <option value="RAB POSKO/KEBERSIHAN">RAB Posko & Kebersihan</option>
-                  <option value="RAB TRANSPORTASI">RAB Transportasi</option>
-                  <option value="RAB LANGGANAN">RAB Langganan</option>
-                  <option value="RAB SEKRE">RAB Sekretariat</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-zinc-700 font-semibold mb-1">Nama Kebutuhan</label>
-                <input
-                  type="text"
-                  placeholder="Contoh: Minyak Goreng, Isi Staples"
-                  value={newKebutuhan}
-                  onChange={(e) => setNewKebutuhan(e.target.value)}
-                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl text-zinc-900 bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5">
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Volume</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={newVolume}
-                    onChange={(e) => setNewVolume(e.target.value)}
-                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl text-center bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition font-medium tabular-nums"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Satuan</label>
-                  <input
-                    type="text"
-                    placeholder="Kg / Hari / Pcs"
-                    value={newSatuan}
-                    onChange={(e) => setNewSatuan(e.target.value)}
-                    className="w-full px-2.5 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
-                    required
-                  />
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-zinc-700 font-semibold mb-1">Harga Satuan (Rupiah)</label>
-                <input
-                  type="number"
-                  placeholder="25000"
-                  value={newHarga}
-                  onChange={(e) => setNewHarga(e.target.value)}
-                  className="w-full px-3 py-2 border border-zinc-200 rounded-xl tabular-nums font-semibold bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none transition"
-                  required
-                />
-              </div>
-
-              <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/80 flex justify-between text-xs">
-                <span className="text-zinc-500 font-medium">Estimasi Jumlah:</span>
-                <span className="font-bold tabular-nums text-zinc-950">
-                  {formatRupiah((Number(newVolume) || 1) * (Number(newHarga) || 0))}
+              {/* Footer Subtotal Tabel */}
+              <div className="px-4 py-2.5 bg-zinc-50/70 border-t border-zinc-200/90 flex items-center justify-between text-xs font-semibold text-zinc-950">
+                <span className="text-zinc-500 font-medium">
+                  Subtotal {cat.category.replace('RAB ', '')} ({cat.items.length} kebutuhan)
+                </span>
+                <span className="font-bold tabular-nums text-emerald-700 text-sm">
+                  {formatRupiah(subtotalCat)}
                 </span>
               </div>
+            </div>
+          );
+        })}
+      </div>
 
-              <div className="pt-2 flex items-center justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-zinc-200 text-zinc-600 hover:bg-zinc-100 font-semibold transition cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-semibold transition disabled:opacity-50 cursor-pointer shadow-xs"
-                >
-                  {submitting ? 'Menyimpan...' : 'Simpan Item'}
-                </button>
-              </div>
-            </form>
-          </div>
+      {filteredCategories.length === 0 && (
+        <div className="bg-white rounded-2xl border border-zinc-200/90 p-12 text-center text-xs text-zinc-400">
+          {loading ? 'Memuat data RAB Kebutuhan Harian dari Google Spreadsheet...' : 'Belum ada data RAB Kebutuhan Harian dari Google Spreadsheet.'}
         </div>
       )}
 
