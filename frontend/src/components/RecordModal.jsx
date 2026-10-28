@@ -21,8 +21,8 @@ export default function RecordModal({ isOpen, onClose }) {
 
   // Pemasukan specific
   const [sumberTipe, setSumberTipe] = useState('anggota'); // 'anggota' or 'lain'
-  const [member, setMember] = useState('SARAH');
-  const [bulanIuran, setBulanIuran] = useState('SEPTEMBER/OKTOBER');
+  const [member, setMember] = useState('AFRIA');
+  const [bulanIuran, setBulanIuran] = useState('NOVEMBER/DESEMBER');
   const [metode, setMetode] = useState('Transfer');
   const [nominalMasuk, setNominalMasuk] = useState('');
 
@@ -123,31 +123,39 @@ export default function RecordModal({ isOpen, onClose }) {
         if (jenis === 'Pemasukan') {
           if (sumberTipe === 'anggota') {
             const mem = next.kartuIuran.members.find(m => m.name === member);
-            if (mem && mem.months[bulanIuran]) {
+            if (mem) {
+              if (!mem.months) mem.months = {};
+              if (!mem.months[bulanIuran]) {
+                mem.months[bulanIuran] = { entries: [], subtotal: 0 };
+              }
               mem.months[bulanIuran].entries.push({
                 slot: mem.months[bulanIuran].entries.length + 1,
                 tanggal: tanggal,
                 nominal: calculatedNominal,
                 metode: metode
               });
-              mem.months[bulanIuran].subtotal += calculatedNominal;
-              mem.total += calculatedNominal;
-              next.kartuIuran.totalDanaKelompok += calculatedNominal;
-              next.kartuIuran.totalBersih += calculatedNominal;
+              mem.months[bulanIuran].subtotal = (Number(mem.months[bulanIuran].subtotal) || 0) + calculatedNominal;
+              mem.total = (Number(mem.total) || 0) + calculatedNominal;
+              next.kartuIuran.totalDanaKelompok = (Number(next.kartuIuran.totalDanaKelompok) || 0) + calculatedNominal;
+              next.kartuIuran.totalBersih = (Number(next.kartuIuran.totalBersih) || 0) + calculatedNominal;
             }
           } else {
             const pLain = next.kartuIuran.pendapatanLain;
-            if (pLain && pLain.months[bulanIuran]) {
+            if (pLain) {
+              if (!pLain.months) pLain.months = {};
+              if (!pLain.months[bulanIuran]) {
+                pLain.months[bulanIuran] = { entries: [], subtotal: 0 };
+              }
               pLain.months[bulanIuran].entries.push({
                 slot: pLain.months[bulanIuran].entries.length + 1,
                 tanggal: tanggal,
                 nominal: calculatedNominal,
                 keterangan: payload.deskripsi
               });
-              pLain.months[bulanIuran].subtotal += calculatedNominal;
-              pLain.total += calculatedNominal;
-              next.kartuIuran.totalDanaKelompok += calculatedNominal;
-              next.kartuIuran.totalBersih += calculatedNominal;
+              pLain.months[bulanIuran].subtotal = (Number(pLain.months[bulanIuran].subtotal) || 0) + calculatedNominal;
+              pLain.total = (Number(pLain.total) || 0) + calculatedNominal;
+              next.kartuIuran.totalDanaKelompok = (Number(next.kartuIuran.totalDanaKelompok) || 0) + calculatedNominal;
+              next.kartuIuran.totalBersih = (Number(next.kartuIuran.totalBersih) || 0) + calculatedNominal;
             }
           }
         }
@@ -156,9 +164,12 @@ export default function RecordModal({ isOpen, onClose }) {
       });
 
       // 2. Kirim ke Backend / Google Apps Script
-      await recordIntegratedTransaction(payload, role);
+      const res = await recordIntegratedTransaction(payload, role);
+      if (res && res.status === 'error') {
+        throw new Error(res.data?.message || res.message || 'Gagal menyimpan transaksi ke Spreadsheet');
+      }
 
-      showToast(`Transaksi berhasil dicatat dan terhubung otomatis.`, 'success');
+      showToast(`Transaksi berhasil dicatat dan disinkronkan ke Spreadsheet.`, 'success');
       onClose();
       refreshLogs();
       refreshData(true); // realtime background sync
@@ -365,7 +376,19 @@ export default function RecordModal({ isOpen, onClose }) {
                   onChange={(e) => setBulanIuran(e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-xl bg-zinc-50 focus:bg-white focus:border-zinc-400 focus:outline-none text-zinc-900 font-medium transition"
                 >
-                  {['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER'].map(m => (
+                  {[
+                    'NOVEMBER/DESEMBER',
+                    'SEPTEMBER/OKTOBER',
+                    'AGUSTUS',
+                    'JULI',
+                    'JUNI',
+                    'MEI',
+                    'APRIL',
+                    'MARET',
+                    'FEBRUARI',
+                    'NOVEMBER',
+                    'DESEMBER'
+                  ].map(m => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>

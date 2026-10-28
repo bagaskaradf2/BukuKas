@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { formatRupiah, formatDate, formatNumber } from '../utils/formatters';
 import { Search, ChevronRight, ChevronDown, CheckCircle2, AlertCircle } from 'lucide-react';
 
-const MONTHS = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER'];
+const MONTHS = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER', 'NOVEMBER/DESEMBER'];
 const TARGET_PER_MEMBER = 1600000;
 
 export default function KartuIuran() {
@@ -104,7 +104,7 @@ export default function KartuIuran() {
                       <td className="py-3 px-3 font-semibold text-zinc-900">{m.name}</td>
                       {MONTHS.map(monthKey => {
                         if (selectedMonth !== 'ALL' && selectedMonth !== monthKey) return null;
-                        const sub = m.months[monthKey]?.subtotal || 0;
+                        const sub = m.months?.[monthKey]?.subtotal || 0;
                         return (
                           <td key={monthKey} className="py-3 px-3 text-right tabular-nums text-zinc-700 font-medium">
                             {sub > 0 ? formatNumber(sub) : '-'}
@@ -147,7 +147,7 @@ export default function KartuIuran() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                               {MONTHS.map(mKey => {
-                                const mData = m.months[mKey] || { entries: [], subtotal: 0 };
+                                const mData = m.months?.[mKey] || { entries: [], subtotal: 0 };
                                 if (mData.entries.length === 0) return null;
 
                                 return (

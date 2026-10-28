@@ -594,7 +594,9 @@ function handleAddIuran(ss, p) {
   };
   const monthColMap = {
     'FEBRUARI': 1, 'MARET': 5, 'APRIL': 9, 'MEI': 13,
-    'JUNI': 17, 'JULI': 21, 'AGUSTUS': 25, 'SEPTEMBER': 29, 'SEPTEMBER/OKTOBER': 29, 'OKTOBER': 29
+    'JUNI': 17, 'JULI': 21, 'AGUSTUS': 25,
+    'SEPTEMBER': 29, 'SEPTEMBER/OKTOBER': 29, 'OKTOBER': 29,
+    'NOVEMBER': 29, 'DESEMBER': 29, 'NOVEMBER/DESEMBER': 29
   };
 
   const rStart = memberRowMap[memberName];
@@ -630,7 +632,9 @@ function handleAddLainLainIuran(ss, p) {
 
   const monthColMap = {
     'FEBRUARI': 1, 'MARET': 5, 'APRIL': 9, 'MEI': 13,
-    'JUNI': 17, 'JULI': 21, 'AGUSTUS': 25, 'SEPTEMBER': 29, 'SEPTEMBER/OKTOBER': 29, 'OKTOBER': 29
+    'JUNI': 17, 'JULI': 21, 'AGUSTUS': 25,
+    'SEPTEMBER': 29, 'SEPTEMBER/OKTOBER': 29, 'OKTOBER': 29,
+    'NOVEMBER': 29, 'DESEMBER': 29, 'NOVEMBER/DESEMBER': 29
   };
   const cStart = monthColMap[monthName] || 29;
 

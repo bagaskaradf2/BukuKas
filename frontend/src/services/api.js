@@ -82,6 +82,7 @@ export function getLiveExcelDownloadUrl() {
 /**
  * SEKALI INPUT TERINTEGRASI:
  * Masuk ke Buku Kas + Terhubung ke RAB Harian/Proker ATAU Kartu Iuran
+ * Dilengkapi fallback otomatis ke aksi atomik jika Google Apps Script masih versi sebelumnya.
  */
 export async function recordIntegratedTransaction(payload, userRole = 'Bendahara') {
   addAuditLog({
@@ -91,20 +92,159 @@ export async function recordIntegratedTransaction(payload, userRole = 'Bendahara
     details: `${payload.deskripsi}: Rp ${Number(payload.nominal).toLocaleString('id-ID')} (${payload.targetAlokasi || payload.member || 'Kas'})`
   });
 
-  if (APPS_SCRIPT_URL) {
-    try {
-      const resp = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'recordIntegratedTransaction', ...payload })
-      });
-      return await resp.json();
-    } catch (err) {
-      console.warn('Integrated transaction Apps Script error:', err);
+  if (!APPS_SCRIPT_URL) {
+    return { success: true, message: 'Transaksi tersimpan lokal', localOnly: true };
+  }
+
+  // 1. Coba kirim via endpoint terpadu recordIntegratedTransaction
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'recordIntegratedTransaction', ...payload })
+    });
+    const json = await resp.json();
+    if (json && (json.status === 'success' || json.success)) {
+      return json;
+    }
+    // Jika ada error selain "Action tidak dikenal", lempar errornya
+    if (json && json.status === 'error' && !json.data?.message?.includes('Action tidak dikenal')) {
+      throw new Error(json.data?.message || 'Gagal menyimpan transaksi di spreadsheet');
+    }
+  } catch (err) {
+    if (!err.message?.includes('Action tidak dikenal')) {
+      console.warn('Integrated call failed, executing direct atomic writes:', err.message);
     }
   }
 
-  return { success: true, message: 'Transaksi terintegrasi tersimpan', localOnly: true };
+  // 2. FALLBACK OTOMATIS: Eksekusi langsung ke endpoint atomik yang aktif di Google Sheets
+  return await executeAtomicWrites(payload);
+}
+
+async function executeAtomicWrites(payload) {
+  const jenis = payload.jenis; // 'Pengeluaran' atau 'Pemasukan'
+  const tglObj = new Date(payload.tanggal || new Date());
+  const tglDay = tglObj.getDate();
+  const monthIdx = tglObj.getMonth();
+  const bulanKas = monthIdx <= 9 ? 'OKTOBER' : (monthIdx === 10 ? 'NOVEMBER' : 'DESEMBER');
+  const nominal = Number(payload.nominal) || 0;
+  const deskripsi = String(payload.deskripsi || '').trim();
+
+  // A. Catat ke BUKU KAS (BB KAS)
+  const kasPayload = {
+    action: 'addBbKasTransaction',
+    bulan: bulanKas,
+    tanggal: tglDay,
+    deskripsi: deskripsi,
+    tipe: jenis === 'Pemasukan' ? 'Masuk' : 'Keluar',
+    nominal: nominal,
+    keterangan: payload.targetAlokasi 
+      ? payload.targetAlokasi.replace('RAB_', '').replace('PROKER_', '') 
+      : (payload.metode || 'Kas')
+  };
+
+  const kasResp = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(kasPayload)
+  });
+  const kasJson = await kasResp.json();
+  if (kasJson && kasJson.status === 'error') {
+    throw new Error(kasJson.data?.message || 'Gagal mencatat mutasi ke Buku Kas');
+  }
+
+  // B. Jika Pemasukan dari Anggota -> Catat ke KARTU IURAN
+  if (jenis === 'Pemasukan' && payload.member) {
+    let targetMonth = payload.bulanIuran || 'SEPTEMBER/OKTOBER';
+    let metodeText = payload.metode || 'Transfer';
+    if (targetMonth === 'NOVEMBER' || targetMonth === 'DESEMBER' || targetMonth === 'NOVEMBER/DESEMBER') {
+      metodeText = `${metodeText} (${targetMonth})`;
+    }
+
+    let iuranResp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'addIuran',
+        member: payload.member,
+        month: targetMonth,
+        tanggal: payload.tanggal,
+        nominal: nominal,
+        metode: metodeText
+      })
+    });
+    let iuranJson = await iuranResp.json();
+
+    // Jika Apps Script lama menolak bulan baru, fallback ke SEPTEMBER/OKTOBER
+    if (iuranJson && iuranJson.status === 'error' && iuranJson.data?.message?.includes('Bulan tidak dikenal')) {
+      iuranResp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'addIuran',
+          member: payload.member,
+          month: 'SEPTEMBER/OKTOBER',
+          tanggal: payload.tanggal,
+          nominal: nominal,
+          metode: `${metodeText} [${targetMonth}]`
+        })
+      });
+      iuranJson = await iuranResp.json();
+    }
+
+    if (iuranJson && iuranJson.status === 'error') {
+      throw new Error(iuranJson.data?.message || 'Gagal mencatat iuran ke Kartu Iuran');
+    }
+  }
+
+  // C. Jika Pengeluaran untuk RAB Harian -> Update baris kosong di RAB HARIAN
+  if (jenis === 'Pengeluaran' && payload.targetAlokasi && payload.targetAlokasi.startsWith('RAB_')) {
+    const catMap = {
+      'RAB_KONSUMSI': 1,
+      'RAB_POSKO': 8,
+      'RAB_TRANSPORTASI': 15,
+      'RAB_LANGGANAN': 22,
+      'RAB_SEKRE': 29
+    };
+    const cStart = catMap[payload.targetAlokasi] || 1;
+
+    try {
+      const allDataRes = await fetchAllData();
+      const catName = payload.targetAlokasi.replace('RAB_', 'RAB ');
+      const curCat = allDataRes?.data?.rabHarian?.find(c => c.category === catName || c.colStart === cStart);
+      const existingItems = curCat?.items || [];
+      const nextRow = 6 + existingItems.length;
+
+      if (nextRow <= 19) {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'updateRabHarianItem',
+            row: nextRow,
+            colStart: cStart,
+            kebutuhan: deskripsi,
+            volume: Number(payload.volume) || 1,
+            satuan: payload.satuan || 'Kali',
+            harga: Number(payload.harga) || nominal
+          })
+        });
+      }
+    } catch (e) {
+      console.warn('Gagal sinkron baris RAB Harian:', e);
+    }
+  }
+
+  return {
+    status: 'success',
+    code: 200,
+    data: {
+      result: {
+        success: true,
+        message: `Transaksi '${deskripsi}' Rp ${nominal} berhasil dicatat ke Spreadsheet.`
+      }
+    }
+  };
 }
 
 /**

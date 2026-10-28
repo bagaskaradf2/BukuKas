@@ -42,6 +42,19 @@ function normalizeData(rawData) {
     });
   }
 
+  // 4. Pastikan kartu iuran anggota memiliki struktur bulan lengkap (termasuk NOVEMBER/DESEMBER)
+  if (clean.kartuIuran && Array.isArray(clean.kartuIuran.members)) {
+    const allMonths = ['FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER/OKTOBER', 'NOVEMBER/DESEMBER'];
+    clean.kartuIuran.members.forEach(mem => {
+      if (!mem.months) mem.months = {};
+      allMonths.forEach(mKey => {
+        if (!mem.months[mKey]) {
+          mem.months[mKey] = { entries: [], subtotal: 0 };
+        }
+      });
+    });
+  }
+
   return clean;
 }
 
