@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { getLiveExcelDownloadUrl, getLiveSpreadsheetUrl } from '../services/api';
-import { Download, Shield, ExternalLink, LogIn, LogOut } from 'lucide-react';
+import { Download, ExternalLink, LogIn, LogOut } from 'lucide-react';
 
 const TABS = [
   { id: 'DASHBOARD', label: 'Dashboard' },
@@ -83,21 +83,15 @@ export default function Navbar() {
                   <span>Spreadsheet</span>
                 </a>
 
-                {/* Badge Status Bendahara & Tombol Keluar */}
-                <div className="flex items-center space-x-1">
-                  <span className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 text-zinc-800 text-xs font-semibold">
-                    <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Bendahara</span>
-                  </span>
-                  <button
-                    onClick={logout}
-                    title="Keluar dari akun Bendahara"
-                    className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-zinc-200 text-zinc-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 text-xs font-medium transition cursor-pointer"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Keluar</span>
-                  </button>
-                </div>
+                {/* Tombol Keluar (Logout) */}
+                <button
+                  onClick={logout}
+                  title="Keluar dari akun Bendahara"
+                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 text-zinc-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 text-xs font-medium transition cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Keluar</span>
+                </button>
               </div>
             ) : (
               /* Mode Pembaca: Tombol Login Bendahara */
