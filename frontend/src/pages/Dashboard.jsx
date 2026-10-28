@@ -2,13 +2,13 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { formatRupiah } from '../utils/formatters';
 import { getLiveSpreadsheetUrl } from '../services/api';
+import ExpenseDonutChart from '../components/ExpenseDonutChart';
 import { 
   ArrowRight, 
   Plus, 
   ArrowDownLeft, 
   ArrowUpRight, 
   Wallet, 
-  CheckCircle2, 
   AlertCircle,
   ExternalLink
 } from 'lucide-react';
@@ -154,75 +154,14 @@ export default function Dashboard() {
 
       </div>
 
-      {/* 2 Main Sections: Status Iuran & Mutasi Kas */}
+      {/* 2 Main Sections: Distribusi Pengeluaran (Donut Chart) & Mutasi Kas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
-        {/* Status Iuran Anggota */}
-        <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden">
-          <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
-            <div>
-              <h2 className="font-bold text-sm text-zinc-950">
-                Status Iuran Anggota
-              </h2>
-              <span className="text-xs text-zinc-400 font-normal">
-                Target iuran: <strong className="text-zinc-700 font-semibold">{formatRupiah(TARGET_PER_MEMBER)}</strong> / orang
-              </span>
-            </div>
-            <button
-              onClick={() => setActiveTab('KARTU IURAN')}
-              className="text-xs text-zinc-500 hover:text-zinc-950 font-semibold inline-flex items-center space-x-1 cursor-pointer transition"
-            >
-              <span>Detail</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="divide-y divide-zinc-100">
-            {members.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-400">
-                {loading ? 'Memuat data anggota...' : 'Belum ada data anggota dari spreadsheet.'}
-              </div>
-            ) : (
-              members.map((m, idx) => {
-                const current = Number(m.total) || 0;
-                const isOver = current > TARGET_PER_MEMBER;
-                const isLunas = current >= TARGET_PER_MEMBER;
-
-                return (
-                  <div key={idx} className="px-5 py-3.5 flex items-center justify-between text-xs hover:bg-zinc-50/60 transition">
-                    <div className="flex items-center space-x-3 min-w-0">
-                      <span className="w-7 h-7 rounded-full bg-zinc-100 text-zinc-600 font-semibold text-xs flex items-center justify-center shrink-0">
-                        {idx + 1}
-                      </span>
-                      <span className="font-semibold text-zinc-900 truncate">{m.name}</span>
-                    </div>
-
-                    <div className="flex items-center space-x-3 text-right">
-                      <span className="tabular-nums font-bold text-zinc-950">
-                        {formatRupiah(current)}
-                      </span>
-                      {isOver ? (
-                        <span className="inline-flex items-center text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                          Lunas (Lebih)
-                        </span>
-                      ) : isLunas ? (
-                        <span className="inline-flex items-center text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                          <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
-                          Lunas
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center text-[10px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
-                          <AlertCircle className="w-2.5 h-2.5 mr-1" />
-                          Kurang {formatRupiah(TARGET_PER_MEMBER - current)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
+        {/* Distribusi Pengeluaran - Diagram Donut & Rincian Kategori */}
+        <ExpenseDonutChart 
+          bbKas={data?.bbKas || {}} 
+          onNavigateToKas={() => setActiveTab('BB KAS')} 
+        />
 
         {/* Mutasi Kas Terkini */}
         <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden">

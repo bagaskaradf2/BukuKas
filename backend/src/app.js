@@ -204,4 +204,37 @@ app.post('/api/bb-kas', async (req, res) => {
   res.json({ success: true, message: 'Transaksi kas berhasil dicatat', tx: newTx, localOnly: !APPS_SCRIPT_URL });
 });
 
+// Update BB KAS transaction
+app.put('/api/bb-kas', async (req, res) => {
+  const { bulan, row, tanggal, deskripsi, masuk, keluar, keterangan, user } = req.body;
+  if (!row || !deskripsi) {
+    return res.status(400).json({ error: 'Row dan deskripsi wajib diisi' });
+  }
+
+  auditLogs.unshift({
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    user: user || 'Bendahara',
+    action: 'EDIT_KAS',
+    sheet: 'BB KAS',
+    details: `${bulan || 'OKTOBER'} baris ${row} diubah: ${deskripsi} (M: ${masuk}, K: ${keluar})`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'updateBbKasTransaction', bulan, row, tanggal, deskripsi, masuk, keluar, keterangan })
+      });
+      const result = await resp.json();
+      return res.json(result);
+    } catch (err) {
+      console.warn('Apps script update failed:', err.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Transaksi kas berhasil diperbarui', localOnly: !APPS_SCRIPT_URL });
+});
+
 export default app;

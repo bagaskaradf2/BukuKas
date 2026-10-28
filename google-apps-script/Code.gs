@@ -85,6 +85,9 @@ function doPost(e) {
       case 'addBbKasTransaction':
         result = handleAddBbKasTransaction(ss, payload);
         break;
+      case 'updateBbKasTransaction':
+        result = handleUpdateBbKasTransaction(ss, payload);
+        break;
       case 'updateRabHarianItem':
         result = handleUpdateRabHarianItem(ss, payload);
         break;
@@ -712,6 +715,51 @@ function handleAddBbKasTransaction(ss, p) {
   }
 
   return { success: true, row: targetRow };
+}
+
+function handleUpdateBbKasTransaction(ss, p) {
+  const sheet = ss.getSheetByName('BB KAS');
+  if (!sheet) return { error: "Sheet BB KAS tidak ditemukan" };
+
+  const bulan = String(p.bulan || 'OKTOBER').trim().toUpperCase();
+  const row = Number(p.row);
+  if (!row) return { error: "Row tidak valid" };
+
+  const monthColMap = {
+    'OKTOBER': 1,
+    'NOVEMBER': 9,
+    'DESEMBER': 17
+  };
+  const cStart = monthColMap[bulan] || 1;
+
+  if (p.tanggal !== undefined && p.tanggal !== null) {
+    sheet.getRange(row, cStart + 1).setValue(p.tanggal);
+  }
+  if (p.deskripsi !== undefined) {
+    sheet.getRange(row, cStart + 2).setValue(String(p.deskripsi).trim());
+  }
+  if (p.masuk !== undefined) {
+    sheet.getRange(row, cStart + 3).setValue(Number(p.masuk) || 0);
+  }
+  if (p.keluar !== undefined) {
+    sheet.getRange(row, cStart + 4).setValue(Number(p.keluar) || 0);
+  }
+  if (p.keterangan !== undefined) {
+    sheet.getRange(row, cStart + 6).setValue(String(p.keterangan).trim());
+  }
+
+  // Jaga rumus saldo di kolom F (Okt), N (Nov), atau V (Des)
+  const saldoColLetter = cStart === 1 ? 'F' : (cStart === 9 ? 'N' : 'V');
+  const masukColLetter = cStart === 1 ? 'D' : (cStart === 9 ? 'L' : 'T');
+  const keluarColLetter = cStart === 1 ? 'E' : (cStart === 9 ? 'M' : 'U');
+  const prevRow = row - 1;
+  const saldoCell = sheet.getRange(row, cStart + 5);
+  const currentFormula = saldoCell.getFormula();
+  if (!currentFormula || currentFormula.indexOf('#REF!') !== -1) {
+    saldoCell.setFormula('=' + saldoColLetter + prevRow + '+' + masukColLetter + row + '-' + keluarColLetter + row);
+  }
+
+  return { success: true, row: row };
 }
 
 function handleUpdateRabHarianItem(ss, p) {

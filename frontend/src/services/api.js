@@ -409,3 +409,49 @@ export async function updateFotoStudio(payload, userRole = 'Bendahara') {
 
   return { success: true, message: 'Data foto studio tersimpan lokal', localOnly: true };
 }
+
+export async function updateBbKasTransaction(payload, userRole = 'Bendahara') {
+  addAuditLog({
+    user: userRole,
+    action: 'EDIT_KAS',
+    sheet: 'BB KAS',
+    details: `${payload.bulan} baris ${payload.row}: ${payload.deskripsi} (M: ${payload.masuk}, K: ${payload.keluar})`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateBbKasTransaction',
+          bulan: payload.bulan,
+          row: payload.row,
+          tanggal: payload.tanggal,
+          deskripsi: payload.deskripsi,
+          masuk: Number(payload.masuk) || 0,
+          keluar: Number(payload.keluar) || 0,
+          keterangan: payload.keterangan || ''
+        })
+      });
+      const json = await resp.json();
+      return json;
+    } catch (err) {
+      console.warn('Apps script update error:', err);
+    }
+  }
+
+  // Fallback to proxy
+  try {
+    const resp = await fetch('/api/bb-kas', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, user: userRole })
+    });
+    if (resp.ok) return await resp.json();
+  } catch (err) {
+    console.warn('Proxy update error:', err);
+  }
+
+  return { success: true, message: 'Transaksi kas diperbarui secara lokal', localOnly: true };
+}

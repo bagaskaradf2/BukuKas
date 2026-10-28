@@ -154,6 +154,41 @@ export function AppProvider({ children }) {
     setLogs(getAuditLogs());
   };
 
+  const updateBbKasRowLocal = useCallback((bulan, updatedTx) => {
+    setData((prev) => {
+      if (!prev || !prev.bbKas) return prev;
+      const next = JSON.parse(JSON.stringify(prev));
+      const list = next.bbKas[bulan] || [];
+      const idx = list.findIndex(t => t.row === updatedTx.row);
+      if (idx !== -1) {
+        list[idx] = {
+          ...list[idx],
+          tanggal: Number(updatedTx.tanggal) || list[idx].tanggal,
+          deskripsi: updatedTx.deskripsi,
+          masuk: Number(updatedTx.masuk) || 0,
+          keluar: Number(updatedTx.keluar) || 0,
+          keterangan: updatedTx.keterangan || ''
+        };
+      }
+
+      // Hitung ulang saldo kumulatif secara kronologis
+      if (list.length > 0) {
+        let runningSaldo = Number(list[0].masuk) || Number(list[0].saldo) || 0;
+        list[0].saldo = runningSaldo;
+        for (let i = 1; i < list.length; i++) {
+          const m = Number(list[i].masuk) || 0;
+          const k = Number(list[i].keluar) || 0;
+          runningSaldo = runningSaldo + m - k;
+          list[i].saldo = runningSaldo;
+        }
+      }
+
+      next.bbKas[bulan] = list;
+      return next;
+    });
+    setLogs(getAuditLogs());
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -177,7 +212,8 @@ export function AppProvider({ children }) {
         auditLogs: logs,
         refreshLogs: () => setLogs(getAuditLogs()),
         isRecordModalOpen,
-        setIsRecordModalOpen
+        setIsRecordModalOpen,
+        updateBbKasRowLocal
       }}
     >
       {children}
