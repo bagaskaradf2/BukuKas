@@ -237,4 +237,37 @@ app.put('/api/bb-kas', async (req, res) => {
   res.json({ success: true, message: 'Transaksi kas berhasil diperbarui', localOnly: !APPS_SCRIPT_URL });
 });
 
+// Delete BB KAS transaction
+app.delete('/api/bb-kas', async (req, res) => {
+  const { bulan, row, user } = req.body;
+  if (!row) {
+    return res.status(400).json({ error: 'Row wajib diisi' });
+  }
+
+  auditLogs.unshift({
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    user: user || 'Bendahara',
+    action: 'HAPUS_KAS',
+    sheet: 'BB KAS',
+    details: `${bulan || 'OKTOBER'} baris ${row} dihapus`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'deleteBbKasTransaction', bulan, row })
+      });
+      const result = await resp.json();
+      return res.json(result);
+    } catch (err) {
+      console.warn('Apps script delete failed:', err.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Transaksi kas berhasil dihapus', localOnly: !APPS_SCRIPT_URL });
+});
+
 export default app;

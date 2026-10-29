@@ -189,6 +189,36 @@ export function AppProvider({ children }) {
     setLogs(getAuditLogs());
   }, []);
 
+  const deleteBbKasRowLocal = useCallback((bulan, row) => {
+    setData((prev) => {
+      if (!prev || !prev.bbKas) return prev;
+      const next = JSON.parse(JSON.stringify(prev));
+      const list = next.bbKas[bulan] || [];
+      const filtered = list.filter(t => t.row !== row);
+
+      // Re-assign row numbers to maintain alignment with Google Sheets
+      for (let i = 0; i < filtered.length; i++) {
+        filtered[i].row = i + 7;
+      }
+
+      // Hitung ulang saldo kumulatif
+      if (filtered.length > 0) {
+        let runningSaldo = Number(filtered[0].masuk) || Number(filtered[0].saldo) || 0;
+        filtered[0].saldo = runningSaldo;
+        for (let i = 1; i < filtered.length; i++) {
+          const m = Number(filtered[i].masuk) || 0;
+          const k = Number(filtered[i].keluar) || 0;
+          runningSaldo = runningSaldo + m - k;
+          filtered[i].saldo = runningSaldo;
+        }
+      }
+
+      next.bbKas[bulan] = filtered;
+      return next;
+    });
+    setLogs(getAuditLogs());
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -213,7 +243,9 @@ export function AppProvider({ children }) {
         refreshLogs: () => setLogs(getAuditLogs()),
         isRecordModalOpen,
         setIsRecordModalOpen,
-        updateBbKasRowLocal
+        updateBbKasRowLocal,
+        deleteBbKasRowLocal,
+        normalizeData
       }}
     >
       {children}

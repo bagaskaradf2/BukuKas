@@ -1,11 +1,31 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { formatRupiah } from '../utils/formatters';
-import { updateBbKasTransaction } from '../services/api';
-import { Search, Pencil, Check, X, Loader2 } from 'lucide-react';
+import { updateBbKasTransaction, deleteBbKasTransaction } from '../services/api';
+import { Search, Pencil, Trash2, Check, X, Loader2, AlertTriangle } from 'lucide-react';
+
+const POS_ALOKASI_OPTIONS = [
+  'Konsumsi',
+  'Operasional Posko',
+  'Transportasi',
+  'Media & Digital',
+  'Sekretariat & Atribut',
+  'Seragam Anggota',
+  'Proker Pendataan Masyarakat',
+  'Proker Bimbingan Belajar',
+  'Proker Tambahan',
+  'Proker Plang Edukatif',
+  'Proker TPA',
+  'Proker Kaca Cembung',
+  'Proker Jalan Sehat',
+  'Proker Peta Bencana',
+  'Proker Pengelolaan Sampah',
+  'Kas',
+  'Lain-Lain'
+];
 
 export default function BbKas() {
-  const { data, loading, role, showToast, updateBbKasRowLocal } = useApp();
+  const { data, setData, normalizeData, loading, role, showToast, updateBbKasRowLocal, deleteBbKasRowLocal, refreshData } = useApp();
   const bbKas = data?.bbKas || {};
 
   const [activeMonth, setActiveMonth] = useState('OKTOBER');
@@ -15,6 +35,10 @@ export default function BbKas() {
   // Edit State
   const [editingRow, setEditingRow] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Delete State
+  const [txToDelete, setTxToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const currentMonthTxs = bbKas[activeMonth] || [];
 
@@ -62,7 +86,9 @@ export default function BbKas() {
       deskripsi: deskripsiTrimmed,
       masuk: Number(editingRow.masuk) || 0,
       keluar: Number(editingRow.keluar) || 0,
-      keterangan: String(editingRow.keterangan || '').trim()
+      keterangan: String(editingRow.keterangan || '').trim(),
+      alokasi: String(editingRow.keterangan || '').trim(),
+      targetAlokasi: String(editingRow.keterangan || '').trim()
     };
 
     setIsSaving(true);
@@ -74,10 +100,15 @@ export default function BbKas() {
 
       // 2. Kirim update ke Google Spreadsheet
       const res = await updateBbKasTransaction(payload, role);
-      if (res && res.error) {
-        showToast(`Tersimpan lokal: ${res.error}`, 'warning');
+      if (res && (res.status === 'error' || res.code === 400 || res.code === 500)) {
+        showToast(res.data?.message || res.message || 'Gagal menyimpan ke spreadsheet', 'error');
       } else {
-        showToast('Transaksi Buku Kas berhasil diperbarui di spreadsheet', 'success');
+        showToast('Transaksi & Alokasi Pos berhasil disimpan di spreadsheet', 'success');
+        if (res && res.data && res.data.freshData && setData && normalizeData) {
+          setData(normalizeData(res.data.freshData));
+        } else if (refreshData) {
+          refreshData(true);
+        }
       }
       setEditingRow(null);
     } catch (err) {
@@ -89,9 +120,53 @@ export default function BbKas() {
     }
   };
 
+  const handleConfirmDelete = async () => {
+    if (!txToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      // 1. Optimistic remove locally
+      if (deleteBbKasRowLocal) {
+        deleteBbKasRowLocal(activeMonth, txToDelete.row);
+      }
+
+      // 2. Call API to delete in Google Spreadsheet
+      const res = await deleteBbKasTransaction({
+        bulan: activeMonth,
+        row: txToDelete.row,
+        deskripsi: txToDelete.deskripsi
+      }, role);
+
+      if (res && (res.status === 'error' || res.code === 400 || res.code === 500)) {
+        showToast(res.data?.message || res.message || 'Gagal menghapus dari spreadsheet', 'error');
+      } else {
+        showToast(`Transaksi "${txToDelete.deskripsi}" berhasil dihapus`, 'success');
+        if (res && res.data && res.data.freshData && setData && normalizeData) {
+          setData(normalizeData(res.data.freshData));
+        } else if (refreshData) {
+          refreshData(true);
+        }
+      }
+      setTxToDelete(null);
+    } catch (err) {
+      console.warn('Gagal hapus transaksi di spreadsheet:', err);
+      showToast('Dihapus dari aplikasi lokal, gagal sinkron ke sheet', 'warning');
+      setTxToDelete(null);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-4 pb-10">
       
+      {/* Pos Alokasi Datalist Suggestions */}
+      <datalist id="pos-alokasi-list">
+        {POS_ALOKASI_OPTIONS.map((opt) => (
+          <option key={opt} value={opt} />
+        ))}
+      </datalist>
+
       {/* Month Selector & Title */}
       <div className="bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -101,7 +176,7 @@ export default function BbKas() {
             </h1>
             {role === 'Bendahara' && (
               <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                Mode Edit Aktif
+                Mode Bendahara Aktif (Edit & Hapus)
               </span>
             )}
           </div>
@@ -164,7 +239,7 @@ export default function BbKas() {
           <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Cari transaksi atau pos pengeluaran..."
+            placeholder="Cari transaksi atau alokasi pos..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 bg-zinc-50 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 focus:bg-white transition"
@@ -196,9 +271,9 @@ export default function BbKas() {
                 <th className="py-3 px-3 text-right w-32 text-emerald-800">Uang Masuk</th>
                 <th className="py-3 px-3 text-right w-32 text-rose-800">Uang Keluar</th>
                 <th className="py-3 px-4 text-right w-36 font-bold text-zinc-950 bg-zinc-100/60">Saldo Kas</th>
-                <th className="py-3 px-3 w-36">Alokasi / Pos</th>
+                <th className="py-3 px-3 w-40">Alokasi / Pos</th>
                 {role === 'Bendahara' && (
-                  <th className="py-3 px-3 text-center w-20">Aksi</th>
+                  <th className="py-3 px-3 text-center w-36">Aksi</th>
                 )}
               </tr>
             </thead>
@@ -206,6 +281,7 @@ export default function BbKas() {
               {filteredTxs.length > 0 ? (
                 filteredTxs.map((tx, idx) => {
                   const isEditing = editingRow && editingRow.row === tx.row;
+                  const isInitialBalance = tx.row === 7 || tx.deskripsi === 'Dana Kas Awal';
 
                   if (isEditing) {
                     return (
@@ -277,14 +353,15 @@ export default function BbKas() {
                           )}
                         </td>
 
-                        {/* Keterangan / Alokasi Input */}
+                        {/* Keterangan / Alokasi Pos Input (dengan Datalist Autocomplete) */}
                         <td className="py-2 px-2">
                           <input
                             type="text"
+                            list="pos-alokasi-list"
                             value={editingRow.keterangan}
                             onChange={(e) => setEditingRow(prev => ({ ...prev, keterangan: e.target.value }))}
-                            className="w-full px-2.5 py-1 text-xs border border-emerald-300 rounded-lg bg-white text-zinc-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                            placeholder="Alokasi pos..."
+                            className="w-full px-2 py-1 text-xs border border-emerald-300 rounded-lg bg-white font-medium text-zinc-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                            placeholder="Pilih alokasi pos..."
                           />
                         </td>
 
@@ -337,18 +414,39 @@ export default function BbKas() {
                       <td className="py-3 px-4 text-right tabular-nums font-bold text-zinc-950 whitespace-nowrap bg-zinc-50/50">
                         {formatRupiah(tx.saldo)}
                       </td>
-                      <td className="py-3 px-3 text-zinc-600 text-[11px] font-medium">{tx.keterangan || '-'}</td>
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        {tx.keterangan ? (
+                          <span className="inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200/80">
+                            {tx.keterangan}
+                          </span>
+                        ) : (
+                          <span className="text-zinc-300 text-[11px]">-</span>
+                        )}
+                      </td>
                       
                       {role === 'Bendahara' && (
                         <td className="py-2 px-2 text-center whitespace-nowrap">
-                          <button
-                            onClick={() => handleStartEdit(tx)}
-                            className="inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-zinc-500 hover:text-emerald-700 hover:bg-emerald-50 transition cursor-pointer border border-transparent hover:border-emerald-200 text-[11px] font-medium"
-                            title="Edit Transaksi Ini (atau klik ganda)"
-                          >
-                            <Pencil className="w-3 h-3" />
-                            <span>Edit</span>
-                          </button>
+                          <div className="flex items-center justify-center space-x-1">
+                            <button
+                              onClick={() => handleStartEdit(tx)}
+                              className="inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-zinc-600 hover:text-emerald-700 hover:bg-emerald-50 transition cursor-pointer border border-transparent hover:border-emerald-200 text-[11px] font-medium"
+                              title="Edit Transaksi Ini (atau klik ganda baris)"
+                            >
+                              <Pencil className="w-3 h-3 text-zinc-400 group-hover:text-emerald-600" />
+                              <span>Edit</span>
+                            </button>
+
+                            {!isInitialBalance && (
+                              <button
+                                onClick={() => setTxToDelete(tx)}
+                                className="inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition cursor-pointer border border-transparent hover:border-rose-200 text-[11px] font-medium"
+                                title="Hapus Transaksi Ini"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span>Hapus</span>
+                              </button>
+                            )}
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -365,6 +463,77 @@ export default function BbKas() {
           </table>
         </div>
       </div>
+
+      {/* Modal Konfirmasi Hapus Transaksi */}
+      {txToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-zinc-200 space-y-4">
+            <div className="flex items-start space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-zinc-950">Hapus Transaksi Kas?</h3>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Transaksi ini akan dihapus dari Buku Kas dan Google Spreadsheet.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-100 text-xs space-y-1.5">
+              <div className="flex justify-between">
+                <span className="text-zinc-400 font-medium">Deskripsi:</span>
+                <span className="font-semibold text-zinc-900 text-right">{txToDelete.deskripsi}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400 font-medium">Bulan / Tgl:</span>
+                <span className="font-semibold text-zinc-700">{activeMonth} {txToDelete.tanggal || '-'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-400 font-medium">Nominal:</span>
+                <span className={`font-bold tabular-nums ${txToDelete.masuk > 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                  {formatRupiah(txToDelete.masuk > 0 ? txToDelete.masuk : txToDelete.keluar)} ({txToDelete.masuk > 0 ? 'Masuk' : 'Keluar'})
+                </span>
+              </div>
+              {txToDelete.keterangan && (
+                <div className="flex justify-between">
+                  <span className="text-zinc-400 font-medium">Pos / Alokasi:</span>
+                  <span className="font-semibold text-zinc-700">{txToDelete.keterangan}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end space-x-2 pt-1">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setTxToDelete(null)}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-zinc-600 hover:bg-zinc-100 transition cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white transition cursor-pointer shadow-xs inline-flex items-center space-x-1.5 disabled:opacity-50"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Menghapus...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Ya, Hapus</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

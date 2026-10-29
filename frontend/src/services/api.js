@@ -431,7 +431,9 @@ export async function updateBbKasTransaction(payload, userRole = 'Bendahara') {
           deskripsi: payload.deskripsi,
           masuk: Number(payload.masuk) || 0,
           keluar: Number(payload.keluar) || 0,
-          keterangan: payload.keterangan || ''
+          keterangan: payload.keterangan || '',
+          alokasi: payload.keterangan || '',
+          targetAlokasi: payload.keterangan || ''
         })
       });
       const json = await resp.json();
@@ -454,4 +456,45 @@ export async function updateBbKasTransaction(payload, userRole = 'Bendahara') {
   }
 
   return { success: true, message: 'Transaksi kas diperbarui secara lokal', localOnly: true };
+}
+
+export async function deleteBbKasTransaction(payload, userRole = 'Bendahara') {
+  addAuditLog({
+    user: userRole,
+    action: 'HAPUS_KAS',
+    sheet: 'BB KAS',
+    details: `${payload.bulan} baris ${payload.row}: ${payload.deskripsi || ''}`
+  });
+
+  if (APPS_SCRIPT_URL) {
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'deleteBbKasTransaction',
+          bulan: payload.bulan,
+          row: payload.row
+        })
+      });
+      const json = await resp.json();
+      return json;
+    } catch (err) {
+      console.warn('Apps script delete error:', err);
+    }
+  }
+
+  // Fallback to proxy
+  try {
+    const resp = await fetch('/api/bb-kas', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, user: userRole })
+    });
+    if (resp.ok) return await resp.json();
+  } catch (err) {
+    console.warn('Proxy delete error:', err);
+  }
+
+  return { success: true, message: 'Transaksi kas dihapus secara lokal', localOnly: true };
 }

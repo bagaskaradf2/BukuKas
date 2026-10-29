@@ -88,6 +88,9 @@ function doPost(e) {
       case 'updateBbKasTransaction':
         result = handleUpdateBbKasTransaction(ss, payload);
         break;
+      case 'deleteBbKasTransaction':
+        result = handleDeleteBbKasTransaction(ss, payload);
+        break;
       case 'updateRabHarianItem':
         result = handleUpdateRabHarianItem(ss, payload);
         break;
@@ -744,8 +747,10 @@ function handleUpdateBbKasTransaction(ss, p) {
   if (p.keluar !== undefined) {
     sheet.getRange(row, cStart + 4).setValue(Number(p.keluar) || 0);
   }
-  if (p.keterangan !== undefined) {
-    sheet.getRange(row, cStart + 6).setValue(String(p.keterangan).trim());
+  // Tangani keterangan / alokasi / pos secara komprehensif
+  const ketVal = p.keterangan !== undefined ? p.keterangan : (p.alokasi !== undefined ? p.alokasi : p.targetAlokasi);
+  if (ketVal !== undefined && ketVal !== null) {
+    sheet.getRange(row, cStart + 6).setValue(String(ketVal).trim());
   }
 
   // Jaga rumus saldo di kolom F (Okt), N (Nov), atau V (Des)
@@ -760,6 +765,70 @@ function handleUpdateBbKasTransaction(ss, p) {
   }
 
   return { success: true, row: row };
+}
+
+function handleDeleteBbKasTransaction(ss, p) {
+  const sheet = ss.getSheetByName('BB KAS');
+  if (!sheet) return { error: "Sheet BB KAS tidak ditemukan" };
+
+  const bulan = String(p.bulan || 'OKTOBER').trim().toUpperCase();
+  const targetRow = Number(p.row);
+  if (!targetRow || targetRow < 8) {
+    return { error: "Baris saldo kas awal tidak dapat dihapus" };
+  }
+
+  const monthColMap = {
+    'OKTOBER': 1,
+    'NOVEMBER': 9,
+    'DESEMBER': 17
+  };
+  const cStart = monthColMap[bulan] || 1;
+
+  // Cari baris terakhir yang terisi di kolom bulan ini
+  let lastRow = targetRow;
+  for (let r = targetRow; r <= 71; r++) {
+    const dsk = sheet.getRange(r, cStart + 2).getValue();
+    const msk = sheet.getRange(r, cStart + 3).getValue();
+    const klr = sheet.getRange(r, cStart + 4).getValue();
+    if (dsk || (msk !== '' && msk !== null && msk !== 0) || (klr !== '' && klr !== null && klr !== 0)) {
+      lastRow = r;
+    }
+  }
+
+  const saldoColLetter = cStart === 1 ? 'F' : (cStart === 9 ? 'N' : 'V');
+  const masukColLetter = cStart === 1 ? 'D' : (cStart === 9 ? 'L' : 'T');
+  const keluarColLetter = cStart === 1 ? 'E' : (cStart === 9 ? 'M' : 'U');
+
+  // Geser baris di bawahnya naik 1 baris khusus di kolom bulan ini
+  for (let r = targetRow; r < lastRow; r++) {
+    const nextRow = r + 1;
+    const nextTgl = sheet.getRange(nextRow, cStart + 1).getValue();
+    const nextDsk = sheet.getRange(nextRow, cStart + 2).getValue();
+    const nextMsk = sheet.getRange(nextRow, cStart + 3).getValue();
+    const nextKlr = sheet.getRange(nextRow, cStart + 4).getValue();
+    const nextKet = sheet.getRange(nextRow, cStart + 6).getValue();
+
+    sheet.getRange(r, cStart + 1).setValue(nextTgl);
+    sheet.getRange(r, cStart + 2).setValue(nextDsk);
+    sheet.getRange(r, cStart + 3).setValue(nextMsk);
+    sheet.getRange(r, cStart + 4).setValue(nextKlr);
+    sheet.getRange(r, cStart + 6).setValue(nextKet);
+
+    // Perbarui rumus saldo
+    const prevRow = r - 1;
+    sheet.getRange(r, cStart + 5).setFormula('=' + saldoColLetter + prevRow + '+' + masukColLetter + r + '-' + keluarColLetter + r);
+  }
+
+  // Bersihkan baris paling bawah yang telah digeser naik
+  sheet.getRange(lastRow, cStart + 1).clearContent();
+  sheet.getRange(lastRow, cStart + 2).clearContent();
+  sheet.getRange(lastRow, cStart + 3).setValue(0);
+  sheet.getRange(lastRow, cStart + 4).setValue(0);
+  sheet.getRange(lastRow, cStart + 6).clearContent();
+  const prevLast = lastRow - 1;
+  sheet.getRange(lastRow, cStart + 5).setFormula('=' + saldoColLetter + prevLast + '+' + masukColLetter + lastRow + '-' + keluarColLetter + lastRow);
+
+  return { success: true, deletedRow: targetRow };
 }
 
 function handleUpdateRabHarianItem(ss, p) {
