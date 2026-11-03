@@ -154,95 +154,108 @@ export default function Dashboard() {
 
       </div>
 
-      {/* 2 Main Sections: Distribusi Pengeluaran (Donut Chart) & Mutasi Kas */}
+      {/* Dua Diagram Pengeluaran: 1. Per Deskripsi Transaksi, 2. Per Alokasi Pos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
-        {/* Distribusi Pengeluaran - Diagram Donut & Rincian Kategori */}
+        {/* Diagram 1: Berdasarkan Deskripsi Transaksi */}
         <ExpenseDonutChart 
           bbKas={data?.bbKas || {}} 
+          initialMode="deskripsi" 
           onNavigateToKas={() => setActiveTab('BB KAS')} 
         />
 
-        {/* Mutasi Kas Terkini */}
-        <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden">
-          <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
-            <div>
-              <h2 className="font-bold text-sm text-zinc-950">
-                Mutasi Kas Terbaru
-              </h2>
-              <span className="text-xs text-zinc-400 font-normal">
-                Aktivitas pemasukan dan pengeluaran kas riil
-              </span>
-            </div>
-            <button
-              onClick={() => setActiveTab('BB KAS')}
-              className="text-xs text-zinc-500 hover:text-zinc-950 font-semibold inline-flex items-center space-x-1 cursor-pointer transition"
-            >
-              <span>Buku Kas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+        {/* Diagram 2: Berdasarkan Alokasi Pos */}
+        <ExpenseDonutChart 
+          bbKas={data?.bbKas || {}} 
+          initialMode="pos" 
+          onNavigateToKas={() => setActiveTab('BB KAS')} 
+        />
+
+      </div>
+
+      {/* Mutasi Kas Terkini */}
+      <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+          <div>
+            <h2 className="font-bold text-sm text-zinc-950">
+              Mutasi Kas Terbaru
+            </h2>
+            <span className="text-xs text-zinc-400 font-normal">
+              Aktivitas pemasukan dan pengeluaran kas riil
+            </span>
           </div>
-
-          <div className="divide-y divide-zinc-100">
-            {bbKasOktober.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-400">
-                {loading ? 'Memuat mutasi kas...' : 'Belum ada mutasi kas dari spreadsheet.'}
-              </div>
-            ) : (
-              bbKasOktober.slice(-6).reverse().map((tx, idx) => {
-                const isMasuk = tx.masuk > 0;
-
-                return (
-                  <div key={idx} className="px-5 py-3.5 flex items-center justify-between text-xs hover:bg-zinc-50/60 transition">
-                    <div className="flex items-center space-x-3 min-w-0">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                        isMasuk ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'
-                      }`}>
-                        {isMasuk ? (
-                          <ArrowDownLeft className="w-4 h-4" />
-                        ) : (
-                          <ArrowUpRight className="w-4 h-4" />
-                        )}
-                      </div>
-
-                      <div className="space-y-0.5 min-w-0">
-                        <div className="font-semibold text-zinc-900 truncate">
-                          {tx.deskripsi}
-                        </div>
-                        <div className="text-[11px] text-zinc-400">
-                          {tx.tanggal ? `Okt ${tx.tanggal}` : '-'} • Saldo: {formatRupiah(tx.saldo)}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      {isMasuk ? (
-                        <div className="space-y-0.5">
-                          <span className="text-xs font-bold tabular-nums text-emerald-700 block">
-                            {formatRupiah(tx.masuk)}
-                          </span>
-                          <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 inline-block">
-                            Masuk
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="space-y-0.5">
-                          <span className="text-xs font-bold tabular-nums text-rose-600 block">
-                            {formatRupiah(tx.keluar)}
-                          </span>
-                          <span className="text-[10px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100 inline-block">
-                            Keluar
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+          <button
+            onClick={() => setActiveTab('BB KAS')}
+            className="text-xs text-zinc-500 hover:text-zinc-950 font-semibold inline-flex items-center space-x-1 cursor-pointer transition"
+          >
+            <span>Buku Kas</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
 
+        <div className="divide-y divide-zinc-100">
+          {bbKasOktober.length === 0 ? (
+            <div className="p-8 text-center text-xs text-zinc-400">
+              {loading ? 'Memuat mutasi kas...' : 'Belum ada mutasi kas dari spreadsheet.'}
+            </div>
+          ) : (
+            bbKasOktober.slice(-8).reverse().map((tx, idx) => {
+              const isMasuk = tx.masuk > 0;
+
+              return (
+                <div key={idx} className="px-5 py-3.5 flex items-center justify-between text-xs hover:bg-zinc-50/60 transition">
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                      isMasuk ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'
+                    }`}>
+                      {isMasuk ? (
+                        <ArrowDownLeft className="w-4 h-4" />
+                      ) : (
+                        <ArrowUpRight className="w-4 h-4" />
+                      )}
+                    </div>
+
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="font-semibold text-zinc-900 truncate">
+                        {tx.deskripsi}
+                      </div>
+                      <div className="text-[11px] text-zinc-400">
+                        {tx.tanggal ? `Okt ${tx.tanggal}` : '-'} • Saldo: {formatRupiah(tx.saldo)}
+                        {tx.keterangan && (
+                          <span className="ml-2 inline-block px-1.5 py-0.2 bg-zinc-100 rounded text-zinc-600 font-medium">
+                            {tx.keterangan}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    {isMasuk ? (
+                      <div className="space-y-0.5">
+                        <span className="text-xs font-bold tabular-nums text-emerald-700 block">
+                          {formatRupiah(tx.masuk)}
+                        </span>
+                        <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 inline-block">
+                          Masuk
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="space-y-0.5">
+                        <span className="text-xs font-bold tabular-nums text-rose-600 block">
+                          {formatRupiah(tx.keluar)}
+                        </span>
+                        <span className="text-[10px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100 inline-block">
+                          Keluar
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
     </div>
