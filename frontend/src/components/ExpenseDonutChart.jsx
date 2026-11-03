@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatRupiah } from '../utils/formatters';
-import { ArrowRight, Search, PieChart } from 'lucide-react';
+import { Search, PieChart } from 'lucide-react';
 
 const COLOR_PALETTE = [
   '#f43f5e', // Rose
@@ -28,7 +28,6 @@ const COLOR_PALETTE = [
 function normalizeDescriptionKey(desc) {
   if (!desc) return 'lainnya';
   let clean = desc.trim().toLowerCase();
-  // Hilangkan awalan beli/bayar/isi jika ada agar seragam (misal: "beli galon" -> "galon")
   clean = clean.replace(/^(beli|bayar|isi)\s+/i, '').trim();
   return clean || 'lainnya';
 }
@@ -38,7 +37,6 @@ function formatDescriptionTitle(desc) {
   let clean = desc.trim();
   clean = clean.replace(/^(beli|bayar|isi)\s+/i, '').trim();
   if (!clean) return desc.trim();
-  // Capitalize first letter of each word, preserving uppercase acronyms (e.g. KKN, ID, TPA)
   return clean
     .split(/\s+/)
     .map(w => (w.length > 1 && w === w.toUpperCase() ? w : w.charAt(0).toUpperCase() + w.slice(1)))
@@ -80,12 +78,10 @@ function formatPercentage(fraction) {
 
 export default function ExpenseDonutChart({ 
   bbKas = {}, 
-  initialMode = 'deskripsi', 
-  title: customTitle,
-  subtitle: customSubtitle,
-  onNavigateToKas 
+  mode = 'deskripsi', // 'deskripsi' | 'pos'
+  title,
+  subtitle
 }) {
-  const [mode, setMode] = useState(initialMode); // 'deskripsi' | 'pos'
   const [selectedMonth, setSelectedMonth] = useState('OKTOBER');
   const [hoveredId, setHoveredId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,15 +164,16 @@ export default function ExpenseDonutChart({
       });
   }
 
-  // 3. Filter list berdasarkan pencarian (jika ada)
+  // 3. Filter list berdasarkan pencarian
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // 4. SVG Donut Math
-  const r = 70;
-  const cx = 110;
-  const cy = 110;
+  // 4. SVG Donut Math (Dimensi lebar & proporsional agar tidak berdempetan atau terpotong)
+  const cx = 130;
+  const cy = 130;
+  const r = 88;
+  const strokeWidth = 24;
   const circumference = 2 * Math.PI * r;
 
   let accumulatedFraction = 0;
@@ -204,122 +201,76 @@ export default function ExpenseDonutChart({
 
   const activeHoveredItem = hoveredId ? categories.find((c) => c.id === hoveredId) : null;
 
-  // Header Titles
   const defaultTitle = mode === 'deskripsi' 
     ? 'Pengeluaran per Deskripsi Transaksi' 
     : 'Pengeluaran per Alokasi Pos';
   const defaultSubtitle = mode === 'deskripsi'
-    ? 'Akumulasi belanja riil per item transaksi (misal: Galon, Gas, Sayur)'
+    ? 'Akumulasi belanja riil per nama barang (misal: Galon, Gas, Sayur)'
     : 'Proporsi pengeluaran riil berdasarkan pos anggaran kegiatan';
 
   return (
     <div className="bg-white rounded-2xl border border-zinc-200/90 shadow-xs overflow-hidden flex flex-col justify-between">
       
-      {/* Header Card */}
-      <div className="px-5 py-4 border-b border-zinc-100 bg-zinc-50/50 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-lg bg-zinc-200/70 text-zinc-700 flex items-center justify-center shrink-0">
-                <PieChart className="w-3.5 h-3.5" />
-              </div>
-              <h2 className="font-bold text-sm text-zinc-950">
-                {customTitle || defaultTitle}
-              </h2>
+      {/* Header Card (Tanpa tombol switch yang mengganggu) */}
+      <div className="px-5 py-4 border-b border-zinc-100 bg-zinc-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center space-x-2">
+            <div className="w-7 h-7 rounded-lg bg-zinc-200/70 text-zinc-700 flex items-center justify-center shrink-0">
+              <PieChart className="w-4 h-4 text-zinc-600" />
             </div>
-            <p className="text-xs text-zinc-400 font-normal mt-0.5">
-              {customSubtitle || defaultSubtitle}
-            </p>
+            <h2 className="font-bold text-sm text-zinc-950">
+              {title || defaultTitle}
+            </h2>
           </div>
-
-          {onNavigateToKas && (
-            <button
-              onClick={onNavigateToKas}
-              className="text-xs text-zinc-500 hover:text-zinc-950 font-semibold inline-flex items-center space-x-1 cursor-pointer transition shrink-0"
-              title="Buka Buku Kas"
-            >
-              <span>Buku Kas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          )}
+          <p className="text-xs text-zinc-400 font-normal mt-0.5 ml-9">
+            {subtitle || defaultSubtitle}
+          </p>
         </div>
 
-        {/* Toolbar: Switcher Mode (Deskripsi vs Alokasi Pos) + Bulan */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-zinc-100">
-          
-          {/* Mode Switcher Tabs */}
-          <div className="flex items-center bg-zinc-200/60 p-0.5 rounded-lg text-[11px]">
+        {/* Month Selector Pills */}
+        <div className="flex items-center space-x-1 self-start sm:self-auto ml-9 sm:ml-0 bg-zinc-200/60 p-0.5 rounded-xl text-[11px] shrink-0">
+          {['OKTOBER', 'NOVEMBER', 'DESEMBER', 'SEMUA'].map((m) => (
             <button
+              key={m}
               onClick={() => {
-                setMode('deskripsi');
+                setSelectedMonth(m);
                 setHoveredId(null);
               }}
-              className={`px-2.5 py-1 rounded-md font-semibold transition cursor-pointer ${
-                mode === 'deskripsi'
+              className={`px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer ${
+                selectedMonth === m
                   ? 'bg-white text-zinc-950 shadow-2xs'
                   : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
-              Deskripsi Item
+              {m === 'SEMUA' ? 'Semua' : m.slice(0, 3)}
             </button>
-            <button
-              onClick={() => {
-                setMode('pos');
-                setHoveredId(null);
-              }}
-              className={`px-2.5 py-1 rounded-md font-semibold transition cursor-pointer ${
-                mode === 'pos'
-                  ? 'bg-white text-zinc-950 shadow-2xs'
-                  : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Alokasi Pos
-            </button>
-          </div>
-
-          {/* Month Filter */}
-          <div className="flex items-center space-x-1 bg-zinc-200/60 p-0.5 rounded-lg text-[11px]">
-            {['OKTOBER', 'NOVEMBER', 'DESEMBER', 'SEMUA'].map((m) => (
-              <button
-                key={m}
-                onClick={() => {
-                  setSelectedMonth(m);
-                  setHoveredId(null);
-                }}
-                className={`px-2 py-0.5 rounded-md font-semibold transition cursor-pointer ${
-                  selectedMonth === m
-                    ? 'bg-white text-zinc-900 shadow-2xs'
-                    : 'text-zinc-600 hover:text-zinc-950'
-                }`}
-              >
-                {m === 'SEMUA' ? 'Semua' : m.slice(0, 3)}
-              </button>
-            ))}
-          </div>
-
+          ))}
         </div>
       </div>
 
-      {/* Content: Chart + List */}
+      {/* Content: Donut + List */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         {totalExpense === 0 ? (
-          <div className="py-16 text-center text-xs text-zinc-400">
+          <div className="py-16 text-center text-xs text-zinc-400 font-medium">
             Belum ada catatan pengeluaran kas di periode {selectedMonth}.
           </div>
         ) : (
           <div className="flex flex-col items-center">
             
-            {/* SVG Donut Chart */}
-            <div className="relative w-56 h-56 flex items-center justify-center my-2">
-              <svg viewBox="0 0 220 220" className="w-full h-full transform transition-all duration-300">
-                {/* Background Ring */}
+            {/* SVG Donut Chart (Area Lega 260x260, Lubang Tengah 152px) */}
+            <div className="relative w-64 h-64 flex items-center justify-center my-3 mx-auto">
+              <svg 
+                viewBox="0 0 260 260" 
+                className="w-full h-full transform transition-all duration-300"
+              >
+                {/* Background Track Ring */}
                 <circle
                   cx={cx}
                   cy={cy}
                   r={r}
                   fill="none"
                   stroke="#f4f4f5"
-                  strokeWidth="26"
+                  strokeWidth={strokeWidth}
                 />
 
                 {/* Slices */}
@@ -332,6 +283,7 @@ export default function ExpenseDonutChart({
                       key={slice.id} 
                       onMouseEnter={() => setHoveredId(slice.id)} 
                       onMouseLeave={() => setHoveredId(null)}
+                      className="cursor-pointer"
                     >
                       <circle
                         cx={cx}
@@ -339,28 +291,28 @@ export default function ExpenseDonutChart({
                         r={r}
                         fill="none"
                         stroke={slice.color}
-                        strokeWidth={isHovered ? '32' : '26'}
+                        strokeWidth={isHovered ? strokeWidth + 6 : strokeWidth}
                         strokeDasharray={`${slice.sliceLength} ${circumference}`}
                         strokeDashoffset={slice.offset}
                         transform={`rotate(-90 ${cx} ${cy})`}
-                        className="transition-all duration-200 cursor-pointer"
+                        className="transition-all duration-200"
                         style={{
                           opacity: hasAnyHover && !isHovered ? 0.35 : 1
                         }}
                       />
-                      {/* Persentase di dalam slice untuk irisan yang cukup lebar (>= 4.5%) */}
-                      {slice.fraction >= 0.045 && (
+                      {/* Label persentase di dalam irisan (hanya untuk irisan lebar >= 7.5% agar tidak terpotong) */}
+                      {slice.fraction >= 0.075 && (
                         <text
                           x={slice.labelX}
                           y={slice.labelY}
                           fill="#ffffff"
-                          fontSize="9.5"
+                          fontSize="10"
                           fontWeight="700"
                           textAnchor="middle"
                           dominantBaseline="central"
                           className="pointer-events-none select-none font-sans drop-shadow-xs"
                         >
-                          {slice.pct}
+                          {Math.round(slice.fraction * 100)}%
                         </text>
                       )}
                     </g>
@@ -368,66 +320,64 @@ export default function ExpenseDonutChart({
                 })}
               </svg>
 
-              {/* Center Info Hole (Interaktif saat di-hover) */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-4 transition-all duration-150">
+              {/* Center Info Hole (Lega, Bersih, Tidak Menabrak Garis) */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-6">
                 {activeHoveredItem ? (
-                  <div className="space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="space-y-0.5 max-w-[145px] animate-in fade-in zoom-in-95 duration-150">
                     <span 
-                      className="text-[10px] font-bold uppercase tracking-wider block truncate max-w-[130px]"
+                      className="text-[11px] font-bold uppercase tracking-wider block truncate"
                       style={{ color: activeHoveredItem.color }}
                     >
-                      {activeHoveredItem.name} ({activeHoveredItem.pct})
+                      {activeHoveredItem.name}
                     </span>
-                    <span className="text-base sm:text-lg font-bold tabular-nums text-zinc-950 block leading-tight">
+                    <span className="text-lg sm:text-xl font-bold tabular-nums text-zinc-950 block leading-tight">
                       {formatRupiah(activeHoveredItem.amount)}
                     </span>
-                    {activeHoveredItem.count > 1 && (
-                      <span className="text-[10px] text-zinc-400 block font-medium">
-                        {activeHoveredItem.count}x transaksi
-                      </span>
-                    )}
+                    <span className="text-[11px] font-semibold text-zinc-500 block">
+                      {activeHoveredItem.pct} {activeHoveredItem.count > 1 ? `• ${activeHoveredItem.count}x` : ''}
+                    </span>
                   </div>
                 ) : (
-                  <div>
+                  <div className="space-y-0.5 max-w-[145px]">
                     <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">
                       Total Pengeluaran
                     </span>
-                    <span className="text-base sm:text-lg font-bold tabular-nums text-zinc-950 mt-0.5 block leading-tight">
+                    <span className="text-lg sm:text-xl font-bold tabular-nums text-zinc-950 block leading-tight">
                       {formatRupiah(totalExpense)}
                     </span>
-                    <span className="text-[10px] text-zinc-400 block mt-0.5">
-                      {categories.length} {mode === 'deskripsi' ? 'item' : 'pos alokasi'}
+                    <span className="text-[11px] text-zinc-400 block font-medium">
+                      {categories.length} {mode === 'deskripsi' ? 'item belanja' : 'pos alokasi'}
                     </span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* List Header + Search jika item banyak */}
-            <div className="w-full mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between gap-2">
+            {/* Subheader: Rincian & Search */}
+            <div className="w-full mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between gap-2 px-1">
               <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
                 Rincian {mode === 'deskripsi' ? 'Item Pengeluaran' : 'Alokasi Pos'} ({categories.length})
               </span>
 
-              {categories.length > 6 && (
-                <div className="relative w-36">
-                  <Search className="w-3 h-3 text-zinc-400 absolute left-2 top-1/2 -translate-y-1/2" />
+              {categories.length > 5 && (
+                <div className="relative w-36 sm:w-44">
+                  <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Cari..."
+                    placeholder="Cari item..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-6 pr-2 py-0.5 text-[11px] bg-zinc-50 rounded-lg border border-zinc-200 focus:outline-none focus:border-zinc-400"
+                    className="w-full pl-7 pr-2.5 py-1 text-xs bg-zinc-50 hover:bg-zinc-100/60 focus:bg-white rounded-lg border border-zinc-200 focus:outline-none focus:border-zinc-400 transition"
                   />
                 </div>
               )}
             </div>
 
             {/* Category / Description Breakdown List */}
-            <div className="w-full divide-y divide-zinc-100 max-h-[380px] overflow-y-auto pr-1 mt-2">
+            <div className="w-full divide-y divide-zinc-100 max-h-[340px] overflow-y-auto pr-1.5 mt-2">
               {filteredCategories.length === 0 ? (
-                <div className="py-6 text-center text-xs text-zinc-400">
-                  Tidak ditemukan item yang cocok.
+                <div className="py-8 text-center text-xs text-zinc-400 font-medium">
+                  Tidak ditemukan data yang cocok dengan "{searchQuery}".
                 </div>
               ) : (
                 filteredCategories.map((cat) => {

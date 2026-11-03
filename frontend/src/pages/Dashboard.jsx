@@ -160,15 +160,17 @@ export default function Dashboard() {
         {/* Diagram 1: Berdasarkan Deskripsi Transaksi */}
         <ExpenseDonutChart 
           bbKas={data?.bbKas || {}} 
-          initialMode="deskripsi" 
-          onNavigateToKas={() => setActiveTab('BB KAS')} 
+          mode="deskripsi" 
+          title="Pengeluaran per Deskripsi Transaksi"
+          subtitle="Akumulasi belanja riil per nama barang (misal: Galon, Gas, Sayur)"
         />
 
         {/* Diagram 2: Berdasarkan Alokasi Pos */}
         <ExpenseDonutChart 
           bbKas={data?.bbKas || {}} 
-          initialMode="pos" 
-          onNavigateToKas={() => setActiveTab('BB KAS')} 
+          mode="pos" 
+          title="Pengeluaran per Alokasi Pos"
+          subtitle="Proporsi pengeluaran riil berdasarkan pos anggaran kegiatan"
         />
 
       </div>
