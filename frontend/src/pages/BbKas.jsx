@@ -32,6 +32,21 @@ export default function BbKas() {
   const [filterType, setFilterType] = useState('ALL');
   const [search, setSearch] = useState('');
 
+  // Auto-select bulan aktif terbaru yang memiliki transaksi
+  const hasAutoSelected = React.useRef(false);
+  React.useEffect(() => {
+    if (!hasAutoSelected.current && data?.bbKas) {
+      const months = ['DESEMBER', 'NOVEMBER', 'OKTOBER'];
+      for (const m of months) {
+        if (data.bbKas[m] && data.bbKas[m].some(t => Number(t.keluar) > 0 || Number(t.masuk) > 0)) {
+          setActiveMonth(m);
+          hasAutoSelected.current = true;
+          break;
+        }
+      }
+    }
+  }, [data]);
+
   // Edit State
   const [editingRow, setEditingRow] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,6 +56,16 @@ export default function BbKas() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const currentMonthTxs = bbKas[activeMonth] || [];
+
+  // Hitung saldo awal pindahan bulan lalu
+  const oktList = bbKas['OKTOBER'] || [];
+  const novList = bbKas['NOVEMBER'] || [];
+  const saldoAkhirOktober = oktList.length > 0 ? oktList[oktList.length - 1].saldo : 17300000;
+  const saldoAkhirNovember = novList.length > 0 ? novList[novList.length - 1].saldo : saldoAkhirOktober;
+
+  const saldoAwalBulan = activeMonth === 'OKTOBER' 
+    ? 17300000 
+    : (activeMonth === 'NOVEMBER' ? saldoAkhirOktober : saldoAkhirNovember);
 
   const filteredTxs = currentMonthTxs.filter(tx => {
     const matchesSearch = tx.deskripsi.toLowerCase().includes(search.toLowerCase()) ||
@@ -53,7 +78,7 @@ export default function BbKas() {
 
   const totalMasuk = currentMonthTxs.reduce((s, t) => s + (Number(t.masuk) || 0), 0);
   const totalKeluar = currentMonthTxs.reduce((s, t) => s + (Number(t.keluar) || 0), 0);
-  const latestSaldo = currentMonthTxs.length > 0 ? currentMonthTxs[currentMonthTxs.length - 1].saldo : 0;
+  const latestSaldo = currentMonthTxs.length > 0 ? currentMonthTxs[currentMonthTxs.length - 1].saldo : saldoAwalBulan;
 
   const handleStartEdit = (tx) => {
     setEditingRow({
@@ -233,6 +258,21 @@ export default function BbKas() {
         </div>
       </div>
 
+      {/* Saldo Pindahan Banner untuk November / Desember */}
+      {activeMonth !== 'OKTOBER' && (
+        <div className="bg-emerald-50/70 border border-emerald-200/90 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+          <div className="flex items-center space-x-2 text-emerald-950 font-medium text-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0"></span>
+            <span>
+              Saldo Awal Pindahan ({activeMonth === 'NOVEMBER' ? 'Saldo Akhir Oktober' : 'Saldo Akhir November'}):
+            </span>
+          </div>
+          <span className="font-bold tabular-nums text-emerald-800 text-sm">
+            {formatRupiah(saldoAwalBulan)}
+          </span>
+        </div>
+      )}
+
       {/* Search & Filter */}
       <div className="bg-white p-3.5 rounded-2xl border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-72">
@@ -278,6 +318,26 @@ export default function BbKas() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
+              {/* Baris Saldo Pindahan untuk Bulan Lanjutan */}
+              {activeMonth !== 'OKTOBER' && filterType !== 'KELUAR' && !search && (
+                <tr className="bg-emerald-50/30 font-medium text-zinc-600">
+                  <td className="py-2.5 px-3 text-center text-zinc-400 font-semibold text-[11px]">-</td>
+                  <td className="py-2.5 px-3 text-zinc-400 text-[11px] font-semibold">{activeMonth.slice(0, 3)} 1</td>
+                  <td className="py-2.5 px-3 font-semibold text-emerald-950">
+                    Saldo Pindahan dari Bulan {activeMonth === 'NOVEMBER' ? 'Oktober' : 'November'}
+                  </td>
+                  <td className="py-2.5 px-3 text-right text-zinc-400">-</td>
+                  <td className="py-2.5 px-3 text-right text-zinc-400">-</td>
+                  <td className="py-2.5 px-4 text-right font-bold tabular-nums text-zinc-950 bg-zinc-100/70">
+                    {formatRupiah(saldoAwalBulan)}
+                  </td>
+                  <td className="py-2.5 px-3 text-emerald-700 font-medium text-[11px]">Saldo Pindahan</td>
+                  {role === 'Bendahara' && (
+                    <td className="py-2.5 px-3 text-center text-zinc-300 text-[11px]">-</td>
+                  )}
+                </tr>
+              )}
+
               {filteredTxs.length > 0 ? (
                 filteredTxs.map((tx, idx) => {
                   const isEditing = editingRow && editingRow.row === tx.row;

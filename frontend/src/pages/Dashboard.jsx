@@ -15,13 +15,35 @@ export default function Dashboard() {
   const { data, setActiveTab, role, setIsRecordModalOpen, loading, refreshData } = useApp();
 
   const kartuIuran = data?.kartuIuran || {};
-  const members = kartuIuran.members || [];
-  const totalDanaKelompok = kartuIuran.totalDanaKelompok || 0;
+  const bbKas = data?.bbKas || {};
+  const allMonths = ['OKTOBER', 'NOVEMBER', 'DESEMBER'];
 
-  const bbKasOktober = data?.bbKas?.OKTOBER || [];
-  const latestTx = bbKasOktober.length > 0 ? bbKasOktober[bbKasOktober.length - 1] : null;
+  let latestTx = null;
+  let totalPengeluaranKas = 0;
+  let totalUangMasukKas = 0;
+  const allRecentTxs = [];
+
+  allMonths.forEach((m) => {
+    const txs = bbKas[m] || [];
+    txs.forEach((tx) => {
+      const klr = Number(tx.keluar) || 0;
+      const msk = Number(tx.masuk) || 0;
+      totalPengeluaranKas += klr;
+      totalUangMasukKas += msk;
+
+      // Kumpulkan transaksi riil untuk mutasi kas terbaru
+      if (klr > 0 || msk > 0 || (tx.deskripsi || '').toLowerCase().includes('kas awal')) {
+        allRecentTxs.push({
+          ...tx,
+          bulanName: m
+        });
+        latestTx = tx;
+      }
+    });
+  });
+
   const saldoSaatIni = latestTx ? latestTx.saldo : 0;
-  const totalPengeluaranKas = bbKasOktober.reduce((acc, curr) => acc + (Number(curr.keluar) || 0), 0);
+  const totalUangMasuk = Math.max(Number(kartuIuran.totalDanaKelompok) || 0, totalUangMasukKas, 17300000);
 
   const TARGET_PER_MEMBER = 1600000;
 
@@ -110,7 +132,7 @@ export default function Dashboard() {
           </div>
           <div className="mt-3">
             <div className="text-2xl sm:text-3xl font-bold tabular-nums text-emerald-700">
-              {formatRupiah(totalDanaKelompok)}
+              {formatRupiah(totalUangMasuk)}
             </div>
             <span className="text-[11px] text-zinc-400 mt-1 block">
               Akumulasi iuran anggota & kas lain
@@ -182,13 +204,14 @@ export default function Dashboard() {
         </div>
 
         <div className="divide-y divide-zinc-100">
-          {bbKasOktober.length === 0 ? (
+          {allRecentTxs.length === 0 ? (
             <div className="p-8 text-center text-xs text-zinc-400">
               {loading ? 'Memuat mutasi kas...' : 'Belum ada mutasi kas dari spreadsheet.'}
             </div>
           ) : (
-            bbKasOktober.slice(-8).reverse().map((tx, idx) => {
-              const isMasuk = tx.masuk > 0;
+            allRecentTxs.slice(-8).reverse().map((tx, idx) => {
+              const isMasuk = (Number(tx.masuk) || 0) > 0;
+              const shortBulan = (tx.bulanName || 'Okt').slice(0, 3).toUpperCase();
 
               return (
                 <div key={idx} className="px-5 py-3.5 flex items-center justify-between text-xs hover:bg-zinc-50/60 transition">
@@ -208,7 +231,7 @@ export default function Dashboard() {
                         {tx.deskripsi}
                       </div>
                       <div className="text-[11px] text-zinc-400">
-                        {tx.tanggal ? `Okt ${tx.tanggal}` : '-'} • Saldo: {formatRupiah(tx.saldo)}
+                        {tx.tanggal ? `${shortBulan} ${tx.tanggal}` : shortBulan} • Saldo: {formatRupiah(tx.saldo)}
                         {tx.keterangan && (
                           <span className="ml-2 inline-block px-1.5 py-0.2 bg-zinc-100 rounded text-zinc-600 font-medium">
                             {tx.keterangan}

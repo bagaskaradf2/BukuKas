@@ -503,12 +503,15 @@ function readBbKas(sheet) {
     { name: 'DESEMBER', cStart: 17 }
   ];
 
+  let chainedRunningSaldo = 17300000;
   const result = {};
+
   for (let i = 0; i < monthsBb.length; i++) {
     const m = monthsBb[i];
     const cIdx = m.cStart - 1;
     const txs = [];
     let lastTanggal = null;
+
     for (let r = 6; r < 71; r++) {
       const blnLbl = values[r][cIdx];
       const rawTgl = values[r][cIdx + 1];
@@ -527,14 +530,24 @@ function readBbKas(sheet) {
           tgl = lastTanggal; // Wariskan tanggal dari baris sebelumnya jika kosong atau tanda strip (-)
         }
 
+        const masukNom = Number(msk) || 0;
+        const keluarNom = Number(klr) || 0;
+
+        // Hitung saldo berantai antar-bulan secara kronologis (Oktober -> November -> Desember)
+        if (i === 0 && txs.length === 0 && String(dsk || '').toLowerCase().includes('kas awal')) {
+          chainedRunningSaldo = masukNom || (typeof sld === 'number' && sld > 0 ? sld : 17300000);
+        } else {
+          chainedRunningSaldo = chainedRunningSaldo + masukNom - keluarNom;
+        }
+
         txs.push({
           row: r + 1,
           bulanLabel: String(blnLbl || '').trim(),
           tanggal: tgl,
           deskripsi: String(dsk || '').trim(),
-          masuk: Number(msk) || 0,
-          keluar: Number(klr) || 0,
-          saldo: (typeof sld === 'number') ? sld : 0,
+          masuk: masukNom,
+          keluar: keluarNom,
+          saldo: chainedRunningSaldo,
           keterangan: String(ket || '').trim()
         });
       }
@@ -705,6 +718,23 @@ function handleAddBbKasTransaction(ss, p) {
   }
 
   sheet.getRange(targetRow, cStart + 6).setValue(keterangan);
+
+  // Pastikan rumus saldo di cell baris 7 (saldo awal bulan lanjutan) terhubung ke saldo akhir bulan sebelumnya
+  if (cStart === 9) { // NOVEMBER
+    const n7Cell = sheet.getRange(7, 14);
+    const n7Formula = n7Cell.getFormula();
+    const n7Val = n7Cell.getValue();
+    if (!n7Formula && (!n7Val || n7Val === 0)) {
+      n7Cell.setFormula('=F71');
+    }
+  } else if (cStart === 17) { // DESEMBER
+    const v7Cell = sheet.getRange(7, 22);
+    const v7Formula = v7Cell.getFormula();
+    const v7Val = v7Cell.getValue();
+    if (!v7Formula && (!v7Val || v7Val === 0)) {
+      v7Cell.setFormula('=N71');
+    }
+  }
 
   const saldoColLetter = cStart === 1 ? 'F' : (cStart === 9 ? 'N' : 'V');
   const masukColLetter = cStart === 1 ? 'D' : (cStart === 9 ? 'L' : 'T');

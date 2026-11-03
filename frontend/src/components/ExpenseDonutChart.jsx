@@ -82,9 +82,32 @@ export default function ExpenseDonutChart({
   title,
   subtitle
 }) {
-  const [selectedMonth, setSelectedMonth] = useState('OKTOBER');
+  // Cari bulan aktif terbaru yang memiliki pengeluaran
+  const getInitialMonth = () => {
+    const months = ['DESEMBER', 'NOVEMBER', 'OKTOBER'];
+    for (const m of months) {
+      if (bbKas[m] && bbKas[m].some(t => Number(t.keluar) > 0)) {
+        return m;
+      }
+    }
+    return 'OKTOBER';
+  };
+
+  const [selectedMonth, setSelectedMonth] = useState(getInitialMonth);
   const [hoveredId, setHoveredId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Sinkronisasi otomatis saat data pertama kali dimuat
+  const hasAutoSelected = React.useRef(false);
+  React.useEffect(() => {
+    if (!hasAutoSelected.current && bbKas) {
+      const init = getInitialMonth();
+      if (init !== 'OKTOBER') {
+        setSelectedMonth(init);
+        hasAutoSelected.current = true;
+      }
+    }
+  }, [bbKas]);
 
   // 1. Ambil transaksi pengeluaran sesuai bulan yang dipilih
   const getTransactions = () => {

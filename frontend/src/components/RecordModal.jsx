@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp, recalculateChainedBbKas } from '../context/AppContext';
 import { recordIntegratedTransaction } from '../services/api';
 import { formatRupiah } from '../utils/formatters';
 import { X, ArrowDownRight, ArrowUpRight } from 'lucide-react';
@@ -83,6 +83,9 @@ export default function RecordModal({ isOpen, onClose }) {
           keterangan: payload.targetAlokasi ? payload.targetAlokasi.replace('RAB_', '') : (payload.metode || 'Kas')
         });
         next.bbKas[bulanKas] = kasList;
+
+        // Recalculate continuous chained balances across all months
+        recalculateChainedBbKas(next.bbKas);
 
         // B. Hubungkan ke RAB Harian jika alokasi RAB Harian
         if (jenis === 'Pengeluaran') {

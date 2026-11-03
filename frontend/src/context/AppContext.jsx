@@ -5,25 +5,50 @@ import RecordModal from '../components/RecordModal';
 
 const AppContext = createContext();
 
+export function recalculateChainedBbKas(bbKas) {
+  if (!bbKas) return bbKas;
+  const months = ['OKTOBER', 'NOVEMBER', 'DESEMBER'];
+  let runningSaldo = 17300000;
+
+  months.forEach((m, mIdx) => {
+    const list = bbKas[m] || [];
+    let lastTgl = 1;
+
+    for (let i = 0; i < list.length; i++) {
+      const t = list[i];
+
+      // Forward-fill tanggal di BB Kas jika kosong
+      if (t.tanggal !== null && t.tanggal !== undefined && t.tanggal !== '' && t.tanggal !== '-' && !isNaN(t.tanggal)) {
+        lastTgl = Number(t.tanggal);
+        t.tanggal = lastTgl;
+      } else {
+        t.tanggal = lastTgl;
+      }
+
+      const msk = Number(t.masuk) || 0;
+      const klr = Number(t.keluar) || 0;
+
+      // Baris pertama bulan Oktober adalah Dana Kas Awal
+      if (mIdx === 0 && i === 0 && (t.deskripsi || '').toLowerCase().includes('kas awal')) {
+        runningSaldo = msk || Number(t.saldo) || runningSaldo;
+      } else {
+        runningSaldo = runningSaldo + msk - klr;
+      }
+
+      t.saldo = runningSaldo;
+    }
+  });
+
+  return bbKas;
+}
+
 function normalizeData(rawData) {
   if (!rawData) return rawData;
   const clean = JSON.parse(JSON.stringify(rawData));
 
-  // 1. Forward-fill tanggal di BB Kas
+  // 1. Chained Saldo Antar-Bulan & Forward-fill tanggal di BB Kas
   if (clean.bbKas) {
-    for (const m of Object.keys(clean.bbKas)) {
-      const list = clean.bbKas[m] || [];
-      let lastTgl = 1;
-      for (let i = 0; i < list.length; i++) {
-        const t = list[i];
-        if (t.tanggal !== null && t.tanggal !== undefined && t.tanggal !== '' && t.tanggal !== '-' && !isNaN(t.tanggal)) {
-          lastTgl = Number(t.tanggal);
-          t.tanggal = lastTgl;
-        } else {
-          t.tanggal = lastTgl;
-        }
-      }
-    }
+    recalculateChainedBbKas(clean.bbKas);
   }
 
   // 2. Hitung subtotal dan total anggaran RAB Harian
@@ -171,19 +196,9 @@ export function AppProvider({ children }) {
         };
       }
 
-      // Hitung ulang saldo kumulatif secara kronologis
-      if (list.length > 0) {
-        let runningSaldo = Number(list[0].masuk) || Number(list[0].saldo) || 0;
-        list[0].saldo = runningSaldo;
-        for (let i = 1; i < list.length; i++) {
-          const m = Number(list[i].masuk) || 0;
-          const k = Number(list[i].keluar) || 0;
-          runningSaldo = runningSaldo + m - k;
-          list[i].saldo = runningSaldo;
-        }
-      }
+      // Hitung ulang saldo kumulatif berantai antar-bulan secara kronologis
+      recalculateChainedBbKas(next.bbKas);
 
-      next.bbKas[bulan] = list;
       return next;
     });
     setLogs(getAuditLogs());
@@ -201,19 +216,11 @@ export function AppProvider({ children }) {
         filtered[i].row = i + 7;
       }
 
-      // Hitung ulang saldo kumulatif
-      if (filtered.length > 0) {
-        let runningSaldo = Number(filtered[0].masuk) || Number(filtered[0].saldo) || 0;
-        filtered[0].saldo = runningSaldo;
-        for (let i = 1; i < filtered.length; i++) {
-          const m = Number(filtered[i].masuk) || 0;
-          const k = Number(filtered[i].keluar) || 0;
-          runningSaldo = runningSaldo + m - k;
-          filtered[i].saldo = runningSaldo;
-        }
-      }
-
       next.bbKas[bulan] = filtered;
+
+      // Hitung ulang saldo kumulatif berantai antar-bulan secara kronologis
+      recalculateChainedBbKas(next.bbKas);
+
       return next;
     });
     setLogs(getAuditLogs());
